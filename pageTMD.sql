@@ -4937,7 +4937,6 @@ CREATE TABLE `wp_mailpoet_newsletter_templates` (
 --
 -- Dumping data for table `wp_mailpoet_newsletter_templates`
 --
-
 INSERT INTO `wp_mailpoet_newsletter_templates` (`id`, `newsletter_id`, `name`, `categories`, `description`, `body`, `thumbnail`, `thumbnail_data`, `readonly`, `created_at`, `updated_at`) VALUES
 (1, 0, 'Correo electrónico de bienvenida: En blanco. 1 Columna', '[\"welcome\",\"blank\"]', '', '{\"content\":{\"type\":\"container\",\"orientation\":\"vertical\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"}},\"blocks\":[{\"type\":\"container\",\"orientation\":\"horizontal\",\"styles\":{\"block\":{\"backgroundColor\":\"#f8f8f8\"}},\"blocks\":[{\"type\":\"container\",\"orientation\":\"vertical\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"}},\"blocks\":[{\"type\":\"header\",\"text\":\"<a href=\\\"[link:newsletter_view_in_browser_url]\\\">Ver esto en tu navegador.<\\/a>\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"},\"text\":{\"fontColor\":\"#222222\",\"fontFamily\":\"Arial\",\"fontSize\":\"12px\",\"textAlign\":\"center\"},\"link\":{\"fontColor\":\"#6cb7d4\",\"textDecoration\":\"underline\"}}}]}]},{\"type\":\"container\",\"orientation\":\"horizontal\",\"styles\":{\"block\":{\"backgroundColor\":\"#ffffff\"}},\"blocks\":[{\"type\":\"container\",\"orientation\":\"vertical\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"}},\"blocks\":[{\"type\":\"spacer\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\",\"height\":\"30px\"}}},{\"type\":\"image\",\"link\":\"\",\"src\":\"http:\\/\\/localhost:8080\\/wp-content\\/plugins\\/mailpoet\\/assets\\/img\\/blank_templates\\/fake-logo.png\",\"alt\":\"Logo falso\",\"fullWidth\":false,\"width\":\"598px\",\"height\":\"71px\",\"styles\":{\"block\":{\"textAlign\":\"center\"}}},{\"type\":\"text\",\"text\":\"<h1 style=\\\"text-align: center;\\\"><strong>Hi, new subscriber!<\\/strong><\\/h1>\\n<p>&nbsp;<\\/p>\\n<p>[subscriber:firstname | default:Subscriber],<\\/p>\\n<p>&nbsp;<\\/p>\\n<p>You recently joined our list and we\'d like to give you a warm welcome!<\\/p>\\n<p>&nbsp;<\\/p>\\n<p>Want to get to know us better? Check out some of our most popular articles: <\\/p>\\n<ol>\\n<li><a href=\\\"https:\\/\\/www.mailpoet.com\\/blog\\/the-importance-of-focus-when-writing\\/\\\">The Importance of Focus When Writing<\\/a><\\/li>\\n<li><a href=\\\"https:\\/\\/www.mailpoet.com\\/blog\\/writing-next-great-email-subject-line\\/\\\">How to Write a Great Subject Line<\\/a><\\/li>\\n<li><a href=\\\"https:\\/\\/www.mailpoet.com\\/blog\\/write-advice-motivation\\/\\\">Just Sit Down and Write &ndash; Advice on Motivation from Ernest Hemingway<\\/a><\\/li>\\n<\\/ol>\"}]}]},{\"type\":\"container\",\"orientation\":\"horizontal\",\"styles\":{\"block\":{\"backgroundColor\":\"#f8f8f8\"}},\"blocks\":[{\"type\":\"container\",\"orientation\":\"vertical\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"}},\"blocks\":[{\"type\":\"divider\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\",\"padding\":\"24.5px\",\"borderStyle\":\"solid\",\"borderWidth\":\"3px\",\"borderColor\":\"#aaaaaa\"}}},{\"type\":\"social\",\"iconSet\":\"grey\",\"icons\":[{\"type\":\"socialIcon\",\"iconType\":\"facebook\",\"link\":\"https:\\/\\/www.facebook.com\",\"image\":\"http:\\/\\/localhost:8080\\/wp-content\\/plugins\\/mailpoet\\/assets\\/img\\/newsletter_editor\\/social-icons\\/11-official\\/Facebook.png\",\"height\":\"32px\",\"width\":\"32px\",\"text\":\"Facebook\"},{\"type\":\"socialIcon\",\"iconType\":\"twitter\",\"link\":\"https:\\/\\/www.twitter.com\",\"image\":\"http:\\/\\/localhost:8080\\/wp-content\\/plugins\\/mailpoet\\/assets\\/img\\/newsletter_editor\\/social-icons\\/11-official\\/X.png\",\"height\":\"32px\",\"width\":\"32px\",\"text\":\"Twitter\"}]},{\"type\":\"divider\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\",\"padding\":\"7.5px\",\"borderStyle\":\"solid\",\"borderWidth\":\"3px\",\"borderColor\":\"#aaaaaa\"}}},{\"type\":\"footer\",\"text\":\"<p><a href=\\\"[link:subscription_unsubscribe_url]\\\">Darse de baja<\\/a> | <a href=\\\"[link:subscription_manage_url]\\\">Gestionar tu suscripci\\u00f3n<\\/a><br \\/>\\u00a1A\\u00f1ade tu direcci\\u00f3n postal aqu\\u00ed!<\\/p>\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"},\"text\":{\"fontColor\":\"#222222\",\"fontFamily\":\"Arial\",\"fontSize\":\"12px\",\"textAlign\":\"center\"},\"link\":{\"fontColor\":\"#6cb7d4\",\"textDecoration\":\"none\"}}}]}]}]},\"globalStyles\":{\"text\":{\"fontColor\":\"#000000\",\"fontFamily\":\"Arial\",\"fontSize\":\"16px\"},\"h1\":{\"fontColor\":\"#111111\",\"fontFamily\":\"Trebuchet MS\",\"fontSize\":\"30px\"},\"h2\":{\"fontColor\":\"#222222\",\"fontFamily\":\"Trebuchet MS\",\"fontSize\":\"24px\"},\"h3\":{\"fontColor\":\"#333333\",\"fontFamily\":\"Trebuchet MS\",\"fontSize\":\"22px\"},\"link\":{\"fontColor\":\"#21759B\",\"textDecoration\":\"underline\"},\"wrapper\":{\"backgroundColor\":\"#ffffff\"},\"body\":{\"backgroundColor\":\"#eeeeee\"}}}', 'https://ps.w.org/mailpoet/assets/newsletter-templates/welcome-email-blank-1-column/thumbnail.20190411-1500.jpg', NULL, 1, NULL, '2026-04-23 06:17:49'),
 (2, 0, 'Correo electrónico de bienvenida: En blanco. Columnas 1:2', '[\"welcome\",\"blank\"]', '', '{\"content\":{\"type\":\"container\",\"orientation\":\"vertical\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"}},\"blocks\":[{\"type\":\"container\",\"orientation\":\"horizontal\",\"styles\":{\"block\":{\"backgroundColor\":\"#f8f8f8\"}},\"blocks\":[{\"type\":\"container\",\"orientation\":\"vertical\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"}},\"blocks\":[{\"type\":\"header\",\"text\":\"<a href=\\\"[link:newsletter_view_in_browser_url]\\\">Ver esto en tu navegador.<\\/a>\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"},\"text\":{\"fontColor\":\"#222222\",\"fontFamily\":\"Arial\",\"fontSize\":\"12px\",\"textAlign\":\"center\"},\"link\":{\"fontColor\":\"#6cb7d4\",\"textDecoration\":\"underline\"}}}]}]},{\"type\":\"container\",\"orientation\":\"horizontal\",\"styles\":{\"block\":{\"backgroundColor\":\"#ffffff\"}},\"blocks\":[{\"type\":\"container\",\"orientation\":\"vertical\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"}},\"blocks\":[{\"type\":\"spacer\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\",\"height\":\"30px\"}}},{\"type\":\"image\",\"link\":\"\",\"src\":\"http:\\/\\/localhost:8080\\/wp-content\\/plugins\\/mailpoet\\/assets\\/img\\/blank_templates\\/fake-logo.png\",\"alt\":\"Logo falso\",\"fullWidth\":false,\"width\":\"598px\",\"height\":\"71px\",\"styles\":{\"block\":{\"textAlign\":\"center\"}}},{\"type\":\"text\",\"text\":\"<h1 style=\\\"text-align: center;\\\"><strong>\\u00a1Hola, nuevo suscriptor!<\\/strong><\\/h1>\\n<p>&nbsp;<\\/p>\\n<p>[subscriber:firstname | default:Subscriber],<\\/p>\\n<p>&nbsp;<\\/p>\\n<p>\\u00a1Hace poco que te has unido a nuestra lista y queremos darte una c\\u00e1lida bienvenida!<\\/p>\"},{\"type\":\"divider\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\",\"padding\":\"13px\",\"borderStyle\":\"solid\",\"borderWidth\":\"3px\",\"borderColor\":\"#aaaaaa\"}}},{\"type\":\"spacer\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\",\"height\":\"20px\"}}}]}]},{\"type\":\"container\",\"orientation\":\"horizontal\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"}},\"blocks\":[{\"type\":\"container\",\"orientation\":\"vertical\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"}},\"blocks\":[{\"type\":\"text\",\"text\":\"<h3>Nuestras entradas m\\u00e1s populares<\\/h3>\"},{\"type\":\"text\",\"text\":\"<ul>\\n<li><a href=\\\"https:\\/\\/www.mailpoet.com\\/blog\\/the-importance-of-focus-when-writing\\/\\\">The Importance of Focus When Writing<\\/a><\\/li>\\n<li><a href=\\\"https:\\/\\/www.mailpoet.com\\/blog\\/writing-next-great-email-subject-line\\/\\\">How to Write a Great Subject Line<\\/a><\\/li>\\n<li><a href=\\\"https:\\/\\/www.mailpoet.com\\/blog\\/write-advice-motivation\\/\\\">Just Sit Down and Write &ndash; Advice on Motivation from Ernest Hemingway<\\/a><\\/li>\\n<\\/ul>\"}]},{\"type\":\"container\",\"orientation\":\"vertical\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"}},\"blocks\":[{\"type\":\"text\",\"text\":\"<h3>\\u00bfY ahora qu\\u00e9?<\\/h3>\"},{\"type\":\"text\",\"text\":\"<p>A\\u00f1adir un bot\\u00f3n para su bolet\\u00edn de noticias con el fin de tener una clara llamada a la acci\\u00f3n, lo que aumentar\\u00e1 sus tasas de clic.<\\/p>\"},{\"type\":\"button\",\"text\":\"\\u00a1Lee!\",\"url\":\"\",\"styles\":{\"block\":{\"backgroundColor\":\"#2ea1cd\",\"borderColor\":\"#0074a2\",\"borderWidth\":\"1px\",\"borderRadius\":\"5px\",\"borderStyle\":\"solid\",\"width\":\"180px\",\"lineHeight\":\"40px\",\"fontColor\":\"#ffffff\",\"fontFamily\":\"Verdana\",\"fontSize\":\"18px\",\"fontWeight\":\"normal\",\"textAlign\":\"center\"}}}]}]},{\"type\":\"container\",\"orientation\":\"horizontal\",\"styles\":{\"block\":{\"backgroundColor\":\"#f8f8f8\"}},\"blocks\":[{\"type\":\"container\",\"orientation\":\"vertical\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"}},\"blocks\":[{\"type\":\"divider\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\",\"padding\":\"24.5px\",\"borderStyle\":\"solid\",\"borderWidth\":\"3px\",\"borderColor\":\"#aaaaaa\"}}},{\"type\":\"social\",\"iconSet\":\"grey\",\"icons\":[{\"type\":\"socialIcon\",\"iconType\":\"facebook\",\"link\":\"https:\\/\\/www.facebook.com\",\"image\":\"http:\\/\\/localhost:8080\\/wp-content\\/plugins\\/mailpoet\\/assets\\/img\\/newsletter_editor\\/social-icons\\/11-official\\/Facebook.png\",\"height\":\"32px\",\"width\":\"32px\",\"text\":\"Facebook\"},{\"type\":\"socialIcon\",\"iconType\":\"twitter\",\"link\":\"https:\\/\\/www.twitter.com\",\"image\":\"http:\\/\\/localhost:8080\\/wp-content\\/plugins\\/mailpoet\\/assets\\/img\\/newsletter_editor\\/social-icons\\/11-official\\/X.png\",\"height\":\"32px\",\"width\":\"32px\",\"text\":\"Twitter\"}]},{\"type\":\"divider\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\",\"padding\":\"7.5px\",\"borderStyle\":\"solid\",\"borderWidth\":\"3px\",\"borderColor\":\"#aaaaaa\"}}},{\"type\":\"footer\",\"text\":\"<p><a href=\\\"[link:subscription_unsubscribe_url]\\\">Darse de baja<\\/a> | <a href=\\\"[link:subscription_manage_url]\\\">Gestionar tu suscripci\\u00f3n<\\/a><br \\/>\\u00a1A\\u00f1ade tu direcci\\u00f3n postal aqu\\u00ed!<\\/p>\",\"styles\":{\"block\":{\"backgroundColor\":\"transparent\"},\"text\":{\"fontColor\":\"#222222\",\"fontFamily\":\"Arial\",\"fontSize\":\"12px\",\"textAlign\":\"center\"},\"link\":{\"fontColor\":\"#6cb7d4\",\"textDecoration\":\"none\"}}}]}]}]},\"globalStyles\":{\"text\":{\"fontColor\":\"#000000\",\"fontFamily\":\"Arial\",\"fontSize\":\"16px\"},\"h1\":{\"fontColor\":\"#111111\",\"fontFamily\":\"Trebuchet MS\",\"fontSize\":\"26px\"},\"h2\":{\"fontColor\":\"#222222\",\"fontFamily\":\"Trebuchet MS\",\"fontSize\":\"24px\"},\"h3\":{\"fontColor\":\"#333333\",\"fontFamily\":\"Trebuchet MS\",\"fontSize\":\"22px\"},\"link\":{\"fontColor\":\"#21759B\",\"textDecoration\":\"underline\"},\"wrapper\":{\"backgroundColor\":\"#ffffff\"},\"body\":{\"backgroundColor\":\"#eeeeee\"}}}', 'https://ps.w.org/mailpoet/assets/newsletter-templates/welcome-email-blank-1-2-column/thumbnail.20190411-1500.jpg', NULL, 1, NULL, '2026-04-23 06:17:49'),
@@ -6956,13 +6955,12 @@ CREATE TABLE `wp_wfauditevents` (
 --
 
 CREATE TABLE `wp_wfblockediplog` (
-  `IP` binary(16) NOT NULL DEFAULT x AS `00000000000000000000000000000000`,
+  `IP` binary(16) NOT NULL DEFAULT x'00000000000000000000000000000000',
   `countryCode` varchar(2) NOT NULL,
   `blockCount` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `unixday` int(10) UNSIGNED NOT NULL,
   `blockType` varchar(50) NOT NULL DEFAULT 'generic'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_uca1400_ai_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -6972,7 +6970,7 @@ CREATE TABLE `wp_wfblockediplog` (
 CREATE TABLE `wp_wfblocks7` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `type` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `IP` binary(16) NOT NULL DEFAULT x AS `00000000000000000000000000000000`,
+  `IP` binary(16) NOT NULL DEFAULT x'00000000000000000000000000000000',
   `blockedTime` bigint(20) NOT NULL,
   `reason` varchar(255) NOT NULL,
   `lastAttempt` int(10) UNSIGNED DEFAULT 0,
@@ -7225,7 +7223,7 @@ INSERT INTO `wp_wfconfig` (`name`, `val`, `autoload`) VALUES
 --
 
 CREATE TABLE `wp_wfcrawlers` (
-  `IP` binary(16) NOT NULL DEFAULT x AS `00000000000000000000000000000000`,
+  `IP` binary(16) NOT NULL DEFAULT x'00000000000000000000000000000000',
   `patternSig` binary(16) NOT NULL,
   `status` char(8) NOT NULL,
   `lastUpdate` int(10) UNSIGNED NOT NULL,
@@ -7255,14 +7253,13 @@ CREATE TABLE `wp_wffilemods` (
   `filename` varchar(1000) NOT NULL,
   `real_path` text NOT NULL,
   `knownFile` tinyint(3) UNSIGNED NOT NULL,
-  `oldMD5` binary(16) NOT NULL DEFAULT x AS `00000000000000000000000000000000`,
+  `oldMD5` binary(16) NOT NULL DEFAULT x'00000000000000000000000000000000',
   `newMD5` binary(16) NOT NULL,
-  `SHAC` binary(32) NOT NULL DEFAULT x AS `0000000000000000000000000000000000000000000000000000000000000000`,
+  `SHAC` binary(32) NOT NULL DEFAULT x'0000000000000000000000000000000000000000000000000000000000000000',
   `stoppedOnSignature` varchar(255) NOT NULL DEFAULT '',
   `stoppedOnPosition` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `isSafeFile` varchar(1) NOT NULL DEFAULT '?'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_uca1400_ai_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -7338,13 +7335,11 @@ CREATE TABLE `wp_wfknownfilelist` (
 --
 -- Table structure for table `wp_wflivetraffichuman`
 --
-
 CREATE TABLE `wp_wflivetraffichuman` (
-  `IP` binary(16) NOT NULL DEFAULT x AS `00000000000000000000000000000000`,
-  `identifier` binary(32) NOT NULL DEFAULT x AS `0000000000000000000000000000000000000000000000000000000000000000`,
+  `IP` binary(16) NOT NULL DEFAULT x'00000000000000000000000000000000',
+  `identifier` binary(32) NOT NULL DEFAULT x'0000000000000000000000000000000000000000000000000000000000000000',
   `expiration` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_uca1400_ai_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -7352,7 +7347,7 @@ CREATE TABLE `wp_wflivetraffichuman` (
 --
 
 CREATE TABLE `wp_wflocs` (
-  `IP` binary(16) NOT NULL DEFAULT x AS `00000000000000000000000000000000`,
+  `IP` binary(16) NOT NULL DEFAULT x'00000000000000000000000000000000',
   `ctime` int(10) UNSIGNED NOT NULL,
   `failed` tinyint(3) UNSIGNED NOT NULL,
   `city` varchar(255) DEFAULT '',
@@ -7362,7 +7357,6 @@ CREATE TABLE `wp_wflocs` (
   `lat` float(10,7) DEFAULT 0.0000000,
   `lon` float(10,7) DEFAULT 0.0000000
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_uca1400_ai_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -7496,11 +7490,10 @@ CREATE TABLE `wp_wfpendingissues` (
 --
 
 CREATE TABLE `wp_wfreversecache` (
-  `IP` binary(16) NOT NULL DEFAULT x AS `00000000000000000000000000000000`,
+  `IP` binary(16) NOT NULL DEFAULT x'00000000000000000000000000000000',
   `host` varchar(255) NOT NULL,
   `lastUpdate` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_uca1400_ai_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -7553,11 +7546,10 @@ CREATE TABLE `wp_wfstatus` (
 
 CREATE TABLE `wp_wftrafficrates` (
   `eMin` int(10) UNSIGNED NOT NULL,
-  `IP` binary(16) NOT NULL DEFAULT x AS `00000000000000000000000000000000`,
+  `IP` binary(16) NOT NULL DEFAULT x'00000000000000000000000000000000',
   `hitType` enum('hit','404') NOT NULL DEFAULT 'hit',
   `hits` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_uca1400_ai_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -8442,7 +8434,6 @@ ALTER TABLE `wp_wc_order_operational_data`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `order_id` (`order_id`),
   ADD KEY `order_key` (`order_key`);
-
 --
 -- Indexes for table `wp_wc_order_product_lookup`
 --
@@ -8507,6 +8498,8 @@ ALTER TABLE `wp_wc_rate_limits`
   ADD PRIMARY KEY (`rate_limit_id`),
   ADD UNIQUE KEY `rate_limit_key` (`rate_limit_key`(191));
 
+
+
 --
 -- Indexes for table `wp_wc_reserved_stock`
 --
@@ -8553,6 +8546,8 @@ ALTER TABLE `wp_wfblocks7`
 --
 ALTER TABLE `wp_wfconfig`
   ADD PRIMARY KEY (`name`);
+
+
 
 --
 -- Indexes for table `wp_wfcrawlers`

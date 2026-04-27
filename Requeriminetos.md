@@ -455,7 +455,6 @@ Sombra:           box-shadow 4px 0 16px rgba(0,0,0,0.2)
 
 > *Como visitante que llega al home, quiero ver de inmediato los tipos de equipo disponibles con imagen representativa, para hacer clic directamente en el que me interesa y llegar al catálogo ya filtrado.*
 
-> ⚠️ **v6.0:** La grilla pasa de 8 a **7 subtipos** al eliminar "Montacargas 3 Ruedas". El layout en desktop se ajusta a **4 + 3** (primera fila completa, segunda fila con 3 celdas centradas) o puede reorganizarse como el cliente prefiera.
 
 ##### Las 7 celdas de la grilla
 
@@ -691,8 +690,6 @@ CTA inferior:     Botón centrado "Ver todos los equipos →", fondo #128CEB, te
 
 #### CAT-006: Mega Menú de Equipos por Subtipo
 **Prioridad:** Alta | **Estimado:** 5 pts
-
-> ⚠️ **v6.0:** El mega menú pasa de 8 a **7 subtipos** al eliminar "Montacargas 3 Ruedas". El grid se ajusta a **4+3** o se reorganiza en 7 celdas uniformes.
 
 **Los 7 subtipos del mega menú:**
 
