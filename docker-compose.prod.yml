@@ -11,6 +11,16 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
+    command: >
+      --innodb-buffer-pool-size=64M
+      --max-connections=30
+      --query-cache-size=16M
+      --tmp-table-size=16M
+      --max-heap-table-size=16M
+    deploy:
+      resources:
+        limits:
+          memory: 128M
 
   wordpress:
     image: wordpress:latest
@@ -22,9 +32,16 @@ services:
       WORDPRESS_DB_NAME: ${DB_NAME}
       WORDPRESS_DB_USER: ${DB_USER}
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_MEMORY_LIMIT', '128M');
+        define('WP_MAX_MEMORY_LIMIT', '256M');
     volumes:
       - ./wp-content:/var/www/html/wp-content
       - wp_files:/var/www/html
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   nginx:
     image: nginx:alpine
@@ -39,6 +56,10 @@ services:
       - certbot_conf:/etc/letsencrypt
     depends_on:
       - wordpress
+    deploy:
+      resources:
+        limits:
+          memory: 64M
 
   certbot:
     image: certbot/certbot
@@ -51,3 +72,4 @@ volumes:
   wp_files:
   certbot_www:
   certbot_conf:
+  
