@@ -1,7 +1,6 @@
 # DOCUMENTO DE REQUERIMIENTOS — TECNI MONTACARGAS
 ## Versión 6.6 — Documento Completo y Consolidado
 
-**Fecha base:** 18 de febrero de 2026
 **Actualizado:** 25 de febrero de 2026
 **Proyecto:** Sitio Web Corporativo + E-commerce + Servicios
 **Marca:** Tecni Montacargas TM-Dual
@@ -2495,6 +2494,3 @@ Estos criterios se verifican durante la fase de QA (Semana 10 del plan de implem
 - [ ] Los alt text de imágenes de equipos siguen el patrón: `[Marca] [Modelo] [Subtipo] — Tecnimontacargas`
 
 ---
-
-*Documento complementario al Documento de Requerimientos Tecni Montacargas v6.6*  
-*Versión SEO: 1.0 — 25 de febrero de 2026*

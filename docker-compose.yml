@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
 
   db:
@@ -14,10 +12,12 @@ services:
       - db_data:/var/lib/mysql
 
   wordpress:
-    image: wordpress:latest
+    image: litespeedtech/openlitespeed:latest
     restart: unless-stopped
     ports:
       - "8080:80"
+      - "8443:443"
+      - "7080:7080"
     depends_on:
       - db
     environment:
@@ -27,6 +27,9 @@ services:
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - wp_data:/var/www/html
+      - wp_data:/var/www/vhosts/localhost/html
+      - ols_conf:/usr/local/lsws/conf
+      - ols_logs:/usr/local/lsws/logs
 
   phpmyadmin:
     image: phpmyadmin:latest
@@ -40,3 +43,5 @@ services:
 volumes:
   db_data:
   wp_data:
+  ols_conf:
+  ols_logs:
