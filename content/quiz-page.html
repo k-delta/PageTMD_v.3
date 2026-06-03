@@ -1,0 +1,101 @@
+<!-- wp:html -->
+<main class="tmd-quiz-shell">
+    <div class="tmd-wrap tmd-quiz" data-tmd-quiz>
+        <div class="tmd-quiz-progress-row">
+            <strong>Progreso del Quiz</strong>
+            <span data-tmd-quiz-count>Paso 1 de 6</span>
+        </div>
+        <div class="tmd-progress-bar"><span class="tmd-progress-fill" data-tmd-quiz-progress></span></div>
+        <div class="tmd-quiz-layout">
+            <div>
+                <section class="tmd-quiz-step" data-tmd-quiz-step="tipo">
+                    <h1>Que tipo de equipo necesitas?</h1>
+                    <p>Selecciona la familia mas cercana a tu operacion.</p>
+                    <div class="tmd-quiz-options">
+                        <button class="tmd-quiz-option" type="button" data-value="Contrabalanceada"><span class="tmd-quiz-icon">↕</span><strong>Contrabalanceada</strong><span>Carga general y exteriores</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Retractil"><span class="tmd-quiz-icon">⇅</span><strong>Retractil</strong><span>Racks y pasillo angosto</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Apilador"><span class="tmd-quiz-icon">▰</span><strong>Apilador</strong><span>Bodega compacta</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Manlift"><span class="tmd-quiz-icon">⌂</span><strong>Manlift</strong><span>Trabajo en altura</span></button>
+                    </div>
+                </section>
+                <section class="tmd-quiz-step" data-tmd-quiz-step="altura" hidden>
+                    <h1>A que altura necesitas levantar la carga?</h1>
+                    <p>Selecciona altura maxima de operacion para recomendar equipo ideal.</p>
+                    <div class="tmd-quiz-options">
+                        <button class="tmd-quiz-option" type="button" data-value="Hasta 3 metros"><span class="tmd-quiz-icon">↑</span><strong>Hasta 3 metros</strong><span>Bodegas pequeñas</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Hasta 5 metros"><span class="tmd-quiz-icon">↕</span><strong>Hasta 5 metros</strong><span>Uso estandar en racks</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Hasta 8 metros"><span class="tmd-quiz-icon">▰</span><strong>Hasta 8 metros</strong><span>Alta densidad</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Mas de 8 metros"><span class="tmd-quiz-icon">⇈</span><strong>Mas de 8 metros</strong><span>Operacion especializada</span></button>
+                    </div>
+                </section>
+                <section class="tmd-quiz-step" data-tmd-quiz-step="capacidad" hidden>
+                    <h1>Que capacidad de carga necesitas?</h1>
+                    <p>Selecciona peso aproximado por movimiento.</p>
+                    <div class="tmd-quiz-options">
+                        <button class="tmd-quiz-option" type="button" data-value="Hasta 1.5 toneladas"><span class="tmd-quiz-icon">1</span><strong>Hasta 1.5 ton</strong><span>Carga ligera</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="2 a 3 toneladas"><span class="tmd-quiz-icon">2</span><strong>2 a 3 ton</strong><span>Operacion estandar</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="4 a 6 toneladas"><span class="tmd-quiz-icon">4</span><strong>4 a 6 ton</strong><span>Carga pesada</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Mas de 6 toneladas"><span class="tmd-quiz-icon">6</span><strong>Mas de 6 ton</strong><span>Alta capacidad</span></button>
+                    </div>
+                </section>
+                <section class="tmd-quiz-step" data-tmd-quiz-step="energia" hidden>
+                    <h1>Que energia prefieres?</h1>
+                    <p>Define segun ventilacion, turnos y tipo de operacion.</p>
+                    <div class="tmd-quiz-options">
+                        <button class="tmd-quiz-option" type="button" data-value="Electrico"><span class="tmd-quiz-icon">⚡</span><strong>Electrico</strong><span>Bodega cerrada</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="GLP"><span class="tmd-quiz-icon">●</span><strong>GLP</strong><span>Uso mixto</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Diesel"><span class="tmd-quiz-icon">◆</span><strong>Diesel</strong><span>Exterior y carga pesada</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Por definir"><span class="tmd-quiz-icon">?</span><strong>No estoy seguro</strong><span>Asesor define contigo</span></button>
+                    </div>
+                </section>
+                <section class="tmd-quiz-step" data-tmd-quiz-step="uso" hidden>
+                    <h1>Donde operara el equipo?</h1>
+                    <p>Contexto de piso, pasillos y ambiente.</p>
+                    <div class="tmd-quiz-options">
+                        <button class="tmd-quiz-option" type="button" data-value="Interior"><span class="tmd-quiz-icon">⌂</span><strong>Interior</strong><span>Bodega o planta</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Exterior"><span class="tmd-quiz-icon">☼</span><strong>Exterior</strong><span>Patio o obra</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Mixto"><span class="tmd-quiz-icon">↔</span><strong>Mixto</strong><span>Interior y exterior</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Pasillo angosto"><span class="tmd-quiz-icon">▥</span><strong>Pasillo angosto</strong><span>Racks estrechos</span></button>
+                    </div>
+                </section>
+                <section class="tmd-quiz-step" data-tmd-quiz-step="modalidad" hidden>
+                    <h1>Quieres comprar o alquilar?</h1>
+                    <p>Selecciona intencion comercial para dirigirte al asesor correcto.</p>
+                    <div class="tmd-quiz-options">
+                        <button class="tmd-quiz-option" type="button" data-value="Comprar"><span class="tmd-quiz-icon">$</span><strong>Comprar</strong><span>Equipo propio</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Alquilar"><span class="tmd-quiz-icon">↻</span><strong>Alquilar</strong><span>Temporal o proyecto</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Servicio tecnico"><span class="tmd-quiz-icon">⚙</span><strong>Servicio tecnico</strong><span>Mantenimiento o diagnostico</span></button>
+                        <button class="tmd-quiz-option" type="button" data-value="Repuestos"><span class="tmd-quiz-icon">▣</span><strong>Repuestos</strong><span>Partes y accesorios</span></button>
+                    </div>
+                </section>
+                <div class="tmd-quiz-nav">
+                    <button class="tmd-quiz-prev-btn" type="button" data-tmd-quiz-prev>← Anterior</button>
+                    <button class="tmd-quiz-next-btn" type="button" data-tmd-quiz-next>Siguiente →</button>
+                </div>
+            </div>
+            <aside class="tmd-quiz-media">
+                <img src="https://tecnimontacargasdual.com/wp-content/uploads/2026/05/ChatGPT-Image-25-may-2026-11_10_17-1.png" alt="Montacargas en operacion">
+                <div class="tmd-quiz-media-copy">
+                    <span class="tmd-quiz-tag">Contexto de operacion</span>
+                    <h2>Altura del mastil</h2>
+                    <p>La altura maxima de elevacion es crucial para determinar estabilidad, capacidad residual y seguridad.</p>
+                    <a class="tmd-btn tmd-btn-primary" href="/equipos">Ver especificaciones tecnicas</a>
+                </div>
+            </aside>
+        </div>
+        <section class="tmd-quiz-result">
+            <h2>Resultado preliminar</h2>
+            <p data-tmd-quiz-summary></p>
+            <form class="tmd-form-grid" data-tmd-ajax-form>
+                <input type="hidden" name="form_type" value="quiz">
+                <input type="hidden" name="message" value="">
+                <div class="tmd-field"><label>Nombre</label><input name="name" required></div>
+                <div class="tmd-field"><label>Telefono</label><input name="phone" required></div>
+                <div class="tmd-field tmd-field-wide"><label>Correo</label><input type="email" name="email"></div>
+                <button class="tmd-submit tmd-field-wide" type="submit">Enviar resultado a un asesor</button>
+                <div class="tmd-form-status tmd-field-wide" data-tmd-form-status></div>
+            </form>
+        </section>
+    </div>
+</main>
+<!-- /wp:html -->

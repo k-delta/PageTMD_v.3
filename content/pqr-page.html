@@ -1,0 +1,33 @@
+<!-- wp:html -->
+<main class="tmd-page">
+    <section class="tmd-pqr-wrap">
+        <form class="tmd-pqr-card" data-tmd-ajax-form>
+            <input type="hidden" name="form_type" value="pqr">
+            <h1>Radica tu peticion, queja o reclamo</h1>
+            <p>Completa el formulario para gestionar tu solicitud de manera eficiente.</p>
+            <div data-tmd-choice-group>
+                <label class="tmd-pqr-type-label">Tipo de solicitud</label>
+                <input type="hidden" name="request_type" value="Peticion">
+                <div class="tmd-choice-row">
+                    <button class="tmd-choice-btn is-active" type="button" data-tmd-choice="Peticion">Peticion</button>
+                    <button class="tmd-choice-btn" type="button" data-tmd-choice="Queja">Queja</button>
+                    <button class="tmd-choice-btn" type="button" data-tmd-choice="Reclamo">Reclamo</button>
+                    <button class="tmd-choice-btn" type="button" data-tmd-choice="Reembolso">Reembolso</button>
+                </div>
+            </div>
+            <div class="tmd-form-grid">
+                <div class="tmd-field tmd-field-wide"><label>Asunto*</label><input name="subject" required placeholder="Ej: Demora en el servicio tecnico"></div>
+                <div class="tmd-field"><label>Nombre completo*</label><input name="name" required placeholder="Ingresa tu nombre"></div>
+                <div class="tmd-field"><label>Email*</label><input type="email" name="email" required placeholder="ejemplo@correo.com"></div>
+                <div class="tmd-field"><label>Telefono*</label><input name="phone" required placeholder="+57 300 000 0000"></div>
+                <div class="tmd-field"><label>Numero de pedido</label><input name="order_number" placeholder="Opcional"></div>
+                <div class="tmd-field tmd-field-wide"><label>Descripcion detallada*</label><textarea name="message" required placeholder="Describe los hechos de manera clara..."></textarea></div>
+                <label class="tmd-legal-note tmd-field-wide"><input type="checkbox" name="terms" value="Acepto" required> Acepto politica de tratamiento de datos personales y terminos de Tecni Montacargas.</label>
+                <button class="tmd-submit tmd-field-wide" type="submit">Enviar PQR</button>
+                <div class="tmd-form-status tmd-field-wide" data-tmd-form-status></div>
+            </div>
+            <p class="tmd-legal-note">ⓘ Los reembolsos se gestionan manualmente. Nuestro equipo contactara de lunes a viernes 7:00-17:00.</p>
+        </form>
+    </section>
+</main>
+<!-- /wp:html -->
