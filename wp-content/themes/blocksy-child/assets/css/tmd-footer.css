@@ -1,0 +1,352 @@
+body.tmd-custom-shell .ct-footer,
+body.tmd-custom-shell footer#footer,
+body.tmd-custom-shell #footer {
+  display: none !important;
+}
+
+.tmd-site-footer,
+.tmd-site-footer * {
+  box-sizing: border-box;
+}
+
+.tmd-site-footer {
+  width: 100%;
+  font-family: 'Work Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.tmd-footer-container {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+/* CTA superior */
+.tmd-footer-cta {
+  background: #128ceb;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  padding: 24px 0;
+}
+
+.tmd-footer-cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.tmd-footer-cta-title {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(20px, 2.4vw, 28px);
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.tmd-footer-cta-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tmd-footer-btn-primary,
+.tmd-footer-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 28px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 700;
+  transition: .2s ease;
+  white-space: nowrap;
+}
+
+.tmd-footer-btn-primary {
+  background: #ffc33c;
+  color: #262e4f;
+}
+
+.tmd-footer-btn-primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.tmd-footer-btn-secondary {
+  border: 2px solid rgba(255,255,255,.6);
+  color: #fff;
+}
+
+.tmd-footer-btn-secondary:hover {
+  background: #fff;
+  color: #128ceb;
+}
+
+/* Footer principal */
+.tmd-footer-main {
+  background: #262e4f;
+  color: #fff;
+  padding: 64px 0 48px;
+}
+
+.tmd-footer-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1fr 1fr;
+  gap: 44px;
+}
+
+.tmd-footer-brand {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  margin-bottom: 24px;
+}
+
+.tmd-footer-socials {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.tmd-footer-social {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.1);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform .2s ease, background-color .2s ease;
+}
+
+.tmd-footer-social:hover {
+  transform: scale(1.1);
+}
+
+.tmd-footer-social.linkedin:hover {
+  background: #0a66c2;
+}
+
+.tmd-footer-social.instagram:hover {
+  background: #e1306c;
+}
+
+.tmd-footer-social.facebook:hover {
+  background: #1877f2;
+}
+
+.tmd-footer-social.youtube:hover {
+  background: #ff0000;
+}
+
+.tmd-footer-social svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.tmd-footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tmd-footer-contact li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 14px;
+  color: rgba(255,255,255,.8);
+}
+
+.tmd-footer-contact svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  margin-top: 2px;
+  fill: #ffc33c;
+}
+
+.tmd-footer-contact a {
+  color: rgba(255,255,255,.8);
+  text-decoration: none;
+  transition: color .2s ease;
+}
+
+.tmd-footer-contact a:hover {
+  color: #ffc33c;
+}
+
+.tmd-footer-col-title {
+  color: #ffc33c;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  margin: 0 0 24px;
+}
+
+.tmd-footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tmd-footer-link {
+  color: rgba(255,255,255,.75);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 300;
+  transition: transform .2s ease, color .2s ease;
+  display: inline-block;
+}
+
+.tmd-footer-link:hover {
+  transform: translateX(4px);
+  color: #ffc33c;
+}
+
+.tmd-footer-mini-cta {
+  margin-top: 16px;
+  display: inline-flex;
+  padding: 10px 16px;
+  border-radius: 2px;
+  border: 1px solid #ffc33c;
+  background: rgba(255,195,60,.15);
+  color: #ffc33c;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Acordeón móvil */
+.tmd-footer-accordion-toggle {
+  display: none;
+}
+
+.tmd-footer-accordion-label {
+  display: block;
+}
+
+.tmd-footer-accordion-icon {
+  display: none;
+}
+
+/* Legal */
+.tmd-footer-legal {
+  background: #1a2240;
+  color: #fff;
+  padding: 16px 0;
+}
+
+.tmd-footer-legal-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.tmd-footer-copyright {
+  font-size: 12px;
+  opacity: .4;
+  font-weight: 300;
+}
+
+.tmd-footer-legal-nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  font-size: 12px;
+  opacity: .4;
+  font-weight: 300;
+}
+
+.tmd-footer-legal-nav a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.tmd-footer-legal-nav a:hover {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .tmd-footer-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .tmd-footer-brand-col {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .tmd-footer-cta-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .tmd-footer-btn-secondary {
+    display: none;
+  }
+
+  .tmd-footer-main {
+    padding: 48px 0 36px;
+  }
+
+  .tmd-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .tmd-footer-accordion-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    margin-bottom: 0;
+  }
+
+  .tmd-footer-accordion-icon {
+    display: block;
+    width: 20px;
+    height: 20px;
+    transition: transform .25s ease;
+  }
+
+  .tmd-footer-accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s ease;
+  }
+
+  .tmd-footer-accordion-toggle:checked + .tmd-footer-accordion-label + .tmd-footer-accordion-content {
+    max-height: 500px;
+    padding-top: 24px;
+  }
+
+  .tmd-footer-accordion-toggle:checked + .tmd-footer-accordion-label .tmd-footer-accordion-icon {
+    transform: rotate(45deg);
+  }
+
+  .tmd-footer-legal-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .tmd-footer-legal-nav {
+    justify-content: center;
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "color": {
+      "palette": [
+        { "slug": "azul-empresarial", "name": "Azul Empresarial", "color": "#128CEB" },
+        { "slug": "azul-americano", "name": "Azul Americano", "color": "#262E4F" },
+        { "slug": "amarillo-imperial", "name": "Amarillo Imperial", "color": "#FFC33C" },
+        { "slug": "azul-metalico", "name": "Azul Metalico", "color": "#5E748B" },
+        { "slug": "platino", "name": "Platino", "color": "#E6E6E6" },
+        { "slug": "aceituna-negra", "name": "Aceituna Negra", "color": "#3C3C3C" },
+        { "slug": "white", "name": "White", "color": "#FFFFFF" }
+      ]
+    },
+    "typography": {
+      "fontFamilies": [
+        {
+          "fontFamily": "Work Sans, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+          "name": "Work Sans",
+          "slug": "work-sans"
+        }
+      ],
+      "fontSizes": [
+        { "slug": "body", "name": "Body", "size": "16px" },
+        { "slug": "subtitle", "name": "Subtitle", "size": "20px" },
+        { "slug": "h2", "name": "H2", "size": "32px" },
+        { "slug": "h1", "name": "H1", "size": "50px" },
+        { "slug": "button", "name": "Button", "size": "18px" }
+      ]
+    },
+    "spacing": {
+      "units": ["px", "em", "rem", "%", "vw", "vh"]
+    }
+  },
+  "styles": {
+    "typography": {
+      "fontFamily": "var:preset|font-family|work-sans",
+      "fontSize": "var:preset|font-size|body",
+      "lineHeight": "1.5"
+    },
+    "elements": {
+      "heading": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|work-sans",
+          "letterSpacing": "0"
+        },
+        "color": {
+          "text": "var:preset|color|azul-americano"
+        }
+      },
+      "button": {
+        "color": {
+          "background": "var:preset|color|azul-empresarial",
+          "text": "var:preset|color|white"
+        },
+        "border": {
+          "radius": "8px"
+        },
+        "typography": {
+          "fontFamily": "var:preset|font-family|work-sans",
+          "fontSize": "var:preset|font-size|button",
+          "fontWeight": "500"
+        }
+      },
+      "link": {
+        "color": {
+          "text": "var:preset|color|azul-empresarial"
+        }
+      }
+    },
+    "blocks": {
+      "core/heading": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|work-sans"
+        }
+      },
+      "core/button": {
+        "border": {
+          "radius": "8px"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "blocksy",
+    "status": "parent",
+    "version": "2.1.50",
+    "auto_update": "off"
+  },
+  {
+    "name": "blocksy-child",
+    "status": "active",
+    "version": "1.0.0",
+    "auto_update": "off"
+  }
+]

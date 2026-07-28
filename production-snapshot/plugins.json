@@ -1,0 +1,134 @@
+[
+  {
+    "name": "advanced-custom-fields",
+    "status": "active",
+    "version": "6.8.6",
+    "auto_update": "on"
+  },
+  {
+    "name": "blocksy-companion",
+    "status": "active",
+    "version": "2.1.50",
+    "auto_update": "off"
+  },
+  {
+    "name": "code-snippets",
+    "status": "active",
+    "version": "3.9.6",
+    "auto_update": "on"
+  },
+  {
+    "name": "contact-form-7",
+    "status": "active",
+    "version": "6.1.6",
+    "auto_update": "on"
+  },
+  {
+    "name": "duracelltomi-google-tag-manager",
+    "status": "active",
+    "version": "1.22.4",
+    "auto_update": "on"
+  },
+  {
+    "name": "email-templates",
+    "status": "active",
+    "version": "1.5.14",
+    "auto_update": "off"
+  },
+  {
+    "name": "filter-everything",
+    "status": "active",
+    "version": "1.9.4",
+    "auto_update": "on"
+  },
+  {
+    "name": "flamingo",
+    "status": "active",
+    "version": "2.6.3",
+    "auto_update": "on"
+  },
+  {
+    "name": "kadence-blocks",
+    "status": "active",
+    "version": "3.7.8.1",
+    "auto_update": "on"
+  },
+  {
+    "name": "litespeed-cache",
+    "status": "active",
+    "version": "7.8.1",
+    "auto_update": "on"
+  },
+  {
+    "name": "seo-by-rank-math",
+    "status": "active",
+    "version": "1.0.275",
+    "auto_update": "off"
+  },
+  {
+    "name": "shortpixel-image-optimiser",
+    "status": "active",
+    "version": "6.5.5",
+    "auto_update": "on"
+  },
+  {
+    "name": "string-locator",
+    "status": "active",
+    "version": "2.6.7",
+    "auto_update": "off"
+  },
+  {
+    "name": "tm-chatbot-fase1",
+    "status": "active",
+    "version": "1.0.0",
+    "auto_update": "off"
+  },
+  {
+    "name": "tm-equipos-destacados-v2",
+    "status": "active",
+    "version": "2.2.0",
+    "auto_update": "off"
+  },
+  {
+    "name": "tm-popup-bienvenida",
+    "status": "active",
+    "version": "1.1.0",
+    "auto_update": "off"
+  },
+  {
+    "name": "tm-quiz-equipo-ideal",
+    "status": "active",
+    "version": "1.0.0",
+    "auto_update": "off"
+  },
+  {
+    "name": "woocommerce",
+    "status": "active",
+    "version": "10.9.4",
+    "auto_update": "on"
+  },
+  {
+    "name": "woocommerce-mercadopago",
+    "status": "inactive",
+    "version": "8.9.0",
+    "auto_update": "on"
+  },
+  {
+    "name": "wordfence",
+    "status": "active",
+    "version": "8.2.2",
+    "auto_update": "on"
+  },
+  {
+    "name": "wpo365-msgraphmailer",
+    "status": "active",
+    "version": "5.10",
+    "auto_update": "off"
+  },
+  {
+    "name": "wps-hide-login",
+    "status": "active",
+    "version": "1.9.18",
+    "auto_update": "on"
+  }
+]

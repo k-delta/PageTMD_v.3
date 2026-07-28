@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb:10.11
+    image: mariadb:10.11@sha256:5a5c675881ef3fd1c1da9b0a3bfd6ee82edbe39cd9e32e06be18034c37235e0e
     container_name: tmd_db
     restart: unless-stopped
     environment:
@@ -17,7 +17,7 @@ services:
       - db_data:/var/lib/mysql
 
   wordpress:
-    image: litespeedtech/openlitespeed:latest
+    image: litespeedtech/openlitespeed:latest@sha256:c5ed930004046a15f6191cbd2f1ae9adfc5fceb548259ab27d6a1369ea3dc2ee
     container_name: tmd_ols_wordpress
     restart: unless-stopped
     depends_on:
@@ -36,10 +36,10 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "7080:7080"
+      - "127.0.0.1:7080:7080"
 
   phpmyadmin:
-    image: phpmyadmin:latest
+    image: phpmyadmin:latest@sha256:7dfd52c452049bf077f5ae6d46324f5f33ea0130c16b958d9821aff5c6f812ef
     container_name: tmd_phpmyadmin
     restart: unless-stopped
     depends_on:
@@ -48,10 +48,18 @@ services:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
-      - "8081:80"
+      - "127.0.0.1:8081:80"
 
 volumes:
   db_data:
+    external: true
+    name: pagetmd_v3_db_data
   wp_data:
+    external: true
+    name: pagetmd_v3_wp_data
   ols_conf:
+    external: true
+    name: pagetmd_v3_ols_conf
   ols_logs:
+    external: true
+    name: pagetmd_v3_ols_logs

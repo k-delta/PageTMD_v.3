@@ -1,0 +1,77 @@
+/*
+Theme Name: Blocksy Child TM
+Template: blocksy
+Version: 1.0.0
+Text Domain: blocksy-child-tm
+*/
+:root {
+  --tm-blue-empresarial: #128CEB;
+  --tm-blue-americano: #262E4F;
+  --tm-amarillo-imperial: #FFC33C;
+  --tm-azul-metalico: #5E748B;
+  --tm-platino: #E6E6E6;
+  --tm-aceituna-negra: #3C3C3C;
+}
+body {
+  font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--tm-aceituna-negra);
+}
+h1, .entry-content h1 {
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+h2, .entry-content h2 {
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+.wp-block-button__link,
+button,
+input[type='submit'] {
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* Header account/cart icon-only items */
+.menu-icon-account > a,
+.menu-icon-cart > a {
+  min-width: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.menu-icon-account > a::before,
+.menu-icon-cart > a::before {
+  font-size: 20px;
+  line-height: 1;
+  color: var(--tm-blue-americano);
+}
+.menu-icon-account > a::before {
+  content: 👤;
+}
+.menu-icon-cart > a::before {
+  content: 🛒;
+}
+
+/* Header account/cart icon-only items override */
+.menu-icon-account > a,
+.menu-icon-cart > a {
+  font-size: 0;
+  min-width: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.menu-icon-account > a::before,
+.menu-icon-cart > a::before {
+  font-size: 20px;
+  line-height: 1;
+  color: var(--tm-blue-americano);
+}
+.menu-icon-account > a::before {
+  content: '\1F464';
+}
+.menu-icon-cart > a::before {
+  content: '\1F6D2';
+}
