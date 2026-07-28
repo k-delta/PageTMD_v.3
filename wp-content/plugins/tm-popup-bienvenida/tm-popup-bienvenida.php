@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: TM Popup Bienvenida WooCommerce
- * Description: Popup de bienvenida para Tecni Montacargas con registro, login, cookie y cupón WooCommerce único.
- * Version: 1.1.0
+ * Description: Popup de bienvenida con cuenta de cliente y código único para el primer alquiler de montacargas o baterías.
+ * Version: 1.2.2
  * Author: Tecni Montacargas
  */
 
@@ -15,6 +15,9 @@ class TM_Popup_Bienvenida_Woo {
     const COOKIE_NAME = 'tm_popup_seen';
     const OPTION_NAME = 'tm_popup_bienvenida_options';
     const NONCE_ACTION = 'tm_popup_bienvenida_nonce';
+    const VERSION = '1.2.2';
+    const VERSION_OPTION = 'tm_popup_bienvenida_version';
+    const COUPON_SCOPE = 'first_rental_equipment_or_battery';
 
     public function __construct() {
         add_action( 'admin_menu', array( $this, 'add_settings_page' ) );
@@ -26,24 +29,29 @@ class TM_Popup_Bienvenida_Woo {
         add_action( 'wp_ajax_nopriv_tm_register_coupon', array( $this, 'ajax_register_coupon' ) );
         add_action( 'wp_ajax_nopriv_tm_login_coupon', array( $this, 'ajax_login_coupon' ) );
 
-        add_action( 'woocommerce_cart_loaded_from_session', array( $this, 'auto_apply_coupon' ), 20 );
-
+        add_action( 'woocommerce_created_customer', array( $this, 'create_coupon_for_new_customer' ), 20, 3 );
+        add_action( 'woocommerce_account_dashboard', array( $this, 'render_account_coupon' ), 15 );
         add_action( 'woocommerce_order_status_processing', array( $this, 'mark_coupon_as_used' ) );
         add_action( 'woocommerce_order_status_completed', array( $this, 'mark_coupon_as_used' ) );
 
+        add_action( 'wpcf7_init', array( $this, 'register_contact_form_tag' ) );
+        add_filter( 'wpcf7_validate_tm_discount', array( $this, 'validate_contact_discount_code' ), 10, 2 );
+
+        add_action( 'admin_post_tm_welcome_coupon_status', array( $this, 'handle_coupon_status' ) );
         add_action( 'admin_notices', array( $this, 'woocommerce_notice' ) );
+        add_action( 'init', array( $this, 'maybe_upgrade' ), 20 );
     }
 
     private function defaults() {
         return array(
             'enabled'         => 'yes',
             'logo_url'        => '',
-            'title'           => '¡Bienvenido!',
-            'subtitle'        => 'Obtén $100.000 COP de descuento en tu primera compra de repuestos o alquiler de montacargas.',
+            'title'           => '¡Tu primer alquiler tiene descuento!',
+            'subtitle'        => 'Obtén $100.000 COP de descuento en tu primer alquiler de montacargas o baterías.',
             'coupon_amount'   => '100000',
             'register_button' => 'Registrarme y obtener descuento',
             'login_button'    => 'Iniciar sesión y usar descuento',
-            'policy_url'      => home_url( '/politica-de-tratamiento-de-datos/' ),
+            'policy_url'      => home_url( '/nosotros/legal/politica-de-privacidad/' ),
         );
     }
 
@@ -134,10 +142,24 @@ class TM_Popup_Bienvenida_Woo {
         }
 
         $options = $this->get_options();
+        $coupons = class_exists( 'WC_Coupon' ) ? get_posts(
+            array(
+                'post_type'      => 'shop_coupon',
+                'post_status'    => array( 'publish', 'draft' ),
+                'posts_per_page' => 100,
+                'orderby'        => 'date',
+                'order'          => 'DESC',
+                'meta_key'       => '_tm_welcome_coupon_user_id',
+            )
+        ) : array();
         ?>
 
         <div class="wrap">
             <h1>TM Popup Bienvenida</h1>
+
+            <?php if ( isset( $_GET['tm_coupon_updated'] ) ) : ?>
+                <div class="notice notice-success is-dismissible"><p>El estado del código se actualizó correctamente.</p></div>
+            <?php endif; ?>
 
             <form method="post" action="options.php">
                 <?php settings_fields( 'tm_popup_bienvenida_group' ); ?>
@@ -206,13 +228,167 @@ class TM_Popup_Bienvenida_Woo {
 
                 <?php submit_button( 'Guardar cambios' ); ?>
             </form>
+
+            <hr>
+
+            <h2>Códigos emitidos</h2>
+            <p>El código se valida contra el correo del cliente. Marcarlo como usado cuando se formalice el primer alquiler de un montacargas o una batería.</p>
+
+            <table class="widefat striped">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Cliente</th>
+                        <th>Valor</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ( empty( $coupons ) ) : ?>
+                        <tr><td colspan="5">Aún no hay códigos emitidos.</td></tr>
+                    <?php else : ?>
+                        <?php foreach ( $coupons as $coupon_post ) : ?>
+                            <?php
+                            $coupon  = new WC_Coupon( $coupon_post->ID );
+                            $user_id = absint( $coupon->get_meta( '_tm_welcome_coupon_user_id', true ) );
+                            $user    = get_userdata( $user_id );
+                            $used    = $this->is_coupon_used( $coupon, $user_id );
+                            ?>
+                            <tr>
+                                <td><code><?php echo esc_html( strtoupper( $coupon->get_code() ) ); ?></code></td>
+                                <td>
+                                    <?php if ( $user ) : ?>
+                                        <?php echo esc_html( $user->display_name ); ?><br>
+                                        <small><?php echo esc_html( $user->user_email ); ?></small>
+                                    <?php else : ?>
+                                        Usuario eliminado
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo esc_html( $this->format_coupon_amount( $coupon->get_amount() ) ); ?></td>
+                                <td>
+                                    <strong style="color:<?php echo $used ? '#a50000' : '#1b6b35'; ?>">
+                                        <?php echo $used ? 'Usado' : 'Disponible'; ?>
+                                    </strong>
+                                </td>
+                                <td>
+                                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+                                        <input type="hidden" name="action" value="tm_welcome_coupon_status">
+                                        <input type="hidden" name="coupon_id" value="<?php echo esc_attr( $coupon->get_id() ); ?>">
+                                        <input type="hidden" name="status" value="<?php echo $used ? 'available' : 'used'; ?>">
+                                        <?php wp_nonce_field( 'tm_welcome_coupon_status_' . $coupon->get_id() ); ?>
+                                        <button type="submit" class="button">
+                                            <?php echo $used ? 'Restaurar' : 'Marcar usado'; ?>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
 
         <?php
     }
 
+    public function maybe_upgrade() {
+        if ( get_option( self::VERSION_OPTION ) === self::VERSION || ! class_exists( 'WC_Coupon' ) ) {
+            return;
+        }
+
+        $options = get_option( self::OPTION_NAME, array() );
+
+        if (
+            empty( $options['subtitle'] )
+            || false !== stripos( $options['subtitle'], 'repuestos' )
+            || false !== stripos( $options['subtitle'], 'primera compra' )
+        ) {
+            $options['title']    = '¡Tu primer alquiler tiene descuento!';
+            $options['subtitle'] = 'Obtén $100.000 COP de descuento en tu primer alquiler de montacargas o baterías.';
+        }
+
+        $options['policy_url'] = home_url( '/nosotros/legal/politica-de-privacidad/' );
+        update_option( self::OPTION_NAME, $options, false );
+
+        $users = get_users(
+            array(
+                'fields'   => array( 'ID', 'user_email' ),
+                'meta_key' => '_tm_welcome_coupon_code',
+            )
+        );
+
+        foreach ( $users as $user ) {
+            $code      = get_user_meta( $user->ID, '_tm_welcome_coupon_code', true );
+            $coupon_id = $code ? wc_get_coupon_id_by_code( $code ) : 0;
+
+            if ( ! $coupon_id ) {
+                continue;
+            }
+
+            $coupon = new WC_Coupon( $coupon_id );
+            $coupon->set_description( 'Código para el primer alquiler de montacargas o batería. Usuario #' . $user->ID );
+            $coupon->set_email_restrictions( array( $user->user_email ) );
+            $coupon->update_meta_data( '_tm_welcome_coupon_user_id', $user->ID );
+            $coupon->update_meta_data( '_tm_welcome_coupon_scope', self::COUPON_SCOPE );
+
+            if ( ! $coupon->get_meta( '_tm_welcome_coupon_created_at', true ) ) {
+                $coupon->update_meta_data( '_tm_welcome_coupon_created_at', current_time( 'mysql' ) );
+            }
+
+            $coupon->save();
+        }
+
+        update_option( self::VERSION_OPTION, self::VERSION, false );
+    }
+
+    public function handle_coupon_status() {
+        if ( ! current_user_can( 'manage_woocommerce' ) && ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'No tienes permisos para modificar códigos de descuento.' );
+        }
+
+        $coupon_id = isset( $_POST['coupon_id'] ) ? absint( $_POST['coupon_id'] ) : 0;
+        $status    = isset( $_POST['status'] ) ? sanitize_key( wp_unslash( $_POST['status'] ) ) : '';
+
+        check_admin_referer( 'tm_welcome_coupon_status_' . $coupon_id );
+
+        $coupon = $coupon_id && class_exists( 'WC_Coupon' ) ? new WC_Coupon( $coupon_id ) : null;
+
+        if ( ! $coupon || ! $coupon->get_id() || ! $this->is_managed_coupon( $coupon ) ) {
+            wp_die( 'El código indicado no pertenece al beneficio de bienvenida.' );
+        }
+
+        $user_id = absint( $coupon->get_meta( '_tm_welcome_coupon_user_id', true ) );
+
+        if ( 'used' === $status ) {
+            $coupon->update_meta_data( '_tm_welcome_coupon_redeemed', 'yes' );
+            $coupon->update_meta_data( '_tm_welcome_coupon_redeemed_at', current_time( 'mysql' ) );
+            update_user_meta( $user_id, '_tm_welcome_coupon_used', 'yes' );
+        } elseif ( 'available' === $status ) {
+            $coupon->delete_meta_data( '_tm_welcome_coupon_redeemed' );
+            $coupon->delete_meta_data( '_tm_welcome_coupon_redeemed_at' );
+            delete_user_meta( $user_id, '_tm_welcome_coupon_used' );
+        } else {
+            wp_die( 'Estado de código no válido.' );
+        }
+
+        $coupon->save();
+
+        wp_safe_redirect(
+            add_query_arg(
+                'tm_coupon_updated',
+                '1',
+                admin_url( 'admin.php?page=tm-popup-bienvenida' )
+            )
+        );
+        exit;
+    }
+
     public function enqueue_assets() {
-        if ( ! $this->should_show_popup() ) {
+        $show_popup  = $this->should_show_popup();
+        $show_account = function_exists( 'is_account_page' ) && is_account_page() && is_user_logged_in();
+
+        if ( ! $show_popup && ! $show_account ) {
             return;
         }
 
@@ -222,14 +398,18 @@ class TM_Popup_Bienvenida_Woo {
             'tm-popup-bienvenida',
             plugin_dir_url( __FILE__ ) . 'assets/tm-popup.css',
             array(),
-            '1.1.0'
+            self::VERSION
         );
+
+        if ( ! $show_popup ) {
+            return;
+        }
 
         wp_enqueue_script(
             'tm-popup-bienvenida',
             plugin_dir_url( __FILE__ ) . 'assets/tm-popup.js',
             array(),
-            '1.0.0',
+            self::VERSION,
             true
         );
 
@@ -329,9 +509,10 @@ class TM_Popup_Bienvenida_Woo {
 
                 <div id="tm-success-box" class="tm-success-box">
                     <h3>Tu descuento está listo</h3>
-                    <p>Usa este código en tu primera compra:</p>
+                    <p>Presenta este código al solicitar tu primer alquiler de un montacargas o una batería:</p>
                     <strong id="tm-coupon-code"></strong>
-                    <p class="tm-small">También te lo enviamos al correo.</p>
+                    <button type="button" id="tm-copy-coupon" class="tm-copy-button">Copiar código</button>
+                    <p id="tm-coupon-delivery" class="tm-small">También quedó guardado en Mi cuenta.</p>
                     <a class="tm-account-link" href="<?php echo esc_url( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/mi-cuenta/' ) ); ?>">Ir a Mi cuenta</a>
                 </div>
             </div>
@@ -343,7 +524,7 @@ class TM_Popup_Bienvenida_Woo {
     public function ajax_register_coupon() {
         check_ajax_referer( self::NONCE_ACTION, 'nonce' );
 
-        if ( is_user_logged_in() ) {
+        if ( is_user_logged_in() && function_exists( 'wc_get_coupon_id_by_code' ) && class_exists( 'WC_Coupon' ) ) {
             wp_send_json_error( array( 'message' => 'Ya tienes una sesión activa. Administra tus datos desde Mi cuenta.' ) );
         }
 
@@ -408,13 +589,14 @@ class TM_Popup_Bienvenida_Woo {
             wp_set_auth_cookie( $user_id, true );
         }
 
-        $this->send_coupon_email( $email, $full_name, $coupon_code );
+        $email_sent = $this->send_coupon_email( $email, $full_name, $coupon_code );
         $this->set_seen_cookie();
 
         wp_send_json_success(
             array(
                 'message' => 'Cuenta creada correctamente.',
                 'coupon'  => $coupon_code,
+                'email_sent' => $email_sent,
             )
         );
     }
@@ -454,16 +636,6 @@ class TM_Popup_Bienvenida_Woo {
 
         $user_id = $signon->ID;
 
-        if ( $this->user_has_previous_orders( $user_id ) ) {
-            $this->set_seen_cookie();
-
-            wp_send_json_error(
-                array(
-                    'message' => 'No aplica: este descuento es solo para la primera compra.',
-                )
-            );
-        }
-
         if ( get_user_meta( $user_id, '_tm_welcome_coupon_used', true ) === 'yes' ) {
             $this->set_seen_cookie();
 
@@ -476,13 +648,14 @@ class TM_Popup_Bienvenida_Woo {
 
         $coupon_code = $this->create_or_get_coupon_for_user( $user_id, $email );
 
-        $this->send_coupon_email( $email, $user->display_name, $coupon_code );
+        $email_sent = $this->send_coupon_email( $email, $user->display_name, $coupon_code );
         $this->set_seen_cookie();
 
         wp_send_json_success(
             array(
                 'message' => 'Sesión iniciada correctamente.',
                 'coupon'  => $coupon_code,
+                'email_sent' => $email_sent,
             )
         );
     }
@@ -522,6 +695,12 @@ class TM_Popup_Bienvenida_Woo {
             $existing_coupon_id = wc_get_coupon_id_by_code( $existing_code );
 
             if ( $existing_coupon_id ) {
+                $existing_coupon = new WC_Coupon( $existing_coupon_id );
+                $existing_coupon->set_email_restrictions( array( $email ) );
+                $existing_coupon->update_meta_data( '_tm_welcome_coupon_user_id', $user_id );
+                $existing_coupon->update_meta_data( '_tm_welcome_coupon_scope', self::COUPON_SCOPE );
+                $existing_coupon->save();
+
                 return $existing_code;
             }
         }
@@ -532,7 +711,7 @@ class TM_Popup_Bienvenida_Woo {
         $code = '';
 
         for ( $i = 0; $i < 10; $i++ ) {
-            $candidate = 'TM-BIENVENIDA-' . strtoupper( wp_generate_password( 6, false, false ) );
+            $candidate = 'TM-ALQUILER-' . strtoupper( wp_generate_password( 6, false, false ) );
 
             if ( ! wc_get_coupon_id_by_code( $candidate ) ) {
                 $code = $candidate;
@@ -541,7 +720,7 @@ class TM_Popup_Bienvenida_Woo {
         }
 
         if ( empty( $code ) ) {
-            $code = 'TM-BIENVENIDA-' . time();
+            $code = 'TM-ALQUILER-' . time();
         }
 
         $coupon = new WC_Coupon();
@@ -553,8 +732,10 @@ class TM_Popup_Bienvenida_Woo {
         $coupon->set_usage_limit( 1 );
         $coupon->set_usage_limit_per_user( 1 );
         $coupon->set_email_restrictions( array( $email ) );
-        $coupon->set_description( 'Cupón de bienvenida generado automáticamente para ' . $email );
+        $coupon->set_description( 'Código para el primer alquiler de montacargas o batería. Usuario #' . $user_id );
         $coupon->add_meta_data( '_tm_welcome_coupon_user_id', $user_id, true );
+        $coupon->add_meta_data( '_tm_welcome_coupon_scope', self::COUPON_SCOPE, true );
+        $coupon->add_meta_data( '_tm_welcome_coupon_created_at', current_time( 'mysql' ), true );
         $coupon->save();
 
         update_user_meta( $user_id, '_tm_welcome_coupon_code', $code );
@@ -562,57 +743,167 @@ class TM_Popup_Bienvenida_Woo {
         return $code;
     }
 
-    private function user_has_previous_orders( $user_id ) {
-        if ( ! function_exists( 'wc_get_orders' ) ) {
-            return false;
+    public function create_coupon_for_new_customer( $customer_id, $new_customer_data = array(), $password_generated = false ) {
+        unset( $password_generated );
+
+        $email = isset( $new_customer_data['user_email'] )
+            ? sanitize_email( $new_customer_data['user_email'] )
+            : '';
+
+        if ( ! $email ) {
+            $user  = get_userdata( $customer_id );
+            $email = $user ? $user->user_email : '';
         }
 
-        $orders = wc_get_orders(
-            array(
-                'customer_id' => $user_id,
-                'limit'       => 1,
-                'status'      => array( 'wc-processing', 'wc-completed', 'wc-on-hold' ),
-                'return'      => 'ids',
-            )
-        );
-
-        return ! empty( $orders );
+        if ( $email ) {
+            $this->create_or_get_coupon_for_user( $customer_id, $email );
+        }
     }
 
-    public function auto_apply_coupon() {
-        if ( is_admin() && ! wp_doing_ajax() ) {
-            return;
-        }
-
-        if ( ! is_user_logged_in() || ! function_exists( 'WC' ) || ! WC()->cart ) {
-            return;
-        }
-
-        if ( WC()->cart->is_empty() ) {
+    public function render_account_coupon() {
+        if ( ! is_user_logged_in() || ! class_exists( 'WC_Coupon' ) ) {
             return;
         }
 
         $user_id = get_current_user_id();
+        $user    = wp_get_current_user();
+        $code    = get_user_meta( $user_id, '_tm_welcome_coupon_code', true );
 
-        if ( get_user_meta( $user_id, '_tm_welcome_coupon_used', true ) === 'yes' ) {
+        if ( ! $code && in_array( 'customer', (array) $user->roles, true ) ) {
+            $code = $this->create_or_get_coupon_for_user( $user_id, $user->user_email );
+        }
+
+        $coupon_id = $code ? wc_get_coupon_id_by_code( $code ) : 0;
+
+        if ( ! $coupon_id ) {
             return;
         }
 
-        if ( $this->user_has_previous_orders( $user_id ) ) {
+        $coupon = new WC_Coupon( $coupon_id );
+        $used   = $this->is_coupon_used( $coupon, $user_id );
+        ?>
+        <section class="tm-account-discount" aria-labelledby="tm-account-discount-title">
+            <div>
+                <span class="tm-account-discount__eyebrow">Beneficio de bienvenida</span>
+                <h2 id="tm-account-discount-title">
+                    <?php echo $used ? 'Código utilizado' : esc_html( $this->format_coupon_amount( $coupon->get_amount() ) . ' de descuento' ); ?>
+                </h2>
+                <p>
+                    <?php echo $used
+                        ? 'Este beneficio ya fue aplicado a tu primer alquiler.'
+                        : 'Válido una sola vez para tu primer alquiler de un montacargas o una batería.'; ?>
+                </p>
+            </div>
+            <div class="tm-account-discount__code">
+                <span><?php echo $used ? 'Usado' : 'Tu código único'; ?></span>
+                <strong><?php echo esc_html( $code ); ?></strong>
+            </div>
+            <?php if ( ! $used ) : ?>
+                <div class="tm-account-discount__actions">
+                    <a href="<?php echo esc_url( home_url( '/equipos/' ) ); ?>">Elegir montacargas</a>
+                    <a href="<?php echo esc_url( home_url( '/energia/' ) ); ?>">Elegir batería</a>
+                </div>
+            <?php endif; ?>
+        </section>
+        <?php
+    }
+
+    public function register_contact_form_tag() {
+        if ( ! function_exists( 'wpcf7_add_form_tag' ) ) {
             return;
         }
 
-        $coupon_code = get_user_meta( $user_id, '_tm_welcome_coupon_code', true );
+        wpcf7_add_form_tag(
+            'tm_discount',
+            array( $this, 'render_contact_discount_tag' ),
+            array( 'name-attr' => true )
+        );
+    }
 
-        if ( empty( $coupon_code ) ) {
-            return;
+    public function render_contact_discount_tag( $tag ) {
+        $name  = $tag->name ? $tag->name : 'tm_discount_code';
+        $value = '';
+
+        if ( is_user_logged_in() ) {
+            $user_id = get_current_user_id();
+            $code    = get_user_meta( $user_id, '_tm_welcome_coupon_code', true );
+
+            if ( $code ) {
+                $coupon_id = wc_get_coupon_id_by_code( $code );
+                $coupon    = $coupon_id ? new WC_Coupon( $coupon_id ) : null;
+
+                if ( $coupon && ! $this->is_coupon_used( $coupon, $user_id ) ) {
+                    $value = $code;
+                }
+            }
         }
 
-        if ( WC()->cart->has_discount( $coupon_code ) ) {
-            return;
+        return sprintf(
+            '<span class="wpcf7-form-control-wrap" data-name="%1$s"><input class="wpcf7-form-control wpcf7-text tm-discount-code" type="text" name="%1$s" value="%2$s" autocomplete="off" placeholder="TM-ALQUILER-XXXXXX"></span>',
+            esc_attr( $name ),
+            esc_attr( $value )
+        );
+    }
+
+    public function validate_contact_discount_code( $result, $tag ) {
+        if ( ! class_exists( 'WPCF7_Submission' ) || ! class_exists( 'WC_Coupon' ) ) {
+            return $result;
         }
 
-        WC()->cart->apply_coupon( $coupon_code );
+        $submission = WPCF7_Submission::get_instance();
+
+        if ( ! $submission ) {
+            return $result;
+        }
+
+        $code = strtoupper( sanitize_text_field( $submission->get_posted_string( $tag->name ) ) );
+
+        if ( '' === $code ) {
+            return $result;
+        }
+
+        $coupon_id = wc_get_coupon_id_by_code( $code );
+        $coupon    = $coupon_id ? new WC_Coupon( $coupon_id ) : null;
+
+        if ( ! $coupon || ! $coupon->get_id() || ! $this->is_managed_coupon( $coupon ) ) {
+            $result->invalidate( $tag, 'El código de descuento no es válido.' );
+            return $result;
+        }
+
+        $coupon_user_id = absint( $coupon->get_meta( '_tm_welcome_coupon_user_id', true ) );
+        $coupon_user    = get_userdata( $coupon_user_id );
+        $form_email     = sanitize_email( $submission->get_posted_string( 'email' ) );
+
+        if (
+            ! $coupon_user
+            || ! $form_email
+            || 0 !== strcasecmp( $coupon_user->user_email, $form_email )
+            || ( is_user_logged_in() && get_current_user_id() !== $coupon_user_id )
+        ) {
+            $result->invalidate( $tag, 'El código no corresponde al correo de esta solicitud.' );
+            return $result;
+        }
+
+        if ( $this->is_coupon_used( $coupon, $coupon_user_id ) ) {
+            $result->invalidate( $tag, 'Este código de descuento ya fue utilizado.' );
+        }
+
+        return $result;
+    }
+
+    private function is_managed_coupon( $coupon ) {
+        return $coupon instanceof WC_Coupon
+            && self::COUPON_SCOPE === $coupon->get_meta( '_tm_welcome_coupon_scope', true )
+            && absint( $coupon->get_meta( '_tm_welcome_coupon_user_id', true ) ) > 0;
+    }
+
+    private function is_coupon_used( $coupon, $user_id ) {
+        return 'yes' === $coupon->get_meta( '_tm_welcome_coupon_redeemed', true )
+            || 'yes' === get_user_meta( $user_id, '_tm_welcome_coupon_used', true );
+    }
+
+    private function format_coupon_amount( $amount ) {
+        return '$' . number_format_i18n( (float) $amount, 0 ) . ' COP';
     }
 
     public function mark_coupon_as_used( $order_id ) {
@@ -644,6 +935,10 @@ class TM_Popup_Bienvenida_Woo {
             $coupon_user_id = get_post_meta( $coupon_id, '_tm_welcome_coupon_user_id', true );
 
             if ( (int) $coupon_user_id === (int) $user_id ) {
+                $coupon = new WC_Coupon( $coupon_id );
+                $coupon->update_meta_data( '_tm_welcome_coupon_redeemed', 'yes' );
+                $coupon->update_meta_data( '_tm_welcome_coupon_redeemed_at', current_time( 'mysql' ) );
+                $coupon->save();
                 update_user_meta( $user_id, '_tm_welcome_coupon_used', 'yes' );
             }
         }
@@ -651,6 +946,8 @@ class TM_Popup_Bienvenida_Woo {
 
     private function send_coupon_email( $email, $name, $coupon_code ) {
         $subject = 'Tu descuento de bienvenida Tecni Montacargas';
+        $options = $this->get_options();
+        $amount  = $this->format_coupon_amount( $options['coupon_amount'] );
         $account = function_exists( 'wc_get_page_permalink' )
             ? wc_get_page_permalink( 'myaccount' )
             : home_url( '/mi-cuenta/' );
@@ -661,13 +958,13 @@ class TM_Popup_Bienvenida_Woo {
         $message .= '<div style="margin:22px 0;padding:24px;border-radius:12px;text-align:center;background:#f4f7fb;border:1px solid #dce6f1">';
         $message .= '<span style="display:block;margin-bottom:8px;color:#68758a;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em">Tu código de descuento</span>';
         $message .= '<strong style="display:block;color:#128ceb;font-size:25px;letter-spacing:.04em">' . esc_html( $coupon_code ) . '</strong>';
-        $message .= '<span style="display:block;margin-top:8px;color:#262e4f;font-weight:700">$100.000 COP</span>';
+        $message .= '<span style="display:block;margin-top:8px;color:#262e4f;font-weight:700">' . esc_html( $amount ) . '</span>';
         $message .= '</div>';
-        $message .= '<p style="margin:0 0 22px">Aplica para tu primera compra de repuestos o primer alquiler de montacargas gestionado en WooCommerce.</p>';
+        $message .= '<p style="margin:0 0 22px">Válido una sola vez para tu primer alquiler de un montacargas o una batería. Preséntalo al solicitar la cotización.</p>';
         $message .= '<p style="margin:0"><a href="' . esc_url( $account ) . '" style="display:inline-block;padding:12px 20px;border-radius:8px;color:#fff;background:#128ceb;font-weight:700;text-decoration:none">Ir a Mi cuenta</a></p>';
         $message .= '</div>';
 
-        wp_mail(
+        return wp_mail(
             $email,
             $subject,
             $message,

@@ -270,6 +270,25 @@
     letter-spacing: 0.04em;
 }
 
+.tm-copy-button {
+    min-height: 38px;
+    margin: 0 0 14px;
+    padding: 0 16px;
+    border: 1px solid #128ceb;
+    border-radius: 8px;
+    color: #128ceb;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.tm-copy-button:hover,
+.tm-copy-button:focus-visible {
+    color: #fff;
+    background: #128ceb;
+}
+
 .tm-success-box .tm-small {
     font-size: 12px;
 }
@@ -310,4 +329,102 @@
 .tm-account-link:focus-visible {
     color: #262e4f;
     background: #ffc33c;
+}
+
+.tm-account-discount {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 20px 28px;
+    align-items: center;
+    margin: 0 0 28px;
+    padding: 26px;
+    border: 1px solid #dce6f1;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f4f8fc 0%, #fff 62%);
+    box-shadow: 0 14px 34px rgba(38, 46, 79, 0.08);
+}
+
+.tm-account-discount__eyebrow {
+    display: block;
+    margin-bottom: 7px;
+    color: #128ceb;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.tm-account-discount h2 {
+    margin: 0 0 8px;
+    color: #262e4f;
+    font-size: 24px;
+}
+
+.tm-account-discount p {
+    margin: 0;
+    color: #5e748b;
+}
+
+.tm-account-discount__code {
+    min-width: 230px;
+    padding: 17px 20px;
+    border-radius: 12px;
+    text-align: center;
+    background: #262e4f;
+}
+
+.tm-account-discount__code span,
+.tm-account-discount__code strong {
+    display: block;
+}
+
+.tm-account-discount__code span {
+    margin-bottom: 6px;
+    color: #bac5d6;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.tm-account-discount__code strong {
+    color: #ffc33c;
+    font-size: 17px;
+    letter-spacing: 0.04em;
+}
+
+.tm-account-discount__actions {
+    display: flex;
+    grid-column: 1 / -1;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tm-account-discount__actions a {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 17px;
+    border-radius: 8px;
+    color: #fff;
+    background: #128ceb;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.tm-account-discount__actions a:last-child {
+    color: #262e4f;
+    background: #ffc33c;
+}
+
+@media (max-width: 640px) {
+    .tm-account-discount {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+
+    .tm-account-discount__code {
+        min-width: 0;
+    }
 }

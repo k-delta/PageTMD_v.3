@@ -1864,6 +1864,59 @@ add_action('init', function () {
 }, 0);
 /* TMD_CONTACT_ENERGIA_REDIRECT_END */
 
+/* TMD_CONTACT_CF7_PREFILL_START */
+add_filter('wpcf7_form_tag', function ($tag) {
+    if (! is_page(57) || ! $tag instanceof WPCF7_FormTag) {
+        return $tag;
+    }
+
+    $equipment = isset($_GET['equipo'])
+        ? sanitize_text_field(wp_unslash($_GET['equipo']))
+        : '';
+    $energy = isset($_GET['tmd_cotizacion_energia'])
+        ? sanitize_text_field(wp_unslash($_GET['tmd_cotizacion_energia']))
+        : '';
+
+    if ($equipment === '' && $energy === '') {
+        return $tag;
+    }
+
+    $type = $equipment !== '' ? 'Equipo' : 'Energía';
+    $product = $equipment !== '' ? $equipment : $energy;
+    $values = [
+        'tmd_tipo_cotizacion' => $type,
+        'tmd_cotizacion' => $product,
+        'tmd_url_origen' => esc_url_raw(home_url(wp_unslash($_SERVER['REQUEST_URI'] ?? '/nosotros/contacto/'))),
+    ];
+
+    if (isset($values[$tag->name])) {
+        $tag->values = [$values[$tag->name]];
+        $tag->raw_values = [$values[$tag->name]];
+    }
+
+    if ($tag->name === 'service') {
+        $tag->options = array_values(array_filter(
+            $tag->options,
+            static fn($option) => ! str_starts_with($option, 'default:')
+        ));
+        $tag->options[] = $type === 'Energía' ? 'default:5' : 'default:3';
+    }
+
+    if ($tag->name === 'message') {
+        $message = 'Hola, quiero recibir información sobre: ' . $product;
+        $tag->options = array_values(array_filter(
+            $tag->options,
+            static fn($option) => ! in_array($option, ['placeholder', 'watermark'], true)
+        ));
+        $tag->values = [$message];
+        $tag->raw_values = [$message];
+        $tag->content = $message;
+    }
+
+    return $tag;
+}, 20);
+/* TMD_CONTACT_CF7_PREFILL_END */
+
 
 
 /* TMD_CONTACT_PAGE_POLISH_START */
@@ -2111,6 +2164,20 @@ body.page-id-57 .tmd-form-card {
   box-shadow: 0 22px 55px rgba(38, 46, 79, .12);
 }
 
+body.page-id-57 .tmd-contact-grid > .wpcf7 {
+  min-width: 0;
+}
+
+body.page-id-57 .tmd-contact-grid .wpcf7-form {
+  margin: 0;
+}
+
+body.page-id-57 .tmd-contact-grid .wpcf7-response-output {
+  grid-column: 1 / -1;
+  margin: 0;
+  border-radius: 12px;
+}
+
 body.page-id-57 .tmd-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2239,29 +2306,38 @@ CSS;
       producto = energia;
     }
 
-    var form = document.querySelector('[data-tmd-ajax-form]');
+    var form = document.querySelector('.tmd-contact-grid .wpcf7-form');
 
     if (form && producto) {
-      ensureHiddenField(form, 'tmd_tipo_cotizacion').value = tipo;
-      ensureHiddenField(form, 'tmd_cotizacion').value = producto;
-      ensureHiddenField(form, 'tmd_url_origen').value = window.location.href;
-
-      var service = form.querySelector('[name="service"]');
-
-      if (service) {
-        service.value = tipo === 'Energía' ? 'Baterias y cargadores' : 'Venta de equipo';
-      }
-
-      var message = form.querySelector('[name="message"]');
-
-      if (message && !message.value) {
-        message.value = 'Hola, quiero recibir información sobre: ' + producto;
-      }
-
-      form.addEventListener('submit', function () {
+      var applyQuotation = function () {
         ensureHiddenField(form, 'tmd_tipo_cotizacion').value = tipo;
         ensureHiddenField(form, 'tmd_cotizacion').value = producto;
         ensureHiddenField(form, 'tmd_url_origen').value = window.location.href;
+
+        var service = form.querySelector('[name="service"]');
+
+        if (service) {
+          service.value = tipo === 'Energía' ? 'Baterías y cargadores' : 'Venta de equipo';
+        }
+
+        var message = form.querySelector('[name="message"]');
+
+        if (message && !message.value) {
+          message.value = 'Hola, quiero recibir información sobre: ' + producto;
+        }
+      };
+
+      applyQuotation();
+      document.addEventListener('wpcf7init', applyQuotation);
+      document.addEventListener('wpcf7reset', applyQuotation);
+      form.addEventListener('reset', function () {
+        window.setTimeout(applyQuotation, 0);
+      });
+      window.addEventListener('load', applyQuotation);
+      window.setTimeout(applyQuotation, 1200);
+
+      form.addEventListener('submit', function () {
+        applyQuotation();
       });
     }
 
@@ -2630,9 +2706,6 @@ add_action('wp_footer', function () {
 }, 100);
 /* TMD_LOGO_CAROUSEL_AUTOPLAY_END */
 
-
-/* TMD_QUIZ_V3_INCLUDE */
-require_once get_stylesheet_directory() . '/inc/tmd-quiz-v3.php';
 
 /* TMD_EQUIPMENT_SECTION_REDIRECTS_INCLUDE */
 require_once get_stylesheet_directory() . '/inc/tmd-equipment-section-redirects.php';

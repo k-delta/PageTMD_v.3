@@ -29,6 +29,12 @@
 
         overlay.classList.add('active');
         overlay.setAttribute('aria-hidden', 'false');
+
+        const firstField = overlay.querySelector('input:not([type="checkbox"])');
+
+        if (firstField) {
+            firstField.focus();
+        }
     }
 
     function closeOverlay(overlay) {
@@ -59,12 +65,13 @@
         box.className = 'tm-popup-message';
     }
 
-    function showSuccess(couponCode) {
+    function showSuccess(couponCode, emailSent) {
         const registerForm = document.getElementById('tm-register-form');
         const loginForm = document.getElementById('tm-login-form');
         const tabs = document.querySelector('.tm-popup-tabs');
         const successBox = document.getElementById('tm-success-box');
         const codeBox = document.getElementById('tm-coupon-code');
+        const deliveryBox = document.getElementById('tm-coupon-delivery');
 
         if (registerForm) {
             registerForm.classList.remove('active');
@@ -84,6 +91,12 @@
 
         if (codeBox) {
             codeBox.textContent = couponCode;
+        }
+
+        if (deliveryBox) {
+            deliveryBox.textContent = emailSent
+                ? 'También te lo enviamos al correo y quedó guardado en Mi cuenta.'
+                : 'El código quedó guardado en Mi cuenta.';
         }
 
         clearMessage();
@@ -117,7 +130,7 @@
             })
             .then(function (result) {
                 if (result.success) {
-                    showSuccess(result.data.coupon);
+                    showSuccess(result.data.coupon, Boolean(result.data.email_sent));
                     return;
                 }
 
@@ -158,6 +171,29 @@
                 closeOverlay(overlay);
             }
         });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && overlay.classList.contains('active')) {
+                closeOverlay(overlay);
+            }
+        });
+
+        const copyButton = document.getElementById('tm-copy-coupon');
+
+        if (copyButton) {
+            copyButton.addEventListener('click', function () {
+                const codeBox = document.getElementById('tm-coupon-code');
+                const code = codeBox ? codeBox.textContent.trim() : '';
+
+                if (!code || !navigator.clipboard) {
+                    return;
+                }
+
+                navigator.clipboard.writeText(code).then(function () {
+                    copyButton.textContent = 'Código copiado';
+                });
+            });
+        }
 
         document.querySelectorAll('.tm-tab').forEach(function (tab) {
             tab.addEventListener('click', function () {
