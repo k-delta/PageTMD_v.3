@@ -2,7 +2,7 @@
 /**
  * Plugin Name: TMD Site Kit
  * Description: Componentes configurables para Tecni Montacargas Dual sin tocar el tema.
- * Version: 0.3.0
+ * Version: 0.4.0
  * Author: TMD
  */
 
@@ -10,7 +10,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-const TMD_SITE_KIT_VERSION = '0.3.0';
+const TMD_SITE_KIT_VERSION = '0.4.0';
+
+require_once __DIR__ . '/tmd-equipment-guides.php';
 
 function tmd_site_kit_defaults(): array
 {

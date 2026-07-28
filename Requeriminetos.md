@@ -1,4 +1,4 @@
-# DOCUMENTO DE REQUERIMIENTOS — TECNI MONTACARGAS
+# DOCUMENTO DE REQUERIMIENTOS — TECNIMONTACARGAS
 ## Versión 6.6 — Documento Completo y Consolidado
 
 **Actualizado:** 25 de febrero de 2026

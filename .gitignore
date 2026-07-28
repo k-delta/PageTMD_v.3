@@ -17,6 +17,8 @@
 /wp-*.php
 /xmlrpc.php
 
+.codex-tmp
+.playwright-mcp
 # Configuration
 wp-config.php
 
@@ -31,6 +33,10 @@ wp-config.php
 
 # Log files
 *.log
+.DS_Store
+*.bak
+*.bak-*
+*.before-*
 
 # htaccess
 /.htaccess
