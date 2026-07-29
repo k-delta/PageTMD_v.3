@@ -40,10 +40,10 @@ function tmd_account_login_intro() {
 	<section class="tmd-account-intro" aria-labelledby="tmd-account-title">
 		<p class="tmd-account-intro__eyebrow"><?php esc_html_e( 'Portal de clientes', 'blocksy-child' ); ?></p>
 		<h1 id="tmd-account-title"><?php esc_html_e( 'Tu operación, siempre a la mano', 'blocksy-child' ); ?></h1>
-		<p><?php esc_html_e( 'Ingresa o crea tu cuenta para consultar solicitudes, actualizar tus datos y gestionar tu información con Tecnimontacargas.', 'blocksy-child' ); ?></p>
+		<p><?php esc_html_e( 'Ingresa o crea tu cuenta para actualizar tus datos y gestionar tu información con Tecnimontacargas.', 'blocksy-child' ); ?></p>
 		<ul class="tmd-account-benefits" aria-label="<?php esc_attr_e( 'Beneficios de tu cuenta', 'blocksy-child' ); ?>">
-			<li><?php esc_html_e( 'Historial de solicitudes y pedidos', 'blocksy-child' ); ?></li>
-			<li><?php esc_html_e( 'Datos y direcciones centralizados', 'blocksy-child' ); ?></li>
+			<li><?php esc_html_e( 'Datos de contacto actualizados', 'blocksy-child' ); ?></li>
+			<li><?php esc_html_e( 'Acceso seguro a tu perfil', 'blocksy-child' ); ?></li>
 			<li><?php esc_html_e( 'Acceso protegido por WooCommerce', 'blocksy-child' ); ?></li>
 		</ul>
 	</section>
@@ -68,7 +68,7 @@ function tmd_account_member_header() {
 		<div>
 			<p><?php esc_html_e( 'Sesión activa', 'blocksy-child' ); ?></p>
 			<h2><?php echo esc_html( sprintf( __( 'Hola, %s', 'blocksy-child' ), $member_name ) ); ?></h2>
-			<span><?php esc_html_e( 'Administra tus datos, direcciones, solicitudes y seguridad desde este panel.', 'blocksy-child' ); ?></span>
+			<span><?php esc_html_e( 'Administra tus datos y seguridad desde este panel.', 'blocksy-child' ); ?></span>
 		</div>
 		<a href="<?php echo esc_url( $logout_url ); ?>"><?php esc_html_e( 'Cerrar sesión', 'blocksy-child' ); ?></a>
 	</section>

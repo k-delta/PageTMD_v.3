@@ -21,7 +21,7 @@
       <div class="tmd-footer-grid">
 
         <div class="tmd-footer-brand-col">
-          <div class="tmd-footer-brand">Tecni Montacargas</div>
+          <div class="tmd-footer-brand">Tecnimontacargas</div>
 
           <div class="tmd-footer-socials">
             <a class="tmd-footer-social linkedin" href="https://co.linkedin.com/company/tmdual" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
@@ -119,7 +119,7 @@
   <section class="tmd-footer-legal" data-purpose="legal-footer">
     <div class="tmd-footer-container tmd-footer-legal-inner">
       <div class="tmd-footer-copyright">
-        Copyright © <?php echo esc_html(date('Y')); ?> Tecni Montacargas. Todos los derechos reservados.
+        Copyright © <?php echo esc_html(date('Y')); ?> Tecnimontacargas. Todos los derechos reservados.
       </div>
 
       <nav class="tmd-footer-legal-nav" aria-label="Enlaces legales">

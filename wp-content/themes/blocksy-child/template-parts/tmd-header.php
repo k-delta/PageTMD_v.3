@@ -102,12 +102,12 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
 ?>
 <header class="tmd-mm-header" role="banner">
   <div class="tmd-mm-wrap" id="tmdMegaMenu" data-current-panel="">
-    <nav class="tmd-mm-navbar" aria-label="Menú principal TM-Dual">
+    <nav class="tmd-mm-navbar" aria-label="Menú principal de Tecnimontacargas">
 
-      <a class="tmd-mm-logo" href="<?php echo esc_url(home_url('/')); ?>" aria-label="Tecni Montacargas">
+      <a class="tmd-mm-logo" href="<?php echo esc_url(home_url('/')); ?>" aria-label="Tecnimontacargas">
         <img
           src="https://tecnimontacargas.com/wp-content/uploads/2026/07/logo-blanco.png"
-          alt="Tecni Montacargas TM-Dual"
+          alt="Tecnimontacargas"
           width="190"
           height="50"
           decoding="async"
@@ -150,10 +150,6 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
             <span class="tmd-mm-user-status" aria-hidden="true"></span>
           <?php endif; ?>
         </a>
-        <a class="tmd-mm-icon-btn" href="<?php echo esc_url(home_url('/carrito/')); ?>" aria-label="Carrito">
-          <i class="ti ti-shopping-cart"></i>
-          <span class="dot"></span>
-        </a>
       </div>
 
     </nav>
@@ -174,7 +170,7 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
       </div>
 
       <div class="tmd-mm-panel-footer">
-        <a class="tmd-mm-footer-link" href="<?php echo esc_url(home_url('/equipos/')); ?>"><i class="ti ti-shopping-bag"></i> Ver tienda completa</a>
+        <a class="tmd-mm-footer-link" href="<?php echo esc_url(home_url('/equipos/')); ?>"><i class="ti ti-list-details"></i> Ver catálogo de equipos</a>
         <span class="tmd-mm-footer-sep">|</span>
         <a class="tmd-mm-footer-link" href="<?php echo esc_url(home_url('/encuentra-tu-equipo/')); ?>"><i class="ti ti-adjustments-horizontal"></i> Encuentra tu equipo</a>
       </div>
@@ -199,7 +195,7 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
       </div>
 
       <div class="tmd-mm-panel-footer">
-        <a class="tmd-mm-footer-link" href="<?php echo esc_url(home_url('/energia/')); ?>"><i class="ti ti-shopping-bag"></i> Ver tienda de energía</a>
+        <a class="tmd-mm-footer-link" href="<?php echo esc_url(home_url('/energia/')); ?>"><i class="ti ti-list-details"></i> Ver catálogo de energía</a>
       </div>
     </div>
 

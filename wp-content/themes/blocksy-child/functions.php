@@ -2727,3 +2727,6 @@ require_once get_stylesheet_directory() . '/inc/tmd-maintenance.php';
 
 /* TMD_PARTNERSHIPS_INCLUDE */
 require_once get_stylesheet_directory() . '/inc/tmd-partnerships.php';
+
+/* TMD_SEO_INCLUDE */
+require_once get_stylesheet_directory() . '/inc/tmd-seo.php';
