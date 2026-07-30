@@ -1,5 +1,5 @@
 {
-  "description": "Repository lifecycle hooks for irreversible-command protection, diff hygiene, focused session context, and evidence-based completion.",
+  "description": "Repository lifecycle hooks for irreversible-command protection, diff hygiene, focused session context, specialized subagent reports, and evidence-based completion.",
   "hooks": {
     "PreToolUse": [
       {
@@ -37,6 +37,19 @@
             "timeout": 5,
             "statusMessage": "Loading focused repository context",
             "additionalContextLimit": 2000
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "^(architecture-reviewer|database-reviewer|performance-reviewer|security-reviewer|test-reviewer|test-runner)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/validate-subagent-report.py\"",
+            "timeout": 5,
+            "statusMessage": "Checking specialized subagent report"
           }
         ]
       }
