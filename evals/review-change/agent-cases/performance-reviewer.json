@@ -1,0 +1,23 @@
+{
+  "agent": "performance_reviewer",
+  "cases": {
+    "positive": {
+      "change": "El render realiza una petición HTTP remota por cada elemento sin caché ni límite.",
+      "path": "wp-content/themes/blocksy-child/inc/tmd-equipment-type-guides.php",
+      "line": 205,
+      "evidence": "Dentro del bucle de equipos, la línea ejecuta wp_remote_get($item['url']) sin transient ni límite de lote.",
+      "expected_outcome": "FINDING",
+      "reason": "Introduce I/O no SQL repetido y latencia proporcional al volumen."
+    },
+    "negative": {
+      "change": "La llamada remota está cacheada, paginada y acotada a un lote pequeño.",
+      "expected_outcome": "NO_FINDINGS",
+      "reason": "El cambio limita el coste operativo relevante."
+    },
+    "false_positive": {
+      "change": "Una consulta WPDB aparece dentro de un bucle.",
+      "expected_outcome": "NO_FINDINGS",
+      "reason": "El N+1 SQL pertenece exclusivamente al revisor de base de datos."
+    }
+  }
+}

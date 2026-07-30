@@ -1,0 +1,23 @@
+{
+  "agent": "test_reviewer",
+  "cases": {
+    "positive": {
+      "change": "Un endpoint protegido cambia su comportamiento sin prueba del caso sin permisos.",
+      "path": "wp-content/plugins/tm-chatbot-fase1/api.php",
+      "line": 64,
+      "evidence": "La rama nueva devuelve datos para usuarios autorizados, pero el diff de pruebas solo añade el escenario exitoso.",
+      "expected_outcome": "FINDING",
+      "reason": "Falta un escenario observable ligado al comportamiento y a los criterios."
+    },
+    "negative": {
+      "change": "Las pruebas cubren éxito, error externo, entrada inválida y autorización con aserciones reales.",
+      "expected_outcome": "NO_FINDINGS",
+      "reason": "Los riesgos del comportamiento modificado están cubiertos."
+    },
+    "false_positive": {
+      "change": "Solo se corrige una explicación en un documento Markdown.",
+      "expected_outcome": "NO_FINDINGS",
+      "reason": "Un cambio documental sin comportamiento no exige pruebas funcionales."
+    }
+  }
+}
