@@ -1,0 +1,43 @@
+{
+  "description": "Repository lifecycle hooks for irreversible-command protection, diff hygiene, and evidence-based completion.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^Bash$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/block-dangerous-commands.py\"",
+            "timeout": 5,
+            "statusMessage": "Checking irreversible command"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "^(apply_patch|Edit|Write)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/check-diff-hygiene.py\"",
+            "timeout": 5,
+            "statusMessage": "Checking diff hygiene"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$(git rev-parse --show-toplevel)/.codex/hooks/validate-before-stop.sh\"",
+            "timeout": 5,
+            "statusMessage": "Checking completion evidence"
+          }
+        ]
+      }
+    ]
+  }
+}
