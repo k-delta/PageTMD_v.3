@@ -1,5 +1,5 @@
 {
-  "description": "Repository lifecycle hooks for irreversible-command protection, diff hygiene, and evidence-based completion.",
+  "description": "Repository lifecycle hooks for irreversible-command protection, diff hygiene, focused session context, and evidence-based completion.",
   "hooks": {
     "PreToolUse": [
       {
@@ -23,6 +23,20 @@
             "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/check-diff-hygiene.py\"",
             "timeout": 5,
             "statusMessage": "Checking diff hygiene"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "^(startup|resume|clear|compact)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/load-session-context.py\"",
+            "timeout": 5,
+            "statusMessage": "Loading focused repository context",
+            "additionalContextLimit": 2000
           }
         ]
       }
