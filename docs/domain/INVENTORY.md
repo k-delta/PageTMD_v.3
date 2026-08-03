@@ -57,6 +57,11 @@ WordPress puede conservar:
 - Caché temporal de respuestas.
 - Última respuesta válida como fallback.
 
+El inventario general se actualiza mediante una tarea horaria de WP-Cron. Las
+solicitudes públicas de `/equipos/` y `/energia/` leen únicamente la caché o el
+último fallback válido; no deben esperar una consulta síncrona a Firebase. Si
+el refresco falla, WordPress conserva la última copia válida.
+
 No añadir polling periódico o recargas automáticas sin un requisito explícito.
 
 ## Cloud Functions

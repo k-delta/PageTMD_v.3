@@ -38,7 +38,7 @@
   {
     "name": "kadence-blocks",
     "status": "active",
-    "version": "3.7.8.1",
+    "version": "3.7.8.2",
     "auto_update": "on"
   },
   {
@@ -51,7 +51,7 @@
     "name": "seo-by-rank-math",
     "status": "active",
     "version": "1.0.275",
-    "auto_update": "off"
+    "auto_update": "on"
   },
   {
     "name": "shortpixel-image-optimiser",
@@ -73,7 +73,7 @@
   },
   {
     "name": "tm-popup-bienvenida",
-    "status": "active",
+    "status": "inactive",
     "version": "1.2.2",
     "auto_update": "off"
   },

@@ -1,0 +1,81 @@
+body.page-id-273 .tmd-jobs-upload {
+  display: grid;
+  gap: 10px;
+  text-align: left;
+}
+
+body.page-id-273 .tmd-jobs-upload input[type="file"] {
+  height: auto !important;
+  min-height: 56px;
+  padding: 10px !important;
+  cursor: pointer;
+}
+
+body.page-id-273 .tmd-jobs-upload input[type="file"]::file-selector-button {
+  margin-right: 12px;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  background: #128ceb;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+body.page-id-273 .tmd-jobs-upload-help,
+body.page-id-273 .tmd-jobs-consent {
+  color: #5e748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+body.page-id-273 .tmd-jobs-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
+}
+
+body.page-id-273 .tmd-jobs-consent input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  min-height: 18px;
+  flex: 0 0 auto;
+  margin-top: 2px;
+  padding: 0 !important;
+}
+
+body.page-id-273 .tmd-jobs-consent a {
+  color: #128ceb;
+  text-decoration: underline;
+}
+
+body.page-id-273 .tmd-jobs-honeypot {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+}
+
+body.page-id-273 .tmd-form-status {
+  min-height: 24px;
+  font-weight: 700;
+}
+
+body.page-id-273 .tmd-form-status.is-success {
+  color: #167244;
+}
+
+body.page-id-273 .tmd-form-status.is-error {
+  color: #b42318;
+}
+
+body.page-id-273 .tmd-jobs-form button[disabled] {
+  cursor: wait;
+  opacity: .7;
+}
+

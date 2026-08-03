@@ -1,33 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.tmd-api-card img, .tmd-api-detail-image img').forEach((image) => {
-    const showFallback = () => {
-      image.parentElement?.classList.add('is-missing');
-      image.remove();
-    };
-
-    image.addEventListener('error', showFallback, { once: true });
-    if (image.complete && image.naturalWidth === 0) {
-      showFallback();
-    }
-  });
-
-  const form = document.querySelector('.tmd-api-filters');
-  const results = document.querySelector('[data-tmd-api-results]');
-
-  if (!form || !results) {
-    return;
-  }
-
-  const cards = Array.from(results.querySelectorAll('.tmd-api-card'));
-  const statusCount = results.querySelector('[data-tmd-api-status] strong');
-  const emptyMessage = results.querySelector('[data-tmd-api-empty]');
-  const pagination = results.querySelector('[data-tmd-api-pagination]');
-  const perPage = Math.max(1, Number.parseInt(results.dataset.apiPerPage || '12', 10));
-  const resultLabel = results.dataset.apiLabel || 'equipos';
-  const categorySelect = form.querySelector('select[name="api_categoria"]');
-  const subcategorySelect = form.querySelector('select[name="api_subcategoria"]');
-  let currentPage = 1;
-
+(function () {
   const normalize = (value) => String(value || '').trim().toLocaleLowerCase('es');
 
   const exactMatch = (actual, expected) => {
@@ -48,6 +19,81 @@ document.addEventListener('DOMContentLoaded', () => {
     return height >= minimum && (maximum <= 0 || height < maximum);
   };
 
+  const cardMatches = (card, filters) => {
+    const values = card?.filters || {};
+    return exactMatch(values.brand, filters.brand)
+      && exactMatch(values.category, filters.category)
+      && exactMatch(values.subcategory, filters.subcategory)
+      && rangeMatch(values.collapsedHeight, filters.collapsedHeight)
+      && rangeMatch(values.liftHeight, filters.liftHeight)
+      && exactMatch(values.condition, filters.condition)
+      && exactMatch(values.operator, filters.operator)
+      && exactMatch(values.reach, filters.reach)
+      && exactMatch(values.voltage, filters.voltage)
+      && exactMatch(values.capacity, filters.capacity);
+  };
+
+  const pageItems = (items, page, perPage) => {
+    const firstVisible = (page - 1) * perPage;
+    return items.slice(firstVisible, firstVisible + perPage);
+  };
+
+  const parsePayload = (text) => {
+    try {
+      const payload = JSON.parse(String(text || ''));
+      return Array.isArray(payload?.items) ? payload.items : null;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { normalize, exactMatch, rangeMatch, cardMatches, pageItems, parsePayload };
+  }
+
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const prepareImage = (image) => {
+    const showFallback = () => {
+      image.parentElement?.classList.add('is-missing');
+      image.remove();
+    };
+
+    image.addEventListener('error', showFallback, { once: true });
+    if (image.complete && image.naturalWidth === 0) {
+      showFallback();
+    }
+    };
+
+    document.querySelectorAll('.tmd-api-card img, .tmd-api-detail-image img').forEach(prepareImage);
+
+  const form = document.querySelector('.tmd-api-filters');
+  const results = document.querySelector('[data-tmd-api-results]');
+
+  if (!form || !results) {
+    return;
+  }
+
+  const grid = results.querySelector('.tmd-api-grid');
+  const payloadNode = results.querySelector('[data-tmd-api-items]');
+  const statusCount = results.querySelector('[data-tmd-api-status] strong');
+  const emptyMessage = results.querySelector('[data-tmd-api-empty]');
+  const pagination = results.querySelector('[data-tmd-api-pagination]');
+  const perPage = Math.max(1, Number.parseInt(results.dataset.apiPerPage || '12', 10));
+  const resultLabel = results.dataset.apiLabel || 'equipos';
+  const categorySelect = form.querySelector('select[name="api_categoria"]');
+  const subcategorySelect = form.querySelector('select[name="api_subcategoria"]');
+  let currentPage = 1;
+
+  const cards = parsePayload(payloadNode?.textContent || '');
+
+  if (!grid || !cards) {
+    return;
+  }
+
   const values = () => {
     const data = new FormData(form);
 
@@ -63,19 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
       voltage: data.get('api_voltaje') || '',
       capacity: data.get('api_capacidad') || '',
     };
-  };
-
-  const cardMatches = (card, filters) => {
-    return exactMatch(card.dataset.apiBrand, filters.brand)
-      && exactMatch(card.dataset.apiCategory, filters.category)
-      && exactMatch(card.dataset.apiSubcategory, filters.subcategory)
-      && rangeMatch(card.dataset.apiCollapsedHeight, filters.collapsedHeight)
-      && rangeMatch(card.dataset.apiLiftHeight, filters.liftHeight)
-      && exactMatch(card.dataset.apiCondition, filters.condition)
-      && exactMatch(card.dataset.apiOperator, filters.operator)
-      && exactMatch(card.dataset.apiReach, filters.reach)
-      && exactMatch(card.dataset.apiVoltage, filters.voltage)
-      && exactMatch(card.dataset.apiCapacity, filters.capacity);
   };
 
   const updateSubcategoryOptions = () => {
@@ -111,6 +144,84 @@ document.addEventListener('DOMContentLoaded', () => {
     window.history.replaceState({}, '', `${url.pathname}${url.search}`);
   };
 
+  const createCard = (card) => {
+    const article = document.createElement('article');
+    article.className = String(card?.classes?.card || 'tmd-api-card');
+
+    const filters = card?.filters || {};
+    article.dataset.apiBrand = String(filters.brand || '');
+    article.dataset.apiCategory = String(filters.category || '');
+    article.dataset.apiSubcategory = String(filters.subcategory || '');
+    article.dataset.apiCondition = String(filters.condition || '');
+    article.dataset.apiCollapsedHeight = String(filters.collapsedHeight || '');
+    article.dataset.apiLiftHeight = String(filters.liftHeight || '');
+    article.dataset.apiOperator = String(filters.operator || '');
+    article.dataset.apiReach = String(filters.reach || '');
+    article.dataset.apiVoltage = String(filters.voltage || '');
+    article.dataset.apiCapacity = String(filters.capacity || '');
+
+    const imageLink = document.createElement('a');
+    imageLink.className = String(card?.classes?.image || '');
+    imageLink.href = String(card?.detailUrl || '');
+    imageLink.setAttribute('aria-label', `Ver ${String(card?.title || '')}`);
+    if (card?.image) {
+      const image = document.createElement('img');
+      image.src = String(card.image);
+      image.alt = String(card?.title || '');
+      image.loading = 'lazy';
+      imageLink.append(image);
+      prepareImage(image);
+    }
+    article.append(imageLink);
+
+    const body = document.createElement('div');
+    body.className = String(card?.classes?.body || '');
+    const tags = document.createElement('div');
+    tags.className = 'tmd-api-tags';
+    (Array.isArray(card?.tags) ? card.tags : []).forEach((tag) => {
+      const tagNode = document.createElement('span');
+      tagNode.className = String(tag?.className || '');
+      tagNode.textContent = String(tag?.label || '');
+      tags.append(tagNode);
+    });
+    body.append(tags);
+
+    const heading = document.createElement('h3');
+    const titleLink = document.createElement('a');
+    titleLink.href = String(card?.detailUrl || '');
+    titleLink.textContent = String(card?.title || '');
+    heading.append(titleLink);
+    body.append(heading);
+
+    const specs = document.createElement('div');
+    specs.className = 'tmd-api-specs';
+    (Array.isArray(card?.specs) ? card.specs : []).forEach((spec) => {
+      const row = document.createElement('div');
+      const label = document.createElement('span');
+      const value = document.createElement('strong');
+      label.textContent = String(spec?.label || '');
+      value.textContent = String(spec?.value || '');
+      row.append(label, value);
+      specs.append(row);
+    });
+    body.append(specs);
+
+    const actions = document.createElement('div');
+    actions.className = 'tmd-api-actions';
+    const detailLink = document.createElement('a');
+    detailLink.className = 'is-primary';
+    detailLink.href = String(card?.detailUrl || '');
+    detailLink.textContent = 'Ver ficha';
+    const contactLink = document.createElement('a');
+    contactLink.href = String(card?.contactUrl || '');
+    contactLink.textContent = 'Cotizar';
+    actions.append(detailLink, contactLink);
+    body.append(actions);
+    article.append(body);
+
+    return article;
+  };
+
   const renderPagination = (totalPages) => {
     if (!pagination) {
       return;
@@ -137,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  function render(resetPage = true) {
+  function render(resetPage = true, preserveGrid = false) {
     const matchingCards = cards.filter((card) => cardMatches(card, values()));
 
     if (resetPage) {
@@ -146,16 +257,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const totalPages = Math.max(1, Math.ceil(matchingCards.length / perPage));
     currentPage = Math.min(currentPage, totalPages);
-    const firstVisible = (currentPage - 1) * perPage;
-    const lastVisible = firstVisible + perPage;
-
-    cards.forEach((card) => {
-      card.hidden = true;
-    });
-
-    matchingCards.forEach((card, index) => {
-      card.hidden = index < firstVisible || index >= lastVisible;
-    });
+    const visibleCards = pageItems(matchingCards, currentPage, perPage);
+    if (!preserveGrid) {
+      grid.replaceChildren(...visibleCards.map(createCard));
+    }
 
     if (statusCount) {
       const label = matchingCards.length === 1
@@ -199,5 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   updateSubcategoryOptions();
-  render(true);
-});
+  render(true, true);
+  });
+})();

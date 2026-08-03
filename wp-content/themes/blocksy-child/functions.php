@@ -52,6 +52,22 @@ add_action('wp_body_open', function () {
 
 add_filter('blocksy:header:render', '__return_false', 20);
 
+/* TMD_CONTACT_RAIL_START */
+add_action('wp_enqueue_scripts', function () {
+    $contact_rail_css = get_stylesheet_directory() . '/assets/css/tmd-contact-rail.css';
+    wp_enqueue_style(
+        'tmd-contact-rail',
+        get_stylesheet_directory_uri() . '/assets/css/tmd-contact-rail.css',
+        ['tmd-tabler-icons'],
+        file_exists($contact_rail_css) ? filemtime($contact_rail_css) : '1.0.0'
+    );
+}, 42);
+
+add_action('wp_body_open', function () {
+    get_template_part('template-parts/tmd-contact-rail');
+}, 5);
+/* TMD_CONTACT_RAIL_END */
+
 /* TMD_FOOTER_START */
 add_action('wp_enqueue_scripts', function () {
     $footer_css = get_stylesheet_directory() . '/assets/css/tmd-footer.css';
@@ -2575,7 +2591,7 @@ require_once get_stylesheet_directory() . '/inc/tmd-inventory-api.php';
 
 /* TMD_LOGO_CAROUSEL_AUTOPLAY_START */
 add_action('wp_footer', function () {
-    if (is_admin()) {
+    if (is_admin() || ! is_front_page()) {
         return;
     }
     ?>
@@ -2583,82 +2599,12 @@ add_action('wp_footer', function () {
     (function () {
       const INTERVAL_MS = 3000;
 
-      function textOf(el) {
-        return (el.innerText || el.textContent || '').toLowerCase();
-      }
-
-      function hasBrandLogo(el) {
-        const txt = textOf(el);
-        if (
-          txt.includes('jungheinrich') ||
-          txt.includes('crown') ||
-          txt.includes('zowell')
-        ) {
-          return true;
-        }
-
-        const imgs = el.querySelectorAll('img');
-        for (const img of imgs) {
-          const alt = (img.getAttribute('alt') || '').toLowerCase();
-          const src = (img.getAttribute('src') || '').toLowerCase();
-
-          if (
-            alt.includes('jungheinrich') ||
-            alt.includes('crown') ||
-            alt.includes('zowell') ||
-            src.includes('jungheinrich') ||
-            src.includes('crown') ||
-            src.includes('zowell')
-          ) {
-            return true;
-          }
-        }
-
-        return false;
-      }
-
       function findCarousel() {
-        const candidates = Array.from(document.querySelectorAll(
-          'section, .wp-block-group, .swiper, .splide, .tmd-brand-carousel, .tmd-logos-carousel, .tmd-marcas-carousel, div'
-        ));
-
-        return candidates.find(function (el) {
-          if (!hasBrandLogo(el)) {
-            return false;
-          }
-
-          const buttons = el.querySelectorAll('button, a, [role="button"]');
-          return buttons.length >= 2;
-        });
+        return document.querySelector('[data-tmd-brand-carousel]');
       }
 
       function findNextButton(carousel) {
-        const controls = Array.from(carousel.querySelectorAll('button, a, [role="button"]'));
-
-        const rightLike = controls.find(function (btn) {
-          const label = (
-            (btn.getAttribute('aria-label') || '') + ' ' +
-            (btn.getAttribute('title') || '') + ' ' +
-            (btn.className || '') + ' ' +
-            textOf(btn)
-          ).toLowerCase();
-
-          return (
-            label.includes('next') ||
-            label.includes('siguiente') ||
-            label.includes('right') ||
-            label.includes('arrow-right') ||
-            label.includes('chevron-right') ||
-            label.includes('swiper-button-next') ||
-            label.includes('splide__arrow--next')
-          );
-        });
-
-        if (rightLike) {
-          return rightLike;
-        }
-
-        return controls[controls.length - 1] || null;
+        return carousel.querySelector('[data-brand-next]');
       }
 
       function initLogoCarouselAutoplay() {
@@ -2730,3 +2676,9 @@ require_once get_stylesheet_directory() . '/inc/tmd-partnerships.php';
 
 /* TMD_SEO_INCLUDE */
 require_once get_stylesheet_directory() . '/inc/tmd-seo.php';
+
+/* TMD_JOB_APPLICATION_INCLUDE */
+require_once get_stylesheet_directory() . '/inc/tmd-job-application.php';
+
+/* TMD_PQR_INCLUDE */
+require_once get_stylesheet_directory() . '/inc/tmd-pqr.php';

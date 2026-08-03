@@ -34,6 +34,14 @@
       root.dataset.currentPanel = name;
     }
 
+    function openPanelFromPassiveInteraction(button) {
+      var name = button.getAttribute('data-tmd-panel');
+
+      if (!root.dataset.currentPanel || root.dataset.currentPanel === name) {
+        openPanel(button);
+      }
+    }
+
     if (mobileToggle && nav) {
       mobileToggle.setAttribute('aria-expanded', 'false');
 
@@ -48,12 +56,16 @@
 
       button.addEventListener('mouseenter', function () {
         if (window.matchMedia('(hover: hover)').matches) {
-          openPanel(button);
+          openPanelFromPassiveInteraction(button);
         }
       });
 
       button.addEventListener('focus', function () {
-        openPanel(button);
+        if (window.matchMedia('(hover: hover)').matches) {
+          openPanelFromPassiveInteraction(button);
+        } else {
+          openPanel(button);
+        }
       });
 
       button.addEventListener('click', function (event) {
