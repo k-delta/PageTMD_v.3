@@ -40,11 +40,46 @@ function tmd_home_ctas_cli_fixture() {
     return '';
 }
 
+function tmd_home_ctas_cli_unfixed_fixture($content) {
+    $expected_buttons = [
+        '/equipos/',
+        '/mantenimiento/',
+        '/energia/',
+        '/energia/baterias/',
+        '/energia/cargadores/',
+    ];
+
+    foreach ($expected_buttons as $target_url) {
+        $encoded = json_encode($target_url, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $content = str_replace(',"url":' . $encoded . '}', '}', $content);
+    }
+
+    $previous_text = 'Opciones de litio y plomo-ácido para equipos eléctricos de manejo de carga.';
+
+    $content = str_replace(
+        'Baterías de tracción para montacargas eléctricos, con criterios de selección, carga y cuidado.',
+        $previous_text,
+        $content
+    );
+
+    $content = str_replace(
+        'Cargadores industriales para baterías de montacargas, según compatibilidad, voltaje y capacidad.',
+        $previous_text,
+        $content
+    );
+
+    return $content;
+}
+
 $scenario           = $argv[1] ?? 'dry-run';
 $mock_content       = tmd_home_ctas_cli_fixture();
 $mock_get_post_calls = 0;
 $mock_update_calls   = 0;
 $mock_updated_content = '';
+
+if (in_array($scenario, ['dry-run', 'explicit-dry-run', 'execute'], true)) {
+    $mock_content = tmd_home_ctas_cli_unfixed_fixture($mock_content);
+}
 
 if ('contradiction' === $scenario) {
     $mock_content = preg_replace(
