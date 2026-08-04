@@ -37,7 +37,7 @@ tmd_home_ctas_test_assert(is_string($home_content) && '' !== $home_content, 'El 
 $snapshot_content = $home_content;
 foreach ($expected_buttons as $target_url) {
     $encoded      = json_encode($target_url, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-    $home_content = str_replace(',"url":' . $encoded . '}', '}', $home_content, $replacement_count);
+    $home_content = str_replace(',"link":' . $encoded . '}', '}', $home_content, $replacement_count);
     tmd_home_ctas_test_assert(1 === $replacement_count, "El fixture previo debe retirar una vez {$target_url}.");
 }
 foreach ($expected_texts as $target_text) {
@@ -55,7 +55,7 @@ foreach ($expected_buttons as $unique_id => $target_url) {
 
     tmd_home_ctas_test_assert(null !== $block, "Debe existir el CTA {$unique_id} después de transformar.");
     tmd_home_ctas_test_assert(
-        ($block['attributes']['url'] ?? '') === $target_url,
+        ($block['attributes']['link'] ?? '') === $target_url,
         "El CTA {$unique_id} debe apuntar a {$target_url}."
     );
 }
@@ -90,7 +90,7 @@ tmd_home_ctas_test_assert($missing_block === $missing['content'], 'Un error debe
 
 $contradictory = preg_replace(
     '/("uniqueID":"47_e9dd8c-4a"[^\r\n]*)(}) \/-->/',
-    '$1,"url":"/destino-incorrecto/"$2 /-->',
+    '$1,"link":"/destino-incorrecto/"$2 /-->',
     $home_content,
     1,
     $replacement_count
@@ -104,7 +104,7 @@ tmd_home_ctas_test_assert($contradictory === $contradiction['content'], 'La cont
 $reverted = $result['content'];
 foreach ($expected_buttons as $target_url) {
     $encoded  = json_encode($target_url, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-    $reverted = str_replace(',"url":' . $encoded . '}', '}', $reverted);
+    $reverted = str_replace(',"link":' . $encoded . '}', '}', $reverted);
 }
 foreach ($expected_texts as $target_text) {
     $reverted = str_replace($target_text, $previous_text, $reverted);

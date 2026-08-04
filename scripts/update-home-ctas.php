@@ -106,7 +106,7 @@ if (! function_exists('tmd_home_ctas_set_button_url')) {
             return $content;
         }
 
-        $updated_attrs = substr($block['attrs'], 0, -1) . ',"url":' . $encoded_url . '}';
+        $updated_attrs = substr($block['attrs'], 0, -1) . ',"link":' . $encoded_url . '}';
         $updated_block = str_replace($block['attrs'], $updated_attrs, $block['full']);
         $changes[]     = "cta:{$unique_id}";
 
