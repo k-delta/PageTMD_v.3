@@ -2196,7 +2196,7 @@ body.page-id-57 .tmd-contact-grid .wpcf7-response-output {
 
 body.page-id-57 .tmd-form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; //creo que es esto
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
