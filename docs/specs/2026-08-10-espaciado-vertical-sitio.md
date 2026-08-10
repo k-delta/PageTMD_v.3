@@ -99,7 +99,7 @@ No aplica.
 - Pruebas unitarias: No aplica; el alcance es CSS de presentación sin lógica de negocio.
 - Pruebas de integración: Comprobar carga de cada asset CSS modificado y confirmar que los selectores se limitan a las plantillas o componentes previstos.
 - Validación manual: Usar Playwright en `1440x900` y `390x900` sobre home, catálogo de equipos, una guía de tipo, catálogo de energía, mantenimiento, quiénes somos, blog y contacto. Medir padding/margin computados, comparar capturas antes/después y revisar consola, recorte, solapamiento y desplazamiento horizontal.
-- Validación productiva: Pendiente de autorización explícita. Si se autoriza, seguir los runbooks, crear backup verificable cuando corresponda, desplegar solo archivos modificados, purgar caché, repetir la matriz Playwright sobre producción y ejecutar `./scripts/sync-production.sh --check`.
+- Validación productiva: Completada el 10 de agosto de 2026 con backup verificado, despliegue focalizado de nueve archivos, purga de LiteSpeed, HTTP, Playwright en escritorio/móvil, revisión de consola/logs y `./scripts/sync-production.sh --check` limpio.
 
 ## Riesgos
 
@@ -122,3 +122,7 @@ No aplica.
 - [Evidencia: php -l, 2026-08-10] `wp-content/themes/blocksy-child/functions.php` no presenta errores de sintaxis.
 - [Evidencia: git diff --check, 2026-08-10] El diff no presenta errores de whitespace.
 - [Evidencia: revisión focalizada, 2026-08-10] Los hallazgos sobre mediciones y cascada se resolvieron con pruebas Playwright adicionales; no quedaron hallazgos Critical o Important abiertos.
+- [Evidencia: producción, 2026-08-10] Los nueve archivos desplegados coincidieron con los hashes del manifiesto `c4cbf2afa1f6ab384361433b5f64c81cac94c3e521188f5f586db7a2af795f2b`; `functions.php` pasó `php -l` dentro del contenedor.
+- [Evidencia: producción, 2026-08-10] LiteSpeed confirmó la purga total; home, contacto y guía respondieron HTTP `200`; el contenedor `tmd_ols_wordpress` permaneció activo y no se encontraron errores PHP fatales, de parseo, excepciones no capturadas ni respuestas `500` en los logs revisados.
+- [Evidencia: Playwright producción, 2026-08-10] La matriz de seis plantillas en `1440x900` y `390x900` confirmó los valores `48px`/`32px`, héroes `64px`/`40px`, ausencia de overflow horizontal y consola sin errores; el carrusel avanzó de Historia 1 a Historia 2.
+- [Evidencia: sincronización, 2026-08-10] `./scripts/sync-production.sh --check` confirmó coincidencia completa entre producción y repositorio tras actualizar `production-snapshot/SHA256SUMS`.
