@@ -824,6 +824,7 @@ body.page-id-49 .tmd-catalog-hero {
   padding: 0 16px;
   font-weight: 800;
 }
+
 /* TMD_EQUIPMENT_FORCE_NARROW_FILTER_START */
 body.page-id-49 .tmd-catalog-layout {
   display: grid !important;
@@ -878,3 +879,17 @@ body.page-id-49 .tmd-catalog-filters * {
   }
 }
 /* TMD_EQUIPMENT_FORCE_NARROW_FILTER_END */
+
+/* TMD_EQUIPMENT_CATALOG_NO_HERO_SPACE_START */
+body.page-id-49 .tmd-catalog-section {
+  padding-top: 0 !important;
+}
+
+body.page-id-49 .tmd-catalog-container {
+  margin-top: 0 !important;
+}
+
+body.page-id-49 .tmd-catalog-layout {
+  margin-top: 0 !important;
+}
+/* TMD_EQUIPMENT_CATALOG_NO_HERO_SPACE_END */

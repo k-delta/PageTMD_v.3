@@ -2682,3 +2682,16 @@ require_once get_stylesheet_directory() . '/inc/tmd-job-application.php';
 
 /* TMD_PQR_INCLUDE */
 require_once get_stylesheet_directory() . '/inc/tmd-pqr.php';
+
+/* TMD_ENQUEUE_CHILD_STYLE_START */
+add_action('wp_enqueue_scripts', function () {
+    $style_path = get_stylesheet_directory() . '/style.css';
+
+    wp_enqueue_style(
+        'tmd-blocksy-child-style',
+        get_stylesheet_uri(),
+        [],
+        file_exists($style_path) ? filemtime($style_path) : wp_get_theme()->get('Version')
+    );
+}, 99);
+/* TMD_ENQUEUE_CHILD_STYLE_END */

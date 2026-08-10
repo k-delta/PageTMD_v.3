@@ -874,3 +874,17 @@ body.page-id-63 .tmde-section {
   }
 }
 /* TMD_ENERGY_TOP_GAP_FIX_END */
+
+/* TMD_ENERGY_CATALOG_NO_TOP_SPACE_START */
+body.page-id-63 .tmde-section {
+  padding-top: 0 !important;
+}
+
+body.page-id-63 .tmde-container {
+  margin-top: 0 !important;
+}
+
+body.page-id-63 .tmde-layout {
+  margin-top: 0 !important;
+}
+/* TMD_ENERGY_CATALOG_NO_TOP_SPACE_END */
