@@ -20,7 +20,7 @@
 }
 
 .tmd-blog-intro {
-  padding: 78px 0 42px;
+  padding: 64px 0 40px;
   background: linear-gradient(135deg, #f7f9fc 0%, #fff 70%);
 }
 
@@ -220,13 +220,13 @@
 
 .tmd-blog-latest,
 .tmd-blog-related {
-  padding: 70px 0;
+  padding: 48px 0;
 }
 
 .tmd-blog-latest h2,
 .tmd-blog-related h2,
 .tmd-home-blog h2 {
-  margin: 0 0 32px;
+  margin: 0 0 24px;
   color: var(--tmd-blog-navy);
   font-size: clamp(28px, 3vw, 38px);
   text-align: center;
@@ -289,7 +289,7 @@
 .tmd-blog-all-btn:hover { background: var(--tmd-blog-navy); color: #fff; }
 
 .tmd-home-blog {
-  padding: 72px 0;
+  padding: 48px 0;
   background: #f6f8fb;
 }
 .tmd-home-blog .tmd-blog-eyebrow { display: block; margin-bottom: 8px; text-align: center; }
@@ -401,12 +401,12 @@
 @media (max-width: 600px) {
   .tmd-blog-container,
   .tmd-article-container { width: min(100% - 28px, 1180px); }
-  .tmd-blog-intro { padding: 48px 0 28px; }
+  .tmd-blog-intro { padding: 40px 0 28px; }
   .tmd-blog-intro p { font-size: 16px; }
   .tmd-blog-filters { padding: 22px 0; }
   .tmd-blog-hero-panel { padding: 30px 24px; }
   .tmd-blog-mini-grid { grid-template-columns: 1fr; }
-  .tmd-blog-latest, .tmd-blog-related, .tmd-home-blog { padding: 48px 0; }
+  .tmd-blog-latest, .tmd-blog-related, .tmd-home-blog { padding: 32px 0; }
   .tmd-blog-card, .tmd-blog-card > a { min-height: 260px; }
   .tmd-blog-card > a { padding: 22px; }
   .tmd-article-page { padding: 34px 0 55px; }

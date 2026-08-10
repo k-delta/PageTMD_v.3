@@ -81,7 +81,7 @@
     gap: clamp(2.5rem, 7vw, 7rem);
     grid-template-columns: minmax(0, 1.05fr) minmax(340px, .95fr);
     min-height: 610px;
-    padding: clamp(3.5rem, 7vw, 6rem) 1.25rem;
+    padding: 4rem 1.25rem;
     position: relative;
     z-index: 1;
 }
@@ -277,7 +277,7 @@
 
 .tmd-type-guide__section,
 .tmd-type-guide__final {
-    padding: clamp(4rem, 7.5vw, 7rem) 1.25rem;
+    padding: 3rem 1.25rem;
 }
 
 .tmd-type-guide__intro {
@@ -553,8 +553,14 @@
     }
 
     .tmd-type-guide__hero-grid {
-        padding-bottom: 3rem;
-        padding-top: 3rem;
+        padding-bottom: 2.5rem;
+        padding-top: 2.5rem;
+    }
+
+    .tmd-type-guide__section,
+    .tmd-type-guide__final {
+        padding-bottom: 2rem;
+        padding-top: 2rem;
     }
 
     .tmd-type-guide__hero h1 {

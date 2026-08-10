@@ -2407,8 +2407,8 @@ body.page-id-57 .page-title {
 
 /* Ajuste del hero real de la página */
 body.page-id-57 .tmd-page-hero {
-  padding-top: 72px !important;
-  padding-bottom: 48px !important;
+  padding-top: 64px !important;
+  padding-bottom: 40px !important;
 }
 
 body.page-id-57 .tmd-page-hero h1 {
@@ -2424,11 +2424,31 @@ body.page-id-57 .tmd-page-hero .tmd-contact-source-box-server {
 /* Ajuste de separación entre hero y asesores */
 body.page-id-57 .tmd-dark-band {
   margin-top: 0 !important;
+  padding-top: 48px !important;
+  padding-bottom: 48px !important;
 }
 
 /* Ajuste suave del formulario para que no quede tan pegado al final */
 body.page-id-57 .tmd-contact-grid {
-  padding-bottom: 96px !important;
+  padding-top: 48px !important;
+  padding-bottom: 48px !important;
+}
+
+@media (max-width: 640px) {
+  body.page-id-57 .tmd-page-hero {
+    padding-top: 40px !important;
+    padding-bottom: 32px !important;
+  }
+
+  body.page-id-57 .tmd-dark-band {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
+
+  body.page-id-57 .tmd-contact-grid {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
 }
 CSS;
 

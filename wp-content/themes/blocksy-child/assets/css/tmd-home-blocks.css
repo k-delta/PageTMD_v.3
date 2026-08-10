@@ -401,3 +401,39 @@ body.page-id-47 .kb-btn47_23547f-fc:hover {
 .editor-styles-wrapper .tmd-hero-block {
   margin-top: 0 !important;
 }
+
+/* Escala vertical compacta para la portada. */
+body.page-id-47 .tmd-home-shell > .tmd-section {
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+body.page-id-47 .tmd-home-shell > .tmd-section .tmd-section {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+body.home.page-id-47 .tmd-home-shell .tm-eqd-section,
+body.page-id-47 .tmd-success-showcase,
+body.page-id-47 .tmd-home-services {
+  padding-top: 48px !important;
+  padding-bottom: 48px !important;
+}
+
+body.page-id-47 .tmd-success-showcase {
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 781px) {
+  body.page-id-47 .tmd-home-shell > .tmd-section {
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
+
+  body.home.page-id-47 .tmd-home-shell .tm-eqd-section,
+  body.page-id-47 .tmd-success-showcase,
+  body.page-id-47 .tmd-home-services {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
+}

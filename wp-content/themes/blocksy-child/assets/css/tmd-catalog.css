@@ -33,7 +33,7 @@ body.page-id-49 .entry-content {
     radial-gradient(circle at 80% 22%, rgba(18,140,235,.22), transparent 34%),
     linear-gradient(135deg, #262e4f 0%, #1a2240 100%);
   color: #fff;
-  padding: 76px 0 58px;
+  padding: 64px 0 48px;
 }
 
 .tmd-catalog-hero h1 {
@@ -62,7 +62,7 @@ body.page-id-49 .entry-content {
 
 .tmd-catalog-section {
   background: #f5f7fa;
-  padding: 54px 0 78px;
+  padding: 48px 0;
 }
 
 .tmd-catalog-layout {
@@ -326,11 +326,11 @@ body.page-id-49 .entry-content {
 
 @media (max-width: 680px) {
   .tmd-catalog-hero {
-    padding: 58px 0 44px;
+    padding: 40px 0 32px;
   }
 
   .tmd-catalog-section {
-    padding: 38px 0 58px;
+    padding: 32px 0;
   }
 
   .tmd-equipment-grid {
@@ -879,7 +879,6 @@ body.page-id-49 .tmd-catalog-filters * {
   }
 }
 /* TMD_EQUIPMENT_FORCE_NARROW_FILTER_END */
-
 /* TMD_EQUIPMENT_CATALOG_NO_HERO_SPACE_START */
 body.page-id-49 .tmd-catalog-section {
   padding-top: 0 !important;
