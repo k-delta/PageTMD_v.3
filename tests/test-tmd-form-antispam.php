@@ -3,6 +3,7 @@
 define('ABSPATH', dirname(__DIR__) . '/');
 
 $mock_actions = [];
+$mock_contact_mail_calls = 0;
 
 function add_action($hook, $callback, $priority = 10, $accepted_args = 1) {
     global $mock_actions;
@@ -40,6 +41,21 @@ class Tmd_Form_Antispam_Submission {
     }
 }
 
+function tmd_form_antispam_run_cf7_cycle($contact_form, $submission) {
+    global $mock_actions, $mock_contact_mail_calls;
+
+    $abort = false;
+    $registration = $mock_actions['wpcf7_before_send_mail'][10][0];
+    $callback = $registration['callback'];
+    $callback($contact_form, $abort, $submission);
+
+    if (! $abort) {
+        $mock_contact_mail_calls++;
+    }
+
+    return $abort;
+}
+
 require_once dirname(__DIR__) . '/wp-content/themes/blocksy-child/inc/tmd-form-antispam.php';
 
 $quoted = '"Mozilla/5.0 (Macintosh) Chrome/142.0.0.0 Safari/537.36"';
@@ -54,22 +70,33 @@ tmd_form_antispam_assert(isset($mock_actions['wpcf7_before_send_mail'][10]), 'De
 $registration = $mock_actions['wpcf7_before_send_mail'][10][0];
 tmd_form_antispam_assert(3 === $registration['accepted_args'], 'El hook debe aceptar formulario, abort y submission.');
 
+$functions = file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/functions.php');
+$antispam_include = strpos($functions, "inc/tmd-form-antispam.php");
+$job_include = strpos($functions, "inc/tmd-job-application.php");
+$pqr_include = strpos($functions, "inc/tmd-pqr.php");
+tmd_form_antispam_assert(false !== $antispam_include, 'functions.php debe cargar el módulo antispam.');
+tmd_form_antispam_assert(
+    $antispam_include < $job_include && $antispam_include < $pqr_include,
+    'El módulo antispam debe cargarse antes de postulaciones y PQR.'
+);
+
 $_SERVER['HTTP_USER_AGENT'] = $normal;
-$abort = false;
+$mock_contact_mail_calls = 0;
 $submission = new Tmd_Form_Antispam_Submission();
-tmd_form_antispam_cf7_before_send_mail(new Tmd_Form_Antispam_Contact_Form(), $abort, $submission);
+$abort = tmd_form_antispam_run_cf7_cycle(new Tmd_Form_Antispam_Contact_Form(), $submission);
 tmd_form_antispam_assert(false === $abort && [] === $submission->spam_logs, 'Contacto legítimo debe conservar el envío.');
+tmd_form_antispam_assert(1 === $mock_contact_mail_calls, 'Contacto legítimo debe invocar el transporte una vez.');
 
 $_SERVER['HTTP_USER_AGENT'] = $quoted;
-$abort = false;
 $submission = new Tmd_Form_Antispam_Submission();
-tmd_form_antispam_cf7_before_send_mail(new Tmd_Form_Antispam_Contact_Form(), $abort, $submission);
+$abort = tmd_form_antispam_run_cf7_cycle(new Tmd_Form_Antispam_Contact_Form(), $submission);
 tmd_form_antispam_assert(true === $abort, 'Contacto automatizado debe abortar antes del correo.');
 tmd_form_antispam_assert(1 === count($submission->spam_logs), 'Contacto automatizado debe registrar solo el motivo técnico sin datos personales.');
+tmd_form_antispam_assert(1 === $mock_contact_mail_calls, 'Contacto automatizado no debe invocar el transporte.');
 
-$abort = false;
 $submission = new Tmd_Form_Antispam_Submission();
-tmd_form_antispam_cf7_before_send_mail(new Tmd_Form_Antispam_Other_Form(), $abort, $submission);
+$abort = tmd_form_antispam_run_cf7_cycle(new Tmd_Form_Antispam_Other_Form(), $submission);
 tmd_form_antispam_assert(false === $abort, 'El hook no debe afectar otros formularios de Contact Form 7.');
+tmd_form_antispam_assert(2 === $mock_contact_mail_calls, 'Otro formulario de Contact Form 7 debe conservar su transporte.');
 
 fwrite(STDOUT, "OK: detector de User-Agent y aborto focalizado de Contact Form 7.\n");

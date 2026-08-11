@@ -2,7 +2,7 @@
 
 ## Estado
 
-- Aprobado
+- Terminado
 
 ## Contexto
 
@@ -134,3 +134,17 @@ Identificar de forma auditable las imágenes sin referencias vigentes, obtener a
 ## Decisiones pendientes
 
 - No aplica. `DEC-01` fue resuelta y aprobada el 2026-08-11.
+
+## Resultado de ejecución
+
+- Fecha: 2026-08-11.
+- Manifiesto aprobado: `sha256:d57e2f012e5e26ecf316df7b318bcb16408db139e1e36853d3a319724ca95cbf`.
+- Adjuntos eliminados: `638, 686, 688, 779, 866, 867, 868, 890, 891, 892, 893, 894`.
+- Omitidos: ninguno.
+- Fallidos: ninguno.
+- Backup verificado: `/opt/tecnimontacargas/backups/media-cleanup-20260811-202124` (`database.sql.gz` y `uploads.tar.gz`).
+- Verificación posterior: cero registros de los IDs eliminados, cero derivados coincidentes y modo de mantenimiento desactivado.
+- Corrección posterior: el adjunto `890` resultó corresponder al logo visible del header. El usuario volvió a cargarlo como adjunto `1409` (`2026/08/logo-blanco.webp`) y se actualizó la referencia canónica del header. La versión productiva anterior del archivo quedó en `/opt/tecnimontacargas/backups/header-logo-20260811-205403`.
+- Caché: purga completa de LiteSpeed y object cache de WordPress.
+- Navegador: Home respondió `200` en escritorio y móvil, cargó el WebP `971x257`, mostró el footer y no presentó imágenes rotas ni respuestas HTTP de error.
+- Logs: no se detectaron errores `PHP Fatal`, excepciones no capturadas ni agotamiento de memoria posteriores a la operación.

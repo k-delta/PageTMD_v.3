@@ -38,6 +38,7 @@ $mock_is_page = false;
 $mock_styles = [];
 $mock_scripts = [];
 $mock_localized = [];
+$mock_move_upload_calls = 0;
 
 function add_action($hook, $callback, $priority = 10) { global $mock_actions; $mock_actions[$hook][$priority][] = $callback; }
 function is_wp_error($value) { return $value instanceof WP_Error; }
@@ -67,7 +68,11 @@ function trailingslashit($path) { return rtrim($path, '/\\') . '/'; }
 function get_temp_dir() { return dirname(__DIR__) . '/.codex-tmp/'; }
 function wp_unique_filename($directory, $filename) { return uniqid('tmd-', true) . '-' . $filename; }
 function tmd_job_application_is_uploaded_file($path) { return is_file($path); }
-function tmd_job_application_move_uploaded_file($source, $destination) { return rename($source, $destination); }
+function tmd_job_application_move_uploaded_file($source, $destination) {
+    global $mock_move_upload_calls;
+    $mock_move_upload_calls++;
+    return rename($source, $destination);
+}
 function is_page($page_id) { global $mock_is_page; return $mock_is_page && 273 === (int) $page_id; }
 function get_stylesheet_directory() { return dirname(__DIR__) . '/wp-content/themes/blocksy-child'; }
 function get_stylesheet_directory_uri() { return 'https://tecnimontacargas.com/wp-content/themes/blocksy-child'; }
@@ -158,14 +163,19 @@ tmd_job_endpoint_assert(false === file_exists($sent_attachment), 'El adjunto pre
 
 $mock_mail_calls = [];
 $mock_transients = [];
+$mock_move_upload_calls = 0;
 [$response, $upload] = tmd_job_endpoint_run(
     tmd_job_endpoint_post(),
-    'missing',
+    'valid',
     '"Mozilla/5.0 Chrome/142.0.0.0 Safari/537.36"'
 );
 tmd_job_endpoint_assert($response->success && 200 === $response->status, 'Huella automatizada debe recibir respuesta genérica de éxito.');
+tmd_job_endpoint_assert('Postulación enviada correctamente.' === $response->data['message'], 'Bloqueo de postulación debe conservar el mensaje público genérico.');
+tmd_job_endpoint_assert(0 === preg_match('/antispam|user-agent|huella/i', $response->data['message']), 'Respuesta de postulación no debe revelar la detección.');
 tmd_job_endpoint_assert([] === $mock_mail_calls, 'Huella automatizada no debe invocar wp_mail ni exigir CV.');
-tmd_job_endpoint_assert('' === $upload, 'Bloqueo temprano no debe crear un archivo de prueba para el CV.');
+tmd_job_endpoint_assert(0 === $mock_move_upload_calls, 'Bloqueo temprano no debe mover ni preparar el CV.');
+tmd_job_endpoint_assert(is_file($upload), 'El archivo temporal de entrada debe permanecer sin procesar por el endpoint bloqueado.');
+tmd_job_endpoint_cleanup($upload);
 
 $mock_nonce_valid = false;
 $mock_mail_calls = [];

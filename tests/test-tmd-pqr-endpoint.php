@@ -132,6 +132,8 @@ $mock_mail_calls = [];
 $mock_transients = [];
 $response = tmd_pqr_endpoint_run(tmd_pqr_endpoint_post(), '192.0.2.11', '"Mozilla/5.0 Chrome/142.0.0.0 Safari/537.36"');
 tmd_pqr_endpoint_assert($response->success && 200 === $response->status, 'Huella automatizada debe recibir respuesta genérica de éxito.');
+tmd_pqr_endpoint_assert('Solicitud PQR procesada correctamente.' === $response->data['message'], 'Bloqueo PQR debe conservar el mensaje público genérico.');
+tmd_pqr_endpoint_assert(0 === preg_match('/antispam|user-agent|huella/i', $response->data['message']), 'Respuesta PQR no debe revelar la detección.');
 tmd_pqr_endpoint_assert([] === $mock_mail_calls, 'Huella automatizada no debe invocar wp_mail en PQR.');
 
 $mock_nonce_valid = false;

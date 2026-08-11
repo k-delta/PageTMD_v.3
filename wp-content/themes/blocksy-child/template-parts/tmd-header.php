@@ -106,7 +106,7 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
 
       <a class="tmd-mm-logo" href="<?php echo esc_url(home_url('/')); ?>" aria-label="Tecnimontacargas">
         <img
-          src="https://tecnimontacargas.com/wp-content/uploads/2026/07/logo-blanco.png"
+          src="https://tecnimontacargas.com/wp-content/uploads/2026/08/logo-blanco.webp"
           alt="Tecnimontacargas"
           width="190"
           height="50"
