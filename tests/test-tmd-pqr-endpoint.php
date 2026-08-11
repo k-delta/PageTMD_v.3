@@ -77,6 +77,7 @@ function tmd_pqr_endpoint_assert($condition, $message) {
     }
 }
 
+require_once dirname(__DIR__) . '/wp-content/themes/blocksy-child/inc/tmd-form-antispam.php';
 require_once dirname(__DIR__) . '/wp-content/themes/blocksy-child/inc/tmd-pqr.php';
 
 function tmd_pqr_endpoint_post() {
@@ -94,9 +95,10 @@ function tmd_pqr_endpoint_post() {
     ];
 }
 
-function tmd_pqr_endpoint_run($post, $ip = '192.0.2.10') {
+function tmd_pqr_endpoint_run($post, $ip = '192.0.2.10', $user_agent = 'Mozilla/5.0 Chrome/142.0.0.0 Safari/537.36') {
     $_POST = $post;
     $_SERVER['REMOTE_ADDR'] = $ip;
+    $_SERVER['HTTP_USER_AGENT'] = $user_agent;
 
     try {
         tmd_pqr_ajax();
@@ -125,6 +127,12 @@ $response = tmd_pqr_endpoint_run(tmd_pqr_endpoint_post());
 tmd_pqr_endpoint_assert($response->success && 200 === $response->status, 'PQR válida debe responder éxito.');
 tmd_pqr_endpoint_assert(1 === count($mock_mail_calls), 'PQR válida debe invocar wp_mail una vez.');
 tmd_pqr_endpoint_assert('gerencia@tmdual.com' === $mock_mail_calls[0]['to'], 'Endpoint debe enviar solo a gerencia.');
+
+$mock_mail_calls = [];
+$mock_transients = [];
+$response = tmd_pqr_endpoint_run(tmd_pqr_endpoint_post(), '192.0.2.11', '"Mozilla/5.0 Chrome/142.0.0.0 Safari/537.36"');
+tmd_pqr_endpoint_assert($response->success && 200 === $response->status, 'Huella automatizada debe recibir respuesta genérica de éxito.');
+tmd_pqr_endpoint_assert([] === $mock_mail_calls, 'Huella automatizada no debe invocar wp_mail en PQR.');
 
 $mock_nonce_valid = false;
 $mock_mail_calls = [];

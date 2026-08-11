@@ -173,6 +173,10 @@ if (! function_exists('tmd_pqr_ajax')) {
             wp_send_json_error(['message' => 'La sesión expiró. Recarga la página e inténtalo nuevamente.'], 403);
         }
 
+        if (tmd_form_antispam_should_block()) {
+            wp_send_json_success(['message' => 'Solicitud PQR procesada correctamente.']);
+        }
+
         if (! empty($_POST['website'])) {
             wp_send_json_success(['message' => 'Solicitud PQR procesada correctamente.']);
         }

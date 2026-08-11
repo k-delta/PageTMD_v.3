@@ -74,7 +74,7 @@
           <div class="tmd-footer-accordion-content">
             <div class="tmd-footer-links">
               <a class="tmd-footer-link" href="<?php echo esc_url(home_url('/equipos/')); ?>">Máquinas</a>
-              <a class="tmd-footer-link" href="<?php echo esc_url(home_url('/energia/baterias/')); ?>">Baterías</a>
+              <a class="tmd-footer-link" href="<?php echo esc_url(home_url('/energia/baterias/plomo/')); ?>">Baterías</a>
               <a class="tmd-footer-link" href="<?php echo esc_url(home_url('/energia/cargadores/')); ?>">Cargadores</a>
 </div>
           </div>

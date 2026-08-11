@@ -2697,6 +2697,9 @@ require_once get_stylesheet_directory() . '/inc/tmd-partnerships.php';
 /* TMD_SEO_INCLUDE */
 require_once get_stylesheet_directory() . '/inc/tmd-seo.php';
 
+/* TMD_FORM_ANTISPAM_INCLUDE */
+require_once get_stylesheet_directory() . '/inc/tmd-form-antispam.php';
+
 /* TMD_JOB_APPLICATION_INCLUDE */
 require_once get_stylesheet_directory() . '/inc/tmd-job-application.php';
 

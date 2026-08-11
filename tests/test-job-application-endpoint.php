@@ -84,6 +84,7 @@ function tmd_job_endpoint_assert($condition, $message) {
     }
 }
 
+require_once dirname(__DIR__) . '/wp-content/themes/blocksy-child/inc/tmd-form-antispam.php';
 require_once dirname(__DIR__) . '/wp-content/themes/blocksy-child/inc/tmd-job-application.php';
 
 function tmd_job_endpoint_post() {
@@ -100,9 +101,10 @@ function tmd_job_endpoint_post() {
     ];
 }
 
-function tmd_job_endpoint_run($post, $file_mode = 'valid') {
+function tmd_job_endpoint_run($post, $file_mode = 'valid', $user_agent = 'Mozilla/5.0 Chrome/142.0.0.0 Safari/537.36') {
     $_POST = $post;
     $_SERVER['REMOTE_ADDR'] = '192.0.2.10';
+    $_SERVER['HTTP_USER_AGENT'] = $user_agent;
     $upload_path = '';
 
     if ('missing' === $file_mode) {
@@ -153,6 +155,17 @@ tmd_job_endpoint_assert(1 === count($mock_mail_calls), 'La postulación válida 
 tmd_job_endpoint_assert('rh@tmdual.com' === $mock_mail_calls[0]['to'], 'El destinatario debe ser RH.');
 $sent_attachment = $mock_mail_calls[0]['attachments'][0];
 tmd_job_endpoint_assert(false === file_exists($sent_attachment), 'El adjunto preparado debe eliminarse después de wp_mail.');
+
+$mock_mail_calls = [];
+$mock_transients = [];
+[$response, $upload] = tmd_job_endpoint_run(
+    tmd_job_endpoint_post(),
+    'missing',
+    '"Mozilla/5.0 Chrome/142.0.0.0 Safari/537.36"'
+);
+tmd_job_endpoint_assert($response->success && 200 === $response->status, 'Huella automatizada debe recibir respuesta genérica de éxito.');
+tmd_job_endpoint_assert([] === $mock_mail_calls, 'Huella automatizada no debe invocar wp_mail ni exigir CV.');
+tmd_job_endpoint_assert('' === $upload, 'Bloqueo temprano no debe crear un archivo de prueba para el CV.');
 
 $mock_nonce_valid = false;
 $mock_mail_calls = [];
