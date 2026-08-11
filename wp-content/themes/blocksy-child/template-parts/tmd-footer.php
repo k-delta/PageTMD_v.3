@@ -21,7 +21,17 @@
       <div class="tmd-footer-grid">
 
         <div class="tmd-footer-brand-col">
-          <div class="tmd-footer-brand">Tecnimontacargas</div>
+          <div class="tmd-footer-brand">
+            <img
+              class="tmd-footer-brand-logo"
+              src="https://tecnimontacargas.com/wp-content/uploads/2026/08/logo-blanco.webp"
+              alt="Tecnimontacargas"
+              width="971"
+              height="257"
+              loading="lazy"
+              decoding="async"
+            >
+          </div>
 
           <div class="tmd-footer-socials">
             <a class="tmd-footer-social linkedin" href="https://co.linkedin.com/company/tmdual" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">

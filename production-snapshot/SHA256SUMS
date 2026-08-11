@@ -1,5 +1,5 @@
-00afff972c6dc9e7422f0e55560158f176e301bdda36afbec871ce4a0cd60909 production-snapshot/pages.json
-758032ea9a8f10a6d9a32756fb4249c0ac0f4cd70f4545b280cb9e1bf7236fdb production-snapshot/plugins.json
+00afff972c6dc9e7422f0e55560158f176e301bdda36afbec871ce4a0cd60909  production-snapshot/pages.json
+758032ea9a8f10a6d9a32756fb4249c0ac0f4cd70f4545b280cb9e1bf7236fdb  production-snapshot/plugins.json
 f953fc561ae2593ef0ff6b33687969f68b7e9afc54c0fcdfb5b71ed40ab12f04  production-snapshot/posts.json
 37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570  production-snapshot/snippets.json
 8e83ad905f7f13682033c74c46a5056fbfe57c4f48ab5986a5911292c2137fd3  production-snapshot/themes.json
@@ -22,7 +22,7 @@ b037599b6f9a785986fa10ff815e3a2e56075d3dc5c7f2ed54f24592c2da58b3  wp-content/the
 e3f82ce7a773dfc3752cc7af35cb2c76714c4f654b1798b84533e405cf24f691  wp-content/themes/blocksy-child/assets/css/tmd-energy-catalog.css
 a26f78ce4c3671fe1c642a0af9631c6c17de143f94e380b629b18464ae9203c2  wp-content/themes/blocksy-child/assets/css/tmd-energy-single.css
 703448cb8107af8464bea5a2f2c21dcd37f41aa2d81aafaa6a84f0f2f5f8d40c  wp-content/themes/blocksy-child/assets/css/tmd-equipment-type-guides.css
-aede2055b8e2b00787dd44e9d256384ef6e84c035574baab02fb2ce687e5d747  wp-content/themes/blocksy-child/assets/css/tmd-footer.css
+0ad27e27ef98abeb8614833b51d6a19ceed6425845d811919e092d0cbd26cef8  wp-content/themes/blocksy-child/assets/css/tmd-footer.css
 f78e01a8bc591b3ff7fee6abea4135e0a5caa32da03ab6f6016a7ed0eaca15ae  wp-content/themes/blocksy-child/assets/css/tmd-home-blocks.css
 6ed3f8727c9594f3436f4645d9f486dbfdd536a65daaecd1d03dfa9115c4a9ab  wp-content/themes/blocksy-child/assets/css/tmd-home.css
 1094062e340d9f7dcf930dd10a06403ef4e9812cf6e9915dc48a7d4ef4d99fdb  wp-content/themes/blocksy-child/assets/css/tmd-inventory-api.css
@@ -37,7 +37,7 @@ f6e144fec051491bbbf9f825ce4fd3c704a790ce6de4ce386edc3c824fec1738  wp-content/the
 f62a875ad0d4718c9f8625c60fe24be6ae17a00260a49c8f0d473e0a1220127d  wp-content/themes/blocksy-child/assets/js/tmd-job-application.js
 568fba6fc2d26f77d0f65200c7c6f77bcc84a4e1b848574599da14f99789f0cf  wp-content/themes/blocksy-child/assets/js/tmd-mega-menu.js
 b909909f55e49fb8d1898825735dfd7aab288c06111dad1323dec4bc8f33c7e8  wp-content/themes/blocksy-child/assets/js/tmd-pqr.js
-e46a8586b9da29e6fe833b90ef0eb84a9a6b26a9a5a1fddfa5baf96111690474  wp-content/themes/blocksy-child/functions.php
+fac4c979d03261085ab92dd434b2d22c06b2f7fd824d964be0b7f001f6346e90  wp-content/themes/blocksy-child/functions.php
 4abd41d95c2d86785cd0270ff0757acedaec4bdbb8803583cde8d26257b588cb  wp-content/themes/blocksy-child/inc/tmd-about.php
 b025aff73ee7f1f23ff90e23703e7dcf2b030bfea9656196bbb0af77d7b9185f  wp-content/themes/blocksy-child/inc/tmd-account.php
 6409aca7fc2119d61e1faf80e81465a741507e0a28ec3102b250d8f309011bf5  wp-content/themes/blocksy-child/inc/tmd-blog.php
@@ -45,12 +45,13 @@ a1f42adacc0fd1d9f20285ae34e8f67a253b37666dca4af13337a9738c942d64  wp-content/the
 283572321c27e32725fe61a4afaa8459a65d9a584b667d9a5eae615fc7ebc215  wp-content/themes/blocksy-child/inc/tmd-energy-structure.php
 b172542d811ab382f12352b1e65ca7380a96d50976c8227e41e4c6cb64e45cf7  wp-content/themes/blocksy-child/inc/tmd-equipment-section-redirects.php
 38d935328c9642445c5af38b469b51e967a4f700d6f958bbc00f46075848a8bb  wp-content/themes/blocksy-child/inc/tmd-equipment-type-guides.php
+bdc274db8cd49b309d666bb6d08f5e3abd28e08acc601ee85220416772c48c9d  wp-content/themes/blocksy-child/inc/tmd-form-antispam.php
 39d3dc89c5935c17adf821b6a2330d565a04e99f2911dd13927171d53bcacd6a  wp-content/themes/blocksy-child/inc/tmd-header-equipment-links-fix.php
 ef6028b8f31f1cfdf56463ec12cecf933588450a4237ab8a09bfbd79ac5375c5  wp-content/themes/blocksy-child/inc/tmd-inventory-api.php
-50708a450b3c2370b7fd919b6627833f3a76483f40366b3a8aee8c80d0b9ce04  wp-content/themes/blocksy-child/inc/tmd-job-application.php
+9c5f31faac209e9cd7e13b2448275cfc9ec5042d99eea20e1a4e25e560169b03  wp-content/themes/blocksy-child/inc/tmd-job-application.php
 98f142bc51805a03d99de66f2c4a526f3311cbfdfa402664e941cc87e0098d79  wp-content/themes/blocksy-child/inc/tmd-maintenance.php
 f1833b7f8088f4a38144cfaa6fa1b2118fe77931260548a45fa09bf6f61019c5  wp-content/themes/blocksy-child/inc/tmd-partnerships.php
-39522b965658ecdbe29bc55035bbdd6419d720d44eab2b39fe1575917e1b1333  wp-content/themes/blocksy-child/inc/tmd-pqr.php
+9a112f85dbf7d9c02222328e2b14e4ad117ef3ba2cbd9e086640b033b3365ee4  wp-content/themes/blocksy-child/inc/tmd-pqr.php
 c4cd6ba9d80883ef3515d6fe2732a947c2e4b6eff1a949d32b9933a7b9e16654  wp-content/themes/blocksy-child/inc/tmd-quiz-v3.php
 ceefcf6ab6be3888261ffdd8a6b9c5fe3ffc2eab37aa8a0fad1e373030b41676  wp-content/themes/blocksy-child/inc/tmd-seo.php
 da929ebd54afb8ee94db1be29b23b7cd60f3e671283e268cd6395f45e8747ca5  wp-content/themes/blocksy-child/page-blog.php
@@ -59,7 +60,7 @@ da929ebd54afb8ee94db1be29b23b7cd60f3e671283e268cd6395f45e8747ca5  wp-content/the
 1a48c9d9c039d84711818ba03a731ec878176ae5c6546b395d11a2c332a9d807  wp-content/themes/blocksy-child/single-tmd_equipo.php
 c447d647e44daa1b7e4678807e1d824ab8becb28c28a83f7c5ebbd482ed48db6  wp-content/themes/blocksy-child/style.css
 a6ce90eb9646cf8c3d5a73676e06c0c6437c08072c095edb89ee8c2eb38808bb  wp-content/themes/blocksy-child/template-parts/tmd-contact-rail.php
-d458797f3ab2ef81b2478ceaa3f872f1622ece55548bd14b0eb17dfe04cf4ad7  wp-content/themes/blocksy-child/template-parts/tmd-footer.php
-aab6b7abb36b2471e8a4ca4838da8eb168d79a8d847712dc8faa6afae59efd82  wp-content/themes/blocksy-child/template-parts/tmd-header.php
+095feb255eaccfa6d5c9a4222593f4fc7bcd4d7139fff4dc3f95519f2b859087  wp-content/themes/blocksy-child/template-parts/tmd-footer.php
+8de60d2c50e957acb28b804d7aaeb646c89b6fadd5fac61ee8c73d49643c7ba5  wp-content/themes/blocksy-child/template-parts/tmd-header.php
 9b823d366a684f0ed861f21d96130896223022fbcb1690d65c71f63412652666  wp-content/themes/blocksy-child/theme.json
 fd027590d7e710be74817a8e0c44c4028949cbe3151d49926d9298d3f9a9cf32  docker-compose.prod.yml

@@ -2,7 +2,7 @@
 
 ## Estado
 
-- Aprobado
+- Terminado
 
 ## Contexto
 
@@ -108,6 +108,16 @@
 - Pruebas de integración: PQR y Trabaja con nosotros bloquean antes de `wp_mail()`; Contact Form 7 aborta el correo mediante su hook soportado; los flujos normales conservan una invocación.
 - Validación manual: revisar respuestas genéricas, ausencia de errores PHP y ausencia de archivos temporales al bloquear una postulación.
 - Validación productiva: con autorización explícita, backup verificado, control de sincronización previo, despliegue mínimo, purga de caché, HTTP, logs sin datos personales, prueba bloqueada sin correo y control de sincronización posterior. No se enviarán formularios legítimos de prueba a bandejas reales para esta validación.
+
+## Evidencia de cierre
+
+- [Pruebas focalizadas, 2026-08-11] Pasaron el detector antispam, la integración soportada de Contact Form 7 y los endpoints de PQR y Trabaja con nosotros; los flujos normales simulados conservan una invocación y los bloqueados no invocan correo ni procesan el CV.
+- [Validación local, 2026-08-11] Los PHP relacionados superaron `php -l` y `git diff --check` no reportó errores.
+- [Producción, 2026-08-11] Se verificó el backup en `/opt/tecnimontacargas/backups/20260811-2055-form-antispam`, se desplegaron únicamente los archivos autorizados del child theme y se purgó LiteSpeed.
+- [Producción, 2026-08-11] Contacto, PQR, Trabaja con nosotros y la página de baterías respondieron HTTP 200; las configuraciones públicas de PQR y postulaciones continuaron cargando.
+- [Producción, 2026-08-11] Solicitudes controladas con la huella malformada recibieron respuestas genéricas antes del transporte; los logs recientes no mostraron errores fatales, excepciones no capturadas ni respuestas 500 asociadas.
+- [Producción, 2026-08-11] `./scripts/sync-production.sh --check` confirmó que producción y repositorio coinciden en todas las rutas versionadas.
+- [Límite deliberado] No se envió una solicitud legítima a una bandeja real ni se verificó recepción en buzón, porque el criterio 9 exige no generar correos de prueba adicionales; la conservación del flujo legítimo se comprobó mediante pruebas focalizadas y disponibilidad pública de los formularios.
 
 ## Riesgos
 

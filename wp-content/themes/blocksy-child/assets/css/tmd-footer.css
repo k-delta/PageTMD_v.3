@@ -99,10 +99,13 @@ body.tmd-custom-shell #footer {
 }
 
 .tmd-footer-brand {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -.02em;
   margin-bottom: 24px;
+}
+
+.tmd-footer-brand-logo {
+  display: block;
+  width: min(260px, 100%);
+  height: auto;
 }
 
 .tmd-footer-socials {
