@@ -50,7 +50,7 @@
   {
     "name": "seo-by-rank-math",
     "status": "active",
-    "version": "1.0.275",
+    "version": "1.0.276",
     "auto_update": "on"
   },
   {
@@ -92,13 +92,13 @@
   {
     "name": "woocommerce",
     "status": "active",
-    "version": "11.0.0",
+    "version": "11.0.1",
     "auto_update": "on"
   },
   {
     "name": "wordfence",
     "status": "active",
-    "version": "8.2.2",
+    "version": "9.0.0",
     "auto_update": "on"
   },
   {

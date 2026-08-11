@@ -19,6 +19,9 @@
 
 .codex-tmp
 .playwright-mcp
+/tmdual-images
+/img
+/.vscode
 # Configuration
 wp-config.php
 

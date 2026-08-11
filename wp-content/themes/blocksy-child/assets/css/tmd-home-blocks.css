@@ -12,10 +12,6 @@ body.page-id-47 .ct-container-full {
   padding-top: 0 !important;
 }
 
-body.page-id-47 .kadence-column47_50cecc-16 {
-  display: none !important;
-}
-
 body.page-id-47 .kt-adv-heading47_d357b9-97 {
   max-width: 520px;
   font-family: 'Work Sans', sans-serif !important;
@@ -404,8 +400,8 @@ body.page-id-47 .kb-btn47_23547f-fc:hover {
 
 /* Escala vertical compacta para la portada. */
 body.page-id-47 .tmd-home-shell > .tmd-section {
-  padding-top: 48px;
-  padding-bottom: 48px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 body.page-id-47 .tmd-home-shell > .tmd-section .tmd-section {
@@ -424,15 +420,28 @@ body.page-id-47 .tmd-success-showcase {
   margin-bottom: 0 !important;
 }
 
+body.page-id-47 .kb-row-layout-id47_83d64e-ce > .kt-row-column-wrap {
+  width: min(1180px, calc(100% - 32px));
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 48px 0 !important;
+}
+
 @media (max-width: 781px) {
   body.page-id-47 .tmd-home-shell > .tmd-section {
-    padding-top: 32px;
-    padding-bottom: 32px;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   body.home.page-id-47 .tmd-home-shell .tm-eqd-section,
   body.page-id-47 .tmd-success-showcase,
   body.page-id-47 .tmd-home-services {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
+
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce > .kt-row-column-wrap {
     padding-top: 32px !important;
     padding-bottom: 32px !important;
   }
