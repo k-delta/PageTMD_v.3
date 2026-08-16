@@ -289,6 +289,32 @@
       });
     }
 
+    function syncHomeHeaderBackground() {
+      var hero = document.querySelector('.kb-row-layout-id47_9c201d-d2');
+      var header = root.closest('.tmd-mm-header');
+
+      if (!document.body.classList.contains('home') || !hero) {
+        if (header) {
+          header.classList.remove('tmd-mm-header--hero-overlap');
+        }
+
+        return;
+      }
+
+      if (!header) {
+        return;
+      }
+
+      header.classList.toggle(
+        'tmd-mm-header--hero-overlap',
+        hero.getBoundingClientRect().bottom > header.getBoundingClientRect().bottom
+      );
+    }
+
+    syncHomeHeaderBackground();
+    window.addEventListener('scroll', syncHomeHeaderBackground, { passive: true });
+    window.addEventListener('resize', syncHomeHeaderBackground);
+
     window.addEventListener('resize', scheduleRestore);
   }
 
