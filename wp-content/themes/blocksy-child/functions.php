@@ -2718,3 +2718,112 @@ add_action('wp_enqueue_scripts', function () {
     );
 }, 99);
 /* TMD_ENQUEUE_CHILD_STYLE_END */
+
+/* TMD_MAINTENANCE_CARDS_FIX_JS_START */
+add_action('wp_footer', function () {
+    if (! is_page(506)) {
+        return;
+    }
+    ?>
+    <script id="tmd-maintenance-cards-fix-js">
+      (function () {
+        var labels = [
+          'DISPONIBILIDAD',
+          'SEGURIDAD',
+          'TRAZABILIDAD',
+          'SERVICIO PROGRAMADO',
+          'ATENCION DE FALLAS',
+          'ATENCIÓN DE FALLAS'
+        ];
+
+        function normalizeText(value) {
+          return (value || '')
+            .trim()
+            .replace(/\s+/g, ' ')
+            .toUpperCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        var normalizedLabels = {};
+        labels.forEach(function (label) {
+          normalizedLabels[normalizeText(label)] = true;
+        });
+
+        function findTile(el, labelText) {
+          var node = el;
+
+          for (var i = 0; i < 7 && node; i += 1) {
+            var nodeText = normalizeText(node.textContent);
+
+            if (nodeText === labelText) {
+              var rect = node.getBoundingClientRect();
+
+              if (rect.width >= 40 && rect.height >= 20) {
+                return node;
+              }
+            }
+
+            node = node.parentElement;
+          }
+
+          return el;
+        }
+
+        function findCard(tile) {
+          var node = tile.parentElement;
+
+          for (var i = 0; i < 8 && node; i += 1) {
+            var text = normalizeText(node.textContent || '');
+            var rect = node.getBoundingClientRect();
+
+            if (
+              rect.width > 180 &&
+              text.length > 40 &&
+              (
+                node.matches('article') ||
+                /card|tarjeta|service|servicio|benefit|beneficio|maintenance|mantenimiento/i.test(node.className || '')
+              )
+            ) {
+              return node;
+            }
+
+            node = node.parentElement;
+          }
+
+          return tile.closest('article, .wp-block-column, .wp-block-group, .kt-inside-inner-col, [class*="card"]');
+        }
+
+        function applyFix() {
+          var nodes = Array.prototype.slice.call(document.querySelectorAll('body.page-id-506 .entry-content *'));
+
+          nodes.forEach(function (el) {
+            var text = normalizeText(el.textContent);
+
+            if (!normalizedLabels[text]) {
+              return;
+            }
+
+            var tile = findTile(el, text);
+            var card = findCard(tile);
+
+            tile.classList.add('tmd-maintenance-compact-tile');
+
+            if (card) {
+              card.classList.add('tmd-maintenance-compact-card');
+            }
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', applyFix);
+        } else {
+          applyFix();
+        }
+
+        window.addEventListener('load', applyFix);
+      })();
+    </script>
+    <?php
+}, 100);
+/* TMD_MAINTENANCE_CARDS_FIX_JS_END */

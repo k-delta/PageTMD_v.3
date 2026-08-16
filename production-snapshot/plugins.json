@@ -38,7 +38,7 @@
   {
     "name": "kadence-blocks",
     "status": "active",
-    "version": "3.7.9",
+    "version": "3.7.9.1",
     "auto_update": "on"
   },
   {
@@ -110,7 +110,7 @@
   {
     "name": "wps-hide-login",
     "status": "active",
-    "version": "1.9.18",
+    "version": "1.9.19",
     "auto_update": "on"
   }
 ]
