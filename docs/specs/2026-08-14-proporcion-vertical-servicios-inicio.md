@@ -2,7 +2,7 @@
 
 ## Estado
 
-- Aprobado
+- Terminado
 
 ## Contexto
 
@@ -89,3 +89,10 @@ No aplica.
 ## Decisiones pendientes
 
 - [Solicitud, 2026-08-14] El usuario aprobó la implementación local. Un despliegue a producción continúa requiriendo autorización explícita posterior.
+
+## Evidencia de implementación
+
+- [Validación local, 2026-08-16] Chrome en `1440x900`: la sección pasó de 851 px a 604 px y las tres tarjetas de 452 px a 336 px; conservaron textos y enlaces, con `min-height: 0`, sin overflow ni errores de consola.
+- [Validación local, 2026-08-16] Chrome en `390x900`: la sección pasó de 1553 px a 1275 px; las tarjetas conservaron contenido completo, altura automática y ausencia de overflow y errores de consola.
+- [Revisión, 2026-08-16] El reporte consolidado terminó `READY`, sin hallazgos generales ni especializados.
+- Producción no fue modificada ni validada; continúa pendiente de una autorización explícita de despliegue.
