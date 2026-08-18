@@ -37,31 +37,54 @@ Secrets requeridos:
 
 No guardar estos valores en archivos del repositorio.
 
+## Requisitos del servidor
+
+El host de producción necesita únicamente para el flujo de código:
+
+- `git`
+- `docker`
+- `curl`
+
+La validación PHP se ejecuta con el runtime del contenedor `tmd_ols_wordpress`; no requiere instalar PHP adicional en Alpine.
+
+El proyecto Compose productivo se llama `pagetmd_v3`. El `docker-compose.prod.yml` fija este nombre para que los comandos operen sobre los contenedores existentes aunque se ejecuten desde `/opt/tecnimontacargas`.
+
 ## Preparación única del servidor
 
 Antes del primer deploy con este modelo:
 
 1. Crear un backup verificable del stack y del código propio actual.
-2. Asegurar que `/opt/tecnimontacargas/app` sea un checkout limpio de este repositorio.
-3. Mantener el `.env` productivo únicamente en el servidor.
+2. Asegurar que `/opt/tecnimontacargas/app` sea un checkout limpio de este repositorio en `main`.
+3. Mantener `/opt/tecnimontacargas/.env.prod` únicamente en el servidor.
 4. Actualizar `/opt/tecnimontacargas/docker-compose.prod.yml` con la versión aprobada del repositorio.
-5. Validar la configuración:
+5. Validar la configuración cargando explícitamente el archivo de entorno:
 
 ```bash
 docker compose \
+  --env-file /opt/tecnimontacargas/.env.prod \
   -f /opt/tecnimontacargas/docker-compose.prod.yml \
   config
 ```
 
-6. Recrear únicamente el servicio WordPress para aplicar los bind mounts:
+6. Confirmar que Compose identifica el stack existente:
 
 ```bash
 docker compose \
+  --env-file /opt/tecnimontacargas/.env.prod \
   -f /opt/tecnimontacargas/docker-compose.prod.yml \
-  up -d wordpress
+  ps
 ```
 
-7. Confirmar que los cinco componentes propios aparecen montados read-only y que el sitio responde correctamente.
+7. Recrear únicamente el servicio WordPress para aplicar los bind mounts:
+
+```bash
+docker compose \
+  --env-file /opt/tecnimontacargas/.env.prod \
+  -f /opt/tecnimontacargas/docker-compose.prod.yml \
+  up -d --no-deps wordpress
+```
+
+8. Confirmar que los cinco componentes propios aparecen montados read-only y que el sitio responde correctamente.
 
 Esta recreación es necesaria solo al adoptar o cambiar los mounts; los deploys de código posteriores no requieren recrear el contenedor.
 
@@ -77,9 +100,9 @@ El script:
 
 1. Rechaza el deploy si el checkout productivo tiene modificaciones locales.
 2. Ejecuta `git fetch --prune origin`.
-3. Verifica que el SHA exista.
+3. Verifica que el SHA exista y pertenezca al historial de `origin/main`.
 4. Crea un worktree temporal del SHA objetivo.
-5. Ejecuta `php -l` sobre todo el PHP de los componentes propios antes de publicarlo.
+5. Ejecuta `php -l` dentro de `tmd_ols_wordpress` sobre todo el PHP de los componentes propios antes de publicarlo.
 6. Cambia el checkout productivo al SHA objetivo mediante `git checkout --detach`.
 7. Ejecuta un health check HTTP sobre el dominio canónico.
 8. Si falla el health check, restaura automáticamente el SHA anterior.
@@ -118,11 +141,7 @@ No dejar cambios manuales sin reconciliar.
 
 ## Validaciones
 
-Antes de mergear, ejecutar las validaciones focalizadas correspondientes. Para PHP:
-
-```bash
-php -l ruta/al/archivo.php
-```
+Antes de mergear, ejecutar las validaciones focalizadas correspondientes. Para PHP, usar un runtime compatible con producción.
 
 Después del deploy:
 
@@ -133,7 +152,7 @@ Después del deploy:
 
 ## Rollback
 
-Para rollback explícito, ejecutar nuevamente el workflow seleccionando un commit estable anterior o invocar en el servidor:
+Para rollback explícito, ejecutar nuevamente el workflow seleccionando un commit estable anterior que pertenezca a `main` o invocar en el servidor:
 
 ```bash
 /opt/tecnimontacargas/app/scripts/deploy-production.sh <sha-estable>
