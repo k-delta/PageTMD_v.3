@@ -214,6 +214,13 @@ add_action('wp_ajax_nopriv_tmd_quiz_v3_send_results', 'tmd_quiz_v3_ajax_send_res
 if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
     function tmd_quiz_equipo_ideal_v3_shortcode($atts = []) {
         $inventory = tmd_quiz_v3_inventory_items();
+        $context_images = [
+            1 => plugin_dir_url(__FILE__) . 'assets/images/quiz/quiz-operation.webp',
+            2 => plugin_dir_url(__FILE__) . 'assets/images/quiz/quiz-space.webp',
+            3 => plugin_dir_url(__FILE__) . 'assets/images/quiz/quiz-load.webp',
+            4 => plugin_dir_url(__FILE__) . 'assets/images/quiz/quiz-capacity.webp',
+            5 => plugin_dir_url(__FILE__) . 'assets/images/quiz/quiz-usage.webp',
+        ];
         ob_start();
         ?>
         <style>
@@ -418,6 +425,7 @@ if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
           }
 
           .tmd-q-side{
+            --tmd-q-side-image:linear-gradient(135deg,#128CEB,#262E4F);
             min-height:560px;
             border-radius:22px;
             overflow:hidden;
@@ -425,7 +433,10 @@ if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
             background:
               linear-gradient(180deg,rgba(18,140,235,.16),rgba(38,46,79,.92)),
               radial-gradient(circle at 24% 22%,rgba(255,195,60,.38),transparent 30%),
-              linear-gradient(135deg,#128CEB,#262E4F);
+              var(--tmd-q-side-image);
+            background-position:center;
+            background-repeat:no-repeat;
+            background-size:cover;
             display:flex;
             align-items:flex-end;
             box-shadow:0 24px 70px rgba(38,46,79,.18);
@@ -922,7 +933,7 @@ if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
                 </div>
               </main>
 
-              <aside class="tmd-q-side">
+              <aside class="tmd-q-side" data-side-panel>
                 <div class="tmd-q-side-inner">
                   <span class="tmd-q-badge">Contexto de operación</span>
                   <h3 data-side-title>Encuentra el equipo ideal</h3>
@@ -956,14 +967,14 @@ if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
 
           let recommendations = [];
 
-          const side = {
-            1:['Aplicación principal','Define la familia base del equipo según la operación.'],
-            2:['Restricciones del espacio','El ancho del pasillo y la altura de paso definen qué equipos pueden operar físicamente.'],
-            3:['Propiedades de la carga','El peso y la altura de elevación definen capacidad, mástil y estabilidad.'],
-            4:['Capacidad residual','El peso en el nivel más alto exige revisar capacidad residual.'],
-            5:['Intensidad de uso','Las horas de trabajo influyen en autonomía, batería y robustez.'],
-            6:['Resultado técnico inicial','La recomendación final debe validarse con un asesor.']
-          };
+          const side = <?php echo wp_json_encode([
+              1 => ['Aplicación principal', 'Define la familia base del equipo según la operación.', $context_images[1]],
+              2 => ['Restricciones del espacio', 'El ancho del pasillo y la altura de paso definen qué equipos pueden operar físicamente.', $context_images[2]],
+              3 => ['Propiedades de la carga', 'El peso y la altura de elevación definen capacidad, mástil y estabilidad.', $context_images[3]],
+              4 => ['Capacidad residual', 'El peso en el nivel más alto exige revisar capacidad residual.', $context_images[4]],
+              5 => ['Intensidad de uso', 'Las horas de trabajo influyen en autonomía, batería y robustez.', $context_images[5]],
+              6 => ['Resultado técnico inicial', 'La recomendación final debe validarse con un asesor.', $context_images[5]],
+          ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
           function fmt(num){return Number(num).toLocaleString('es-CO');}
 
@@ -1149,6 +1160,7 @@ if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
             const sc = side[step] || side[1];
             root.querySelector('[data-side-title]').textContent = sc[0];
             root.querySelector('[data-side-text]').textContent = sc[1];
+            root.querySelector('[data-side-panel]').style.setProperty('--tmd-q-side-image', 'url("' + sc[2] + '")');
 
             if(step === 6) renderResult();
 

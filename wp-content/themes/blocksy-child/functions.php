@@ -52,6 +52,22 @@ add_action('wp_body_open', function () {
 
 add_filter('blocksy:header:render', '__return_false', 20);
 
+/* TMD_CONTACT_RAIL_START */
+add_action('wp_enqueue_scripts', function () {
+    $contact_rail_css = get_stylesheet_directory() . '/assets/css/tmd-contact-rail.css';
+    wp_enqueue_style(
+        'tmd-contact-rail',
+        get_stylesheet_directory_uri() . '/assets/css/tmd-contact-rail.css',
+        ['tmd-tabler-icons'],
+        file_exists($contact_rail_css) ? filemtime($contact_rail_css) : '1.0.0'
+    );
+}, 42);
+
+add_action('wp_body_open', function () {
+    get_template_part('template-parts/tmd-contact-rail');
+}, 5);
+/* TMD_CONTACT_RAIL_END */
+
 /* TMD_FOOTER_START */
 add_action('wp_enqueue_scripts', function () {
     $footer_css = get_stylesheet_directory() . '/assets/css/tmd-footer.css';
@@ -2391,8 +2407,8 @@ body.page-id-57 .page-title {
 
 /* Ajuste del hero real de la página */
 body.page-id-57 .tmd-page-hero {
-  padding-top: 72px !important;
-  padding-bottom: 48px !important;
+  padding-top: 64px !important;
+  padding-bottom: 40px !important;
 }
 
 body.page-id-57 .tmd-page-hero h1 {
@@ -2408,11 +2424,31 @@ body.page-id-57 .tmd-page-hero .tmd-contact-source-box-server {
 /* Ajuste de separación entre hero y asesores */
 body.page-id-57 .tmd-dark-band {
   margin-top: 0 !important;
+  padding-top: 48px !important;
+  padding-bottom: 48px !important;
 }
 
 /* Ajuste suave del formulario para que no quede tan pegado al final */
 body.page-id-57 .tmd-contact-grid {
-  padding-bottom: 96px !important;
+  padding-top: 48px !important;
+  padding-bottom: 48px !important;
+}
+
+@media (max-width: 640px) {
+  body.page-id-57 .tmd-page-hero {
+    padding-top: 40px !important;
+    padding-bottom: 32px !important;
+  }
+
+  body.page-id-57 .tmd-dark-band {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
+
+  body.page-id-57 .tmd-contact-grid {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
 }
 CSS;
 
@@ -2575,7 +2611,7 @@ require_once get_stylesheet_directory() . '/inc/tmd-inventory-api.php';
 
 /* TMD_LOGO_CAROUSEL_AUTOPLAY_START */
 add_action('wp_footer', function () {
-    if (is_admin()) {
+    if (is_admin() || ! is_front_page()) {
         return;
     }
     ?>
@@ -2583,82 +2619,12 @@ add_action('wp_footer', function () {
     (function () {
       const INTERVAL_MS = 3000;
 
-      function textOf(el) {
-        return (el.innerText || el.textContent || '').toLowerCase();
-      }
-
-      function hasBrandLogo(el) {
-        const txt = textOf(el);
-        if (
-          txt.includes('jungheinrich') ||
-          txt.includes('crown') ||
-          txt.includes('zowell')
-        ) {
-          return true;
-        }
-
-        const imgs = el.querySelectorAll('img');
-        for (const img of imgs) {
-          const alt = (img.getAttribute('alt') || '').toLowerCase();
-          const src = (img.getAttribute('src') || '').toLowerCase();
-
-          if (
-            alt.includes('jungheinrich') ||
-            alt.includes('crown') ||
-            alt.includes('zowell') ||
-            src.includes('jungheinrich') ||
-            src.includes('crown') ||
-            src.includes('zowell')
-          ) {
-            return true;
-          }
-        }
-
-        return false;
-      }
-
       function findCarousel() {
-        const candidates = Array.from(document.querySelectorAll(
-          'section, .wp-block-group, .swiper, .splide, .tmd-brand-carousel, .tmd-logos-carousel, .tmd-marcas-carousel, div'
-        ));
-
-        return candidates.find(function (el) {
-          if (!hasBrandLogo(el)) {
-            return false;
-          }
-
-          const buttons = el.querySelectorAll('button, a, [role="button"]');
-          return buttons.length >= 2;
-        });
+        return document.querySelector('[data-tmd-brand-carousel]');
       }
 
       function findNextButton(carousel) {
-        const controls = Array.from(carousel.querySelectorAll('button, a, [role="button"]'));
-
-        const rightLike = controls.find(function (btn) {
-          const label = (
-            (btn.getAttribute('aria-label') || '') + ' ' +
-            (btn.getAttribute('title') || '') + ' ' +
-            (btn.className || '') + ' ' +
-            textOf(btn)
-          ).toLowerCase();
-
-          return (
-            label.includes('next') ||
-            label.includes('siguiente') ||
-            label.includes('right') ||
-            label.includes('arrow-right') ||
-            label.includes('chevron-right') ||
-            label.includes('swiper-button-next') ||
-            label.includes('splide__arrow--next')
-          );
-        });
-
-        if (rightLike) {
-          return rightLike;
-        }
-
-        return controls[controls.length - 1] || null;
+        return carousel.querySelector('[data-brand-next]');
       }
 
       function initLogoCarouselAutoplay() {
@@ -2730,3 +2696,134 @@ require_once get_stylesheet_directory() . '/inc/tmd-partnerships.php';
 
 /* TMD_SEO_INCLUDE */
 require_once get_stylesheet_directory() . '/inc/tmd-seo.php';
+
+/* TMD_FORM_ANTISPAM_INCLUDE */
+require_once get_stylesheet_directory() . '/inc/tmd-form-antispam.php';
+
+/* TMD_JOB_APPLICATION_INCLUDE */
+require_once get_stylesheet_directory() . '/inc/tmd-job-application.php';
+
+/* TMD_PQR_INCLUDE */
+require_once get_stylesheet_directory() . '/inc/tmd-pqr.php';
+
+/* TMD_ENQUEUE_CHILD_STYLE_START */
+add_action('wp_enqueue_scripts', function () {
+    $style_path = get_stylesheet_directory() . '/style.css';
+
+    wp_enqueue_style(
+        'tmd-blocksy-child-style',
+        get_stylesheet_uri(),
+        [],
+        file_exists($style_path) ? filemtime($style_path) : wp_get_theme()->get('Version')
+    );
+}, 99);
+/* TMD_ENQUEUE_CHILD_STYLE_END */
+
+/* TMD_MAINTENANCE_CARDS_FIX_JS_START */
+add_action('wp_footer', function () {
+    if (! is_page(506)) {
+        return;
+    }
+    ?>
+    <script id="tmd-maintenance-cards-fix-js">
+      (function () {
+        var labels = [
+          'DISPONIBILIDAD',
+          'SEGURIDAD',
+          'TRAZABILIDAD',
+          'SERVICIO PROGRAMADO',
+          'ATENCION DE FALLAS',
+          'ATENCIÓN DE FALLAS'
+        ];
+
+        function normalizeText(value) {
+          return (value || '')
+            .trim()
+            .replace(/\s+/g, ' ')
+            .toUpperCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        var normalizedLabels = {};
+        labels.forEach(function (label) {
+          normalizedLabels[normalizeText(label)] = true;
+        });
+
+        function findTile(el, labelText) {
+          var node = el;
+
+          for (var i = 0; i < 7 && node; i += 1) {
+            var nodeText = normalizeText(node.textContent);
+
+            if (nodeText === labelText) {
+              var rect = node.getBoundingClientRect();
+
+              if (rect.width >= 40 && rect.height >= 20) {
+                return node;
+              }
+            }
+
+            node = node.parentElement;
+          }
+
+          return el;
+        }
+
+        function findCard(tile) {
+          var node = tile.parentElement;
+
+          for (var i = 0; i < 8 && node; i += 1) {
+            var text = normalizeText(node.textContent || '');
+            var rect = node.getBoundingClientRect();
+
+            if (
+              rect.width > 180 &&
+              text.length > 40 &&
+              (
+                node.matches('article') ||
+                /card|tarjeta|service|servicio|benefit|beneficio|maintenance|mantenimiento/i.test(node.className || '')
+              )
+            ) {
+              return node;
+            }
+
+            node = node.parentElement;
+          }
+
+          return tile.closest('article, .wp-block-column, .wp-block-group, .kt-inside-inner-col, [class*="card"]');
+        }
+
+        function applyFix() {
+          var nodes = Array.prototype.slice.call(document.querySelectorAll('body.page-id-506 .entry-content *'));
+
+          nodes.forEach(function (el) {
+            var text = normalizeText(el.textContent);
+
+            if (!normalizedLabels[text]) {
+              return;
+            }
+
+            var tile = findTile(el, text);
+            var card = findCard(tile);
+
+            tile.classList.add('tmd-maintenance-compact-tile');
+
+            if (card) {
+              card.classList.add('tmd-maintenance-compact-card');
+            }
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', applyFix);
+        } else {
+          applyFix();
+        }
+
+        window.addEventListener('load', applyFix);
+      })();
+    </script>
+    <?php
+}, 100);
+/* TMD_MAINTENANCE_CARDS_FIX_JS_END */

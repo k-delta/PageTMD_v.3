@@ -1,0 +1,23 @@
+{
+  "agent": "database_reviewer",
+  "cases": {
+    "positive": {
+      "change": "Un foreach ejecuta una consulta WPDB por cada equipo recuperado.",
+      "path": "wp-content/themes/blocksy-child/inc/tmd-inventory-api.php",
+      "line": 120,
+      "evidence": "Dentro de foreach ($equipment as $item), la línea ejecuta $wpdb->get_results() usando el identificador del elemento.",
+      "expected_outcome": "FINDING",
+      "reason": "La causa es un patrón N+1 SQL propiedad del revisor de base de datos."
+    },
+    "negative": {
+      "change": "Una consulta preparada y acotada recupera todos los identificadores requeridos en un solo acceso.",
+      "expected_outcome": "NO_FINDINGS",
+      "reason": "La consulta preserva parámetros, límites e integridad."
+    },
+    "false_positive": {
+      "change": "Un bucle hace peticiones HTTP repetidas sin tocar SQL ni almacenamiento.",
+      "expected_outcome": "NO_FINDINGS",
+      "reason": "El coste no SQL pertenece al revisor de rendimiento."
+    }
+  }
+}

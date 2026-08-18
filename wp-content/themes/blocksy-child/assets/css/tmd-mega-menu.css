@@ -38,6 +38,67 @@ body.tmd-custom-shell header.ct-header {
   box-shadow: 0 8px 24px rgba(0,0,0,.12);
 }
 
+/* Portada de Inicio: el video ocupa la primera vista y el header se superpone. */
+body.home .tmd-mm-header {
+  position: fixed;
+}
+
+body.home .kb-row-layout-id47_9c201d-d2 {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+body.home .kb-row-layout-id47_9c201d-d2 .kb-blocks-bg-video-container,
+body.home .kb-row-layout-id47_9c201d-d2 .kb-blocks-bg-video {
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+body.home .kb-row-layout-id47_9c201d-d2 .kb-blocks-bg-video-container {
+  overflow: hidden;
+}
+
+body.home .kb-row-layout-id47_9c201d-d2 .kb-blocks-bg-video {
+  object-fit: cover;
+}
+
+body.home .kb-row-layout-id47_9c201d-d2 > .kt-row-layout-overlay {
+  opacity: 1;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgb(38 46 79 / 78%) 0%, rgb(38 46 79 / 42%) 7%, rgb(38 46 79 / 12%) 12%, transparent 15%),
+    linear-gradient(to top, #262e4f 0%, rgb(38 46 79 / 82%) 10%, rgb(38 46 79 / 28%) 22%, transparent 30%),
+    rgb(21 32 61 / 18%);
+}
+
+body.home .kb-row-layout-id47_9c201d-d2 > .kt-row-column-wrap {
+  position: relative;
+  z-index: 2;
+}
+
+body.home .kb-row-layout-id47_9c201d-d2 .kt-adv-heading47_d357b9-97 {
+  text-shadow: 0 1px 2px rgb(0 0 0 / 35%) !important;
+}
+
+@media (max-width: 767px) {
+  body.home .kb-row-layout-id47_9c201d-d2 > .kt-row-layout-overlay {
+    background:
+      linear-gradient(to bottom, rgb(38 46 79 / 80%) 0%, rgb(38 46 79 / 42%) 7%, rgb(38 46 79 / 12%) 12%, transparent 15%),
+      linear-gradient(to top, #262e4f 0%, rgb(38 46 79 / 82%) 10%, rgb(38 46 79 / 28%) 22%, transparent 30%),
+      rgb(21 32 61 / 18%);
+  }
+}
+
+body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
+  background: transparent;
+  box-shadow: none;
+}
+
 .tmd-mm-logo {
   display: flex;
   align-items: center;
@@ -243,6 +304,36 @@ body.tmd-custom-shell header.ct-header {
   background:
     radial-gradient(circle at 20% 20%, rgba(255,195,60,.45), transparent 28%),
     radial-gradient(circle at 80% 70%, rgba(18,140,235,.25), transparent 30%);
+}
+
+.tmd-mm-img--compania {
+  background-image: url('../images/mega-menu/menu-company.webp');
+}
+
+.tmd-mm-img--socios-atencion {
+  background-image: url('../images/mega-menu/menu-partners-support.webp?v=20260814-190000');
+}
+
+.tmd-mm-img--legal {
+  background-image: url('../images/mega-menu/menu-legal.webp');
+}
+
+.tmd-mm-img--maintenance {
+  background-image: url('../images/mega-menu/menu-maintenance.webp?v=20260816-190000');
+}
+
+.tmd-mm-img--compania,
+.tmd-mm-img--socios-atencion,
+.tmd-mm-img--legal,
+.tmd-mm-img--maintenance {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#tmd-mm-panel-nosotros .tmd-mm-img,
+#tmd-mm-panel-mant .tmd-mm-img {
+  height: 150px;
 }
 
 .tmd-mm-title {
@@ -451,10 +542,98 @@ body.tmd-custom-shell header.ct-header {
   .tmd-mm-img {
     height: 72px;
   }
+
+  #tmd-mm-panel-nosotros .tmd-mm-img,
+  #tmd-mm-panel-mant .tmd-mm-img {
+    height: 110px;
+  }
 }
 
 @media (max-width: 782px) {
   .admin-bar .tmd-mm-header {
     top: 46px;
+  }
+}
+
+/* Ilustraciones originales de Equipos y Energía. */
+#tmd-mm-panel-equipos .tmd-mm-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 112px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  outline: 0;
+  overflow: visible;
+}
+
+#tmd-mm-panel-equipos .tmd-mm-img::after,
+#tmd-mm-panel-energia .tmd-mm-img::after {
+  display: none;
+}
+
+#tmd-mm-panel-equipos .tmd-mm-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 112px;
+  object-fit: contain;
+  object-position: center;
+}
+
+#tmd-mm-panel-energia .tmd-mm-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 132px;
+  padding: 0;
+  margin: 0 0 12px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+#tmd-mm-panel-energia .tmd-mm-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 132px;
+  object-fit: contain;
+  object-position: center;
+}
+
+@media (max-width: 1024px) {
+  #tmd-mm-panel-equipos .tmd-mm-img,
+  #tmd-mm-panel-equipos .tmd-mm-img img {
+    height: 96px;
+    max-height: 96px;
+  }
+
+  #tmd-mm-panel-energia .tmd-mm-img,
+  #tmd-mm-panel-energia .tmd-mm-img img {
+    height: 108px;
+    max-height: 108px;
+  }
+}
+
+@media (max-width: 767px) {
+  #tmd-mm-panel-equipos .tmd-mm-img,
+  #tmd-mm-panel-equipos .tmd-mm-img img {
+    height: 86px;
+    max-height: 86px;
+  }
+
+  #tmd-mm-panel-energia .tmd-mm-img,
+  #tmd-mm-panel-energia .tmd-mm-img img {
+    height: 92px;
+    max-height: 92px;
   }
 }

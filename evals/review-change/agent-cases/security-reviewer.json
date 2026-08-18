@@ -1,0 +1,23 @@
+{
+  "agent": "security_reviewer",
+  "cases": {
+    "positive": {
+      "change": "Una acción AJAX escribe opciones sin comprobar nonce ni capability.",
+      "path": "wp-content/plugins/tm-popup-bienvenida/admin.php",
+      "line": 41,
+      "evidence": "La función llama update_option() con $_POST antes de cualquier comprobación de nonce o current_user_can().",
+      "expected_outcome": "FINDING",
+      "reason": "Existe una ruta explotable para una escritura no autorizada."
+    },
+    "negative": {
+      "change": "La acción comprueba nonce y capability, valida la entrada y escapa la salida.",
+      "expected_outcome": "NO_FINDINGS",
+      "reason": "Los controles de seguridad correspondientes están presentes."
+    },
+    "false_positive": {
+      "change": "Una consulta preparada usa un entero validado y no concatena entrada controlable.",
+      "expected_outcome": "NO_FINDINGS",
+      "reason": "No debe marcarse una consulta parametrizada como inyección."
+    }
+  }
+}

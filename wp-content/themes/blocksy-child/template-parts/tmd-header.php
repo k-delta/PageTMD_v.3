@@ -7,6 +7,7 @@ $equipos = [
     [
         'title' => 'Estibadores y Apiladores',
         'url' => home_url('/equipos/tipos/estibadores-y-apiladores/'),
+        'image' => 'menu-estibadores-apiladores.webp',
         'items' => [
             ['label' => 'Estibadores manuales', 'url' => home_url('/equipos/tipos/estibadores-manuales/')],
             ['label' => 'Estibadores eléctricos', 'url' => home_url('/equipos/tipos/estibadores-electricos/')],
@@ -16,6 +17,7 @@ $equipos = [
     [
         'title' => 'Reach / Retráctiles',
         'url' => home_url('/equipos/tipos/reach-retractiles/'),
+        'image' => 'menu-reach-retractiles.webp',
         'items' => [
             ['label' => 'Retráctiles de mástil móvil', 'url' => home_url('/equipos/tipos/retractiles-de-mastil-movil/')],
             ['label' => 'Pantógrafo sencillo', 'url' => home_url('/equipos/tipos/pantografo-sencillo/')],
@@ -25,6 +27,7 @@ $equipos = [
     [
         'title' => 'Tomapedidos',
         'url' => home_url('/equipos/tipos/tomapedidos/'),
+        'image' => 'menu-tomapedidos.webp',
         'items' => [
             ['label' => 'Tomapedidos de alto nivel', 'url' => home_url('/equipos/tipos/tomapedidos-de-alto-nivel/')],
         ],
@@ -32,6 +35,7 @@ $equipos = [
     [
         'title' => 'Contrabalanceados',
         'url' => home_url('/equipos/tipos/contrabalanceados/'),
+        'image' => 'menu-contrabalanceados.webp',
         'items' => [
             ['label' => 'Eléctricos de 3 ruedas', 'url' => home_url('/equipos/tipos/electricos-de-3-ruedas/')],
             ['label' => 'Eléctricos de 4 ruedas', 'url' => home_url('/equipos/tipos/electricos-de-4-ruedas/')],
@@ -43,6 +47,7 @@ $energia = [
     [
         'title' => 'Baterías de plomo',
         'url' => home_url('/energia/baterias/plomo/'),
+        'image' => 'energy-baterias-plomo.webp',
         'items' => [
             ['label' => 'Baterías inundadas', 'url' => home_url('/energia/baterias/plomo/')],
         ],
@@ -50,6 +55,7 @@ $energia = [
     [
         'title' => 'BMS',
         'url' => home_url('/energia/bms/'),
+        'image' => 'energy-bms.webp',
         'items' => [
             ['label' => 'Monitoreo de batería', 'url' => home_url('/energia/bms/#monitoreo-bateria')],
             ['label' => 'Estado y rendimiento', 'url' => home_url('/energia/bms/#estado-rendimiento')],
@@ -59,6 +65,7 @@ $energia = [
     [
         'title' => 'Cargadores',
         'url' => home_url('/energia/cargadores/'),
+        'image' => 'energy-cargadores.png',
         'items' => [
             ['label' => 'Para baterías de plomo-ácido', 'url' => home_url('/energia/cargadores/')],
         ],
@@ -106,7 +113,7 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
 
       <a class="tmd-mm-logo" href="<?php echo esc_url(home_url('/')); ?>" aria-label="Tecnimontacargas">
         <img
-          src="https://tecnimontacargas.com/wp-content/uploads/2026/07/logo-blanco.png"
+          src="https://tecnimontacargas.com/wp-content/uploads/2026/08/logo-blanco.webp"
           alt="Tecnimontacargas"
           width="190"
           height="50"
@@ -158,7 +165,9 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
       <div class="tmd-mm-inner tmd-mm-grid-4">
         <?php foreach ($equipos as $item) : ?>
           <div class="tmd-mm-card">
-            <a class="tmd-mm-img" href="<?php echo esc_url($item['url']); ?>" aria-label="<?php echo esc_attr($item['title']); ?>"></a>
+            <a class="tmd-mm-img" href="<?php echo esc_url($item['url']); ?>" aria-label="<?php echo esc_attr($item['title']); ?>">
+              <img src="<?php echo esc_url(get_stylesheet_directory_uri() . '/assets/img/mega-menu/' . $item['image']); ?>" alt="" decoding="async">
+            </a>
             <a class="tmd-mm-title" href="<?php echo esc_url($item['url']); ?>"><?php echo esc_html($item['title']); ?></a>
             <ul class="tmd-mm-items">
               <?php foreach ($item['items'] as $subitem) : ?>
@@ -180,7 +189,9 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
       <div class="tmd-mm-inner tmd-mm-grid-4">
         <?php foreach ($energia as $item) : ?>
           <div class="tmd-mm-card">
-            <a class="tmd-mm-img" href="<?php echo esc_url($item['url']); ?>" aria-label="<?php echo esc_attr($item['title']); ?>"></a>
+            <a class="tmd-mm-img" href="<?php echo esc_url($item['url']); ?>" aria-label="<?php echo esc_attr($item['title']); ?>">
+              <img src="<?php echo esc_url(get_stylesheet_directory_uri() . '/assets/img/mega-menu/' . $item['image']); ?>" alt="" decoding="async">
+            </a>
             <a class="tmd-mm-title" href="<?php echo esc_url($item['url']); ?>"><?php echo esc_html($item['title']); ?></a>
             <?php if (! empty($item['description'])) : ?>
               <p class="tmd-mm-description"><?php echo esc_html($item['description']); ?></p>
@@ -202,7 +213,7 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
           <div class="tmd-mm-panel" id="tmd-mm-panel-mant">
         <div class="tmd-mm-inner tmd-mm-grid-3">
           <div class="tmd-mm-card">
-            <a class="tmd-mm-img" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>" aria-label="Mantenimientos"></a>
+            <a class="tmd-mm-img tmd-mm-img--maintenance" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>" aria-label="Mantenimientos"></a>
             <a class="tmd-mm-title" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>">Mantenimientos</a>
             <ul class="tmd-mm-items">
               <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-preventivo/')); ?>">Preventivo</a></li>
@@ -216,7 +227,7 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
       <div class="tmd-mm-inner tmd-mm-grid-3">
         <?php foreach ($nosotros as $col) : ?>
           <div class="tmd-mm-card">
-            <span class="tmd-mm-img"></span>
+            <span class="tmd-mm-img tmd-mm-img--<?php echo esc_attr(sanitize_title($col['title'])); ?>"></span>
             <a class="tmd-mm-title" href="<?php echo esc_url($col['url']); ?>"><?php echo esc_html($col['title']); ?></a>
             <ul class="tmd-mm-items">
               <?php foreach ($col['items'] as $link) : ?>

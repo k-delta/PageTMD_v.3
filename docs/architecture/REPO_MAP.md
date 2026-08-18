@@ -134,12 +134,13 @@ Firestore
 listarEquiposWordpress
    ↓
 tmd-inventory-api.php
-   ↓
-HTML de tarjetas
-   ↓
-tmd-inventory-api.js
-   ├── filtros
-   └── paginación
+   ├── hasta 12 tarjetas HTML iniciales
+   └── modelo público JSON del catálogo
+        ↓
+   tmd-inventory-api.js
+        ├── filtros
+        ├── paginación
+        └── solo tarjetas de la página visible en el DOM
 ```
 
 ### Equipos destacados

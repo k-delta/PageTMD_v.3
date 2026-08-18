@@ -1,0 +1,21 @@
+# Repository-scoped Codex configuration.
+# Hooks are intentionally defined only in .codex/hooks.json.
+
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "live"
+project_doc_max_bytes = 65536
+
+[sandbox_workspace_write]
+network_access = false
+exclude_slash_tmp = true
+exclude_tmpdir_env_var = true
+
+[features]
+hooks = true
+multi_agent = true
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 4
+interrupt_message = true

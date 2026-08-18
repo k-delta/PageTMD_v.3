@@ -72,7 +72,7 @@ ssh -o BatchMode=yes "$SSH_TARGET" \
   jq 'sort_by(.name)' >"$TEMP_ROOT/production-snapshot/themes.json"
 
 ssh -o BatchMode=yes "$SSH_TARGET" \
-  "$WP eval 'global \$wpdb; \$rows=\$wpdb->get_results(\"SELECT id,name,description,code,tags,scope,priority,active,modified FROM {\$wpdb->prefix}snippets ORDER BY id\", ARRAY_A); echo wp_json_encode(\$rows, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);'" |
+  "$WP eval 'global \$wpdb; \$table=\$wpdb->prefix . \"snippets\"; \$exists=\$wpdb->get_var(\$wpdb->prepare(\"SHOW TABLES LIKE %s\", \$wpdb->esc_like(\$table))); if (\"\" !== \$wpdb->last_error) { WP_CLI::error(\"No se pudo comprobar la tabla de snippets.\"); } if (\$exists !== \$table) { echo \"[]\"; return; } \$rows=\$wpdb->get_results(\"SELECT id,name,description,code,tags,scope,priority,active,modified FROM {\$wpdb->prefix}snippets ORDER BY id\", ARRAY_A); if (\"\" !== \$wpdb->last_error || ! is_array(\$rows)) { WP_CLI::error(\"No se pudo exportar la tabla de snippets.\"); } echo wp_json_encode(\$rows, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);'" |
   jq . >"$TEMP_ROOT/production-snapshot/snippets.json"
 
 ssh -o BatchMode=yes "$SSH_TARGET" "cat '$REMOTE_COMPOSE'" \

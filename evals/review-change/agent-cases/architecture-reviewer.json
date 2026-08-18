@@ -1,0 +1,23 @@
+{
+  "agent": "architecture_reviewer",
+  "cases": {
+    "positive": {
+      "change": "Un plugin guarda una copia editable del inventario que pretende reemplazar la autoridad de Firebase.",
+      "path": "wp-content/plugins/tm-equipos-destacados-v2/tm-equipos-destacados-v2.php",
+      "line": 88,
+      "evidence": "La línea añade update_option('tm_inventory', $editable_inventory) y la usa como fuente primaria.",
+      "expected_outcome": "FINDING",
+      "reason": "Duplica una fuente canónica y cambia la responsabilidad entre componentes."
+    },
+    "negative": {
+      "change": "Un helper interno del plugin se divide sin alterar contratos, dependencias ni fuentes canónicas.",
+      "expected_outcome": "NO_FINDINGS",
+      "reason": "La responsabilidad y los límites arquitectónicos permanecen iguales."
+    },
+    "false_positive": {
+      "change": "Se ajusta el espaciado CSS del header en un único archivo.",
+      "expected_outcome": "NO_FINDINGS",
+      "reason": "Un cambio visual aislado no constituye un problema arquitectónico."
+    }
+  }
+}

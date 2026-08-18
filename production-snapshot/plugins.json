@@ -2,7 +2,7 @@
   {
     "name": "advanced-custom-fields",
     "status": "active",
-    "version": "6.8.6",
+    "version": "6.8.7",
     "auto_update": "on"
   },
   {
@@ -20,7 +20,7 @@
   {
     "name": "duracelltomi-google-tag-manager",
     "status": "active",
-    "version": "1.22.4",
+    "version": "1.22.5",
     "auto_update": "on"
   },
   {
@@ -38,20 +38,20 @@
   {
     "name": "kadence-blocks",
     "status": "active",
-    "version": "3.7.8.1",
+    "version": "3.7.9.1",
     "auto_update": "on"
   },
   {
     "name": "litespeed-cache",
     "status": "active",
-    "version": "7.8.1",
+    "version": "7.9",
     "auto_update": "on"
   },
   {
     "name": "seo-by-rank-math",
     "status": "active",
-    "version": "1.0.275",
-    "auto_update": "off"
+    "version": "1.0.276",
+    "auto_update": "on"
   },
   {
     "name": "shortpixel-image-optimiser",
@@ -73,7 +73,7 @@
   },
   {
     "name": "tm-popup-bienvenida",
-    "status": "active",
+    "status": "inactive",
     "version": "1.2.2",
     "auto_update": "off"
   },
@@ -84,15 +84,21 @@
     "auto_update": "off"
   },
   {
+    "name": "tmd-historias-exito",
+    "status": "active",
+    "version": "1.1.0",
+    "auto_update": "off"
+  },
+  {
     "name": "woocommerce",
     "status": "active",
-    "version": "10.9.4",
+    "version": "11.0.1",
     "auto_update": "on"
   },
   {
     "name": "wordfence",
     "status": "active",
-    "version": "8.2.2",
+    "version": "9.0.0",
     "auto_update": "on"
   },
   {
@@ -104,7 +110,7 @@
   {
     "name": "wps-hide-login",
     "status": "active",
-    "version": "1.9.18",
+    "version": "1.9.19",
     "auto_update": "on"
   }
 ]

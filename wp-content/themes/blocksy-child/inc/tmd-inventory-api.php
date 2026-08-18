@@ -10,33 +10,14 @@ if (! defined('ABSPATH')) {
 const TMD_INVENTORY_API_URL = 'https://us-central1-inventariomaquinas-t.cloudfunctions.net/listarEquiposWordpress';
 const TMD_INVENTORY_API_CACHE_KEY = 'tmd_inventory_api_payload_v1';
 const TMD_INVENTORY_API_FALLBACK_KEY = 'tmd_inventory_api_last_good_v1';
+const TMD_INVENTORY_API_REFRESH_HOOK = 'tmd_inventory_api_refresh';
+const TMD_INVENTORY_API_LOCK_KEY = 'tmd_inventory_api_refresh_lock_v1';
+const TMD_INVENTORY_API_LOCK_TTL = 300;
 
 function tmd_inventory_api_payload() {
     $cached = get_transient(TMD_INVENTORY_API_CACHE_KEY);
     if (is_array($cached) && ! empty($cached['items'])) {
         return $cached;
-    }
-
-    $response = wp_remote_get(TMD_INVENTORY_API_URL, [
-        'timeout' => 18,
-        'redirection' => 2,
-        'headers' => ['Accept' => 'application/json'],
-        'user-agent' => 'TecniMontacargasWordPress/1.0; ' . home_url('/'),
-    ]);
-
-    if (! is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
-        $body = json_decode(wp_remote_retrieve_body($response), true);
-        if (is_array($body) && ! empty($body['ok']) && ! empty($body['items']) && is_array($body['items'])) {
-            $payload = [
-                'items' => array_values($body['items']),
-                'generatedAt' => sanitize_text_field((string) ($body['generatedAt'] ?? '')),
-                'fetchedAt' => time(),
-                'source' => 'live',
-            ];
-            set_transient(TMD_INVENTORY_API_CACHE_KEY, $payload, DAY_IN_SECONDS);
-            update_option(TMD_INVENTORY_API_FALLBACK_KEY, $payload, false);
-            return $payload;
-        }
     }
 
     $fallback = get_option(TMD_INVENTORY_API_FALLBACK_KEY, []);
@@ -46,8 +27,105 @@ function tmd_inventory_api_payload() {
         return $fallback;
     }
 
+    tmd_inventory_api_schedule_refresh();
     return ['items' => [], 'generatedAt' => '', 'fetchedAt' => 0, 'source' => 'error'];
 }
+
+function tmd_inventory_api_acquire_refresh_lock() {
+    $now = time();
+    $lock = [
+        'token' => wp_generate_uuid4(),
+        'created_at' => $now,
+    ];
+    if (add_option(TMD_INVENTORY_API_LOCK_KEY, $lock, '', 'no')) {
+        return $lock;
+    }
+
+    $current_lock = get_option(TMD_INVENTORY_API_LOCK_KEY, []);
+    $locked_at = is_array($current_lock) ? (int) ($current_lock['created_at'] ?? 0) : 0;
+    if ($locked_at > 0 && $locked_at > ($now - TMD_INVENTORY_API_LOCK_TTL)) {
+        return false;
+    }
+
+    if (! tmd_inventory_api_delete_refresh_lock($current_lock)) {
+        return false;
+    }
+
+    return add_option(TMD_INVENTORY_API_LOCK_KEY, $lock, '', 'no') ? $lock : false;
+}
+
+function tmd_inventory_api_delete_refresh_lock($lock) {
+    global $wpdb;
+
+    if (! is_array($lock) || empty($lock['token']) || empty($lock['created_at'])) {
+        return false;
+    }
+
+    $deleted = $wpdb->delete(
+        $wpdb->options,
+        [
+            'option_name' => TMD_INVENTORY_API_LOCK_KEY,
+            'option_value' => maybe_serialize($lock),
+        ],
+        ['%s', '%s']
+    );
+
+    if ($deleted === 1) {
+        wp_cache_delete(TMD_INVENTORY_API_LOCK_KEY, 'options');
+        return true;
+    }
+
+    return false;
+}
+
+function tmd_inventory_api_refresh() {
+    $lock = tmd_inventory_api_acquire_refresh_lock();
+    if (! $lock) {
+        return false;
+    }
+
+    try {
+        $response = wp_remote_get(TMD_INVENTORY_API_URL, [
+            'timeout' => 18,
+            'redirection' => 2,
+            'headers' => ['Accept' => 'application/json'],
+            'user-agent' => 'TecniMontacargasWordPress/1.0; ' . home_url('/'),
+        ]);
+
+        if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+            return false;
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        if (! is_array($body) || empty($body['ok']) || empty($body['items']) || ! is_array($body['items'])) {
+            return false;
+        }
+
+        $payload = [
+            'items' => array_values($body['items']),
+            'generatedAt' => sanitize_text_field((string) ($body['generatedAt'] ?? '')),
+            'fetchedAt' => time(),
+            'source' => 'live',
+        ];
+        set_transient(TMD_INVENTORY_API_CACHE_KEY, $payload, DAY_IN_SECONDS);
+        update_option(TMD_INVENTORY_API_FALLBACK_KEY, $payload, false);
+        return true;
+    } finally {
+        tmd_inventory_api_delete_refresh_lock($lock);
+    }
+}
+
+function tmd_inventory_api_schedule_refresh() {
+    if (! wp_next_scheduled(TMD_INVENTORY_API_REFRESH_HOOK)) {
+        wp_schedule_event(time() + MINUTE_IN_SECONDS, 'hourly', TMD_INVENTORY_API_REFRESH_HOOK);
+    }
+}
+
+add_action(TMD_INVENTORY_API_REFRESH_HOOK, 'tmd_inventory_api_refresh');
+add_action('init', 'tmd_inventory_api_schedule_refresh', 5);
+add_action('switch_theme', function () {
+    wp_clear_scheduled_hook(TMD_INVENTORY_API_REFRESH_HOOK);
+});
 
 function tmd_inventory_api_items_by_type($type) {
     $payload = tmd_inventory_api_payload();
@@ -471,77 +549,100 @@ function tmd_inventory_api_specs($item, $type, $full = false) {
     return array_filter($values, static fn($value) => $value !== '');
 }
 
-function tmd_inventory_api_card($item, $type) {
+function tmd_inventory_api_card_data($item, $type) {
     $title = tmd_inventory_api_title($item, $type);
-    $image = esc_url($item['media']['imagenPrincipal'] ?? '');
     $state = tmd_inventory_api_text($item['estado']['nombre'] ?? 'Disponible') ?: 'Disponible';
     $detail_url = add_query_arg('ficha', rawurlencode((string) ($item['id'] ?? '')), $type === 'montacargas' ? home_url('/equipos/') : home_url('/energia/'));
-    $contact_args = [
-        'equipo_id' => (string) ($item['id'] ?? ''),
-    ];
+    $contact_args = ['equipo_id' => (string) ($item['id'] ?? '')];
     $contact_args[$type === 'bateria' ? 'tmd_cotizacion_energia' : 'equipo'] = $title;
     $contact_url = add_query_arg($contact_args, home_url('/nosotros/contacto/'));
-    $card_class = $type === 'montacargas' ? 'tmd-equipment-card' : 'tmde-card';
-    $image_class = $type === 'montacargas' ? 'tmd-equipment-image' : 'tmde-image';
-    $body_class = $type === 'montacargas' ? 'tmd-equipment-body' : 'tmde-card-body';
     $spec = is_array($item['especificaciones'] ?? null) ? $item['especificaciones'] : [];
     $classification = $type === 'montacargas'
         ? tmd_inventory_api_classification($item)
         : ['category' => '', 'subcategory' => ''];
-    $filter_data = [
-        'data-api-brand' => tmd_inventory_api_text($item['marca'] ?? ''),
-        'data-api-category' => $classification['category'],
-        'data-api-subcategory' => $classification['subcategory'],
-        'data-api-condition' => $type === 'montacargas'
-            ? tmd_inventory_api_text($spec['condicionEspecial'] ?? '')
-            : (! empty($item['esNueva']) ? 'Nueva' : 'Usada'),
-        'data-api-collapsed-height' => $type === 'montacargas'
-            ? (string) tmd_inventory_api_height_m($spec['alturaMastilContraido_m'] ?? 0)
-            : '',
-        'data-api-lift-height' => $type === 'montacargas'
-            ? (string) tmd_inventory_api_height_m($spec['alturaLevantamiento_m'] ?? 0)
-            : '',
-        'data-api-operator' => $type === 'montacargas'
-            ? tmd_inventory_api_text($spec['posicionOperario'] ?? '')
-            : '',
-        'data-api-reach' => $type === 'montacargas'
-            ? tmd_inventory_api_text($spec['tipoReach'] ?? '')
-            : '',
-        'data-api-voltage' => $type === 'bateria'
-            ? tmd_inventory_api_number($spec['voltaje_v'] ?? 0, ' V')
-            : '',
-        'data-api-capacity' => $type === 'bateria'
-            ? tmd_inventory_api_number($spec['amperaje_ah'] ?? 0, ' Ah')
-            : '',
-    ];
-    $filter_attributes = '';
-    foreach ($filter_data as $attribute => $value) {
-        $filter_attributes .= ' ' . $attribute . '="' . esc_attr($value) . '"';
+    $tags = $type === 'montacargas'
+        ? [
+            ['label' => $classification['category'], 'className' => ''],
+            ['label' => $classification['subcategory'], 'className' => 'is-subcategory'],
+        ]
+        : [
+            ['label' => 'Batería', 'className' => ''],
+            ['label' => $state, 'className' => ''],
+        ];
+    $public_specs = [];
+    foreach (array_slice(tmd_inventory_api_specs($item, $type), 0, 5, true) as $label => $value) {
+        $public_specs[] = ['label' => $label, 'value' => $value];
     }
 
-    echo '<article class="' . esc_attr($card_class . ' tmd-api-card') . '"' . $filter_attributes . '>';
-    echo '<a class="' . esc_attr($image_class) . '" href="' . esc_url($detail_url) . '" aria-label="Ver ' . esc_attr($title) . '">';
-    if ($image) {
-        echo '<img src="' . $image . '" alt="' . esc_attr($title) . '" loading="lazy">';
+    return [
+        'id' => (string) ($item['id'] ?? ''),
+        'title' => $title,
+        'image' => esc_url_raw($item['media']['imagenPrincipal'] ?? ''),
+        'detailUrl' => esc_url_raw($detail_url),
+        'contactUrl' => esc_url_raw($contact_url),
+        'classes' => [
+            'card' => ($type === 'montacargas' ? 'tmd-equipment-card' : 'tmde-card') . ' tmd-api-card',
+            'image' => $type === 'montacargas' ? 'tmd-equipment-image' : 'tmde-image',
+            'body' => $type === 'montacargas' ? 'tmd-equipment-body' : 'tmde-card-body',
+        ],
+        'tags' => $tags,
+        'filters' => [
+            'brand' => tmd_inventory_api_text($item['marca'] ?? ''),
+            'category' => $classification['category'],
+            'subcategory' => $classification['subcategory'],
+            'condition' => $type === 'montacargas'
+                ? tmd_inventory_api_text($spec['condicionEspecial'] ?? '')
+                : (! empty($item['esNueva']) ? 'Nueva' : 'Usada'),
+            'collapsedHeight' => $type === 'montacargas' ? (string) tmd_inventory_api_height_m($spec['alturaMastilContraido_m'] ?? 0) : '',
+            'liftHeight' => $type === 'montacargas' ? (string) tmd_inventory_api_height_m($spec['alturaLevantamiento_m'] ?? 0) : '',
+            'operator' => $type === 'montacargas' ? tmd_inventory_api_text($spec['posicionOperario'] ?? '') : '',
+            'reach' => $type === 'montacargas' ? tmd_inventory_api_text($spec['tipoReach'] ?? '') : '',
+            'voltage' => $type === 'bateria' ? tmd_inventory_api_number($spec['voltaje_v'] ?? 0, ' V') : '',
+            'capacity' => $type === 'bateria' ? tmd_inventory_api_number($spec['amperaje_ah'] ?? 0, ' Ah') : '',
+        ],
+        'specs' => $public_specs,
+    ];
+}
+
+function tmd_inventory_api_render_card($card) {
+    $filter_attribute_names = [
+        'brand' => 'data-api-brand',
+        'category' => 'data-api-category',
+        'subcategory' => 'data-api-subcategory',
+        'condition' => 'data-api-condition',
+        'collapsedHeight' => 'data-api-collapsed-height',
+        'liftHeight' => 'data-api-lift-height',
+        'operator' => 'data-api-operator',
+        'reach' => 'data-api-reach',
+        'voltage' => 'data-api-voltage',
+        'capacity' => 'data-api-capacity',
+    ];
+    $filter_attributes = '';
+    foreach ($filter_attribute_names as $key => $attribute) {
+        $filter_attributes .= ' ' . $attribute . '="' . esc_attr($card['filters'][$key] ?? '') . '"';
     }
-    echo '</a>';
-    echo '<div class="' . esc_attr($body_class) . '">';
-    echo '<div class="tmd-api-tags">';
-    if ($type === 'montacargas') {
-        echo '<span>' . esc_html($classification['category']) . '</span>';
-        echo '<span class="is-subcategory">' . esc_html($classification['subcategory']) . '</span>';
-    } else {
-        echo '<span>Batería</span><span>' . esc_html($state) . '</span>';
+
+    echo '<article class="' . esc_attr($card['classes']['card'] ?? 'tmd-api-card') . '"' . $filter_attributes . '>';
+    echo '<a class="' . esc_attr($card['classes']['image'] ?? '') . '" href="' . esc_url($card['detailUrl'] ?? '') . '" aria-label="Ver ' . esc_attr($card['title'] ?? '') . '">';
+    if (! empty($card['image'])) {
+        echo '<img src="' . esc_url($card['image']) . '" alt="' . esc_attr($card['title'] ?? '') . '" loading="lazy">';
     }
-    echo '</div>';
-    echo '<h3><a href="' . esc_url($detail_url) . '">' . esc_html($title) . '</a></h3>';
+    echo '</a><div class="' . esc_attr($card['classes']['body'] ?? '') . '"><div class="tmd-api-tags">';
+    foreach ($card['tags'] ?? [] as $tag) {
+        $class = ! empty($tag['className']) ? ' class="' . esc_attr($tag['className']) . '"' : '';
+        echo '<span' . $class . '>' . esc_html($tag['label'] ?? '') . '</span>';
+    }
+    echo '</div><h3><a href="' . esc_url($card['detailUrl'] ?? '') . '">' . esc_html($card['title'] ?? '') . '</a></h3>';
     echo '<div class="tmd-api-specs">';
-    foreach (array_slice(tmd_inventory_api_specs($item, $type), 0, 5, true) as $label => $value) {
-        echo '<div><span>' . esc_html($label) . '</span><strong>' . esc_html($value) . '</strong></div>';
+    foreach ($card['specs'] ?? [] as $spec) {
+        echo '<div><span>' . esc_html($spec['label'] ?? '') . '</span><strong>' . esc_html($spec['value'] ?? '') . '</strong></div>';
     }
-    echo '</div>';
-    echo '<div class="tmd-api-actions"><a class="is-primary" href="' . esc_url($detail_url) . '">Ver ficha</a><a href="' . esc_url($contact_url) . '">Cotizar</a></div>';
+    echo '</div><div class="tmd-api-actions"><a class="is-primary" href="' . esc_url($card['detailUrl'] ?? '') . '">Ver ficha</a><a href="' . esc_url($card['contactUrl'] ?? '') . '">Cotizar</a></div>';
     echo '</div></article>';
+}
+
+function tmd_inventory_api_card($item, $type) {
+    tmd_inventory_api_render_card(tmd_inventory_api_card_data($item, $type));
 }
 
 function tmd_inventory_api_detail($item, $type) {
@@ -586,18 +687,30 @@ function tmd_inventory_api_grid($type, $per_page) {
         }
     }
 
-    $per_page = max(1, min(48, (int) $per_page));
+    $per_page = max(1, min(12, (int) $per_page));
     $label = $type === 'montacargas' ? 'equipos' : 'baterías';
+    $filtered_items = tmd_inventory_api_filter_items($all_items, $type);
+    $initial_items = array_slice($filtered_items, 0, $per_page);
+    $public_items = array_map(static function ($item) use ($type) {
+        return tmd_inventory_api_card_data($item, $type);
+    }, $all_items);
 
     ob_start();
     echo '<div class="tmd-api-results" data-tmd-api-results data-api-type="' . esc_attr($type) . '" data-api-per-page="' . esc_attr((string) $per_page) . '" data-api-label="' . esc_attr($label) . '">';
-    tmd_inventory_api_status($type, count($all_items));
+    tmd_inventory_api_status($type, count($filtered_items));
 
     echo '<div class="tmd-api-grid">';
-    foreach ($all_items as $item) {
+    foreach ($initial_items as $item) {
         tmd_inventory_api_card($item, $type);
     }
     echo '</div>';
+    $json = wp_json_encode(
+        ['items' => $public_items],
+        JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+    );
+    if (is_string($json)) {
+        echo '<script type="application/json" data-tmd-api-items>' . $json . '</script>';
+    }
     echo '<div class="tmd-api-message" data-tmd-api-empty hidden>No encontramos resultados con estos filtros.</div>';
     echo '<nav class="tmd-api-pagination" data-tmd-api-pagination aria-label="Páginas del catálogo"></nav>';
     echo '</div>';
