@@ -2,194 +2,149 @@
 
 ## Propósito
 
-Define el procedimiento seguro para desplegar cambios en producción.
+Define el procedimiento seguro y rápido para desplegar código propio en producción manteniendo Git como fuente canónica.
 
-Principio: desplegar únicamente el cambio necesario, después de validarlo y crear los respaldos correspondientes.
+## Modelo canónico
+
+- GitHub gobierna el código propio: `blocksy-child` y los plugins `tm-*` versionados.
+- MariaDB gobierna páginas, posts, opciones y demás contenido persistente de WordPress.
+- `wp-content/uploads` gobierna multimedia y no se despliega desde Git.
+- WordPress core, tema padre y plugins de terceros no se despliegan desde este repositorio.
+- `production-snapshot/` es auditoría; no es una fuente primaria ni un requisito para cada deploy.
+
+## Flujo normal
+
+El flujo normal es unidireccional:
+
+```text
+branch/PR -> main -> GitHub Actions -> SSH -> deploy-production.sh -> checkout del SHA
+```
+
+Los componentes propios se montan read-only desde `/opt/tecnimontacargas/app` dentro del contenedor WordPress. Por eso un cambio de commit se refleja sin copiar archivos al contenedor ni reiniciarlo.
+
+## GitHub Actions
+
+Workflow: `.github/workflows/deploy-production.yml`.
+
+Inicialmente el despliegue es manual mediante `workflow_dispatch` y el environment `production`.
+
+Secrets requeridos:
+
+- `DEPLOY_SSH_HOST`
+- `DEPLOY_SSH_USER`
+- `DEPLOY_SSH_KEY`
+- `DEPLOY_KNOWN_HOSTS`
+
+No guardar estos valores en archivos del repositorio.
+
+## Preparación única del servidor
+
+Antes del primer deploy con este modelo:
+
+1. Crear un backup verificable del stack y del código propio actual.
+2. Asegurar que `/opt/tecnimontacargas/app` sea un checkout limpio de este repositorio.
+3. Mantener el `.env` productivo únicamente en el servidor.
+4. Actualizar `/opt/tecnimontacargas/docker-compose.prod.yml` con la versión aprobada del repositorio.
+5. Validar la configuración:
+
+```bash
+docker compose \
+  -f /opt/tecnimontacargas/docker-compose.prod.yml \
+  config
+```
+
+6. Recrear únicamente el servicio WordPress para aplicar los bind mounts:
+
+```bash
+docker compose \
+  -f /opt/tecnimontacargas/docker-compose.prod.yml \
+  up -d wordpress
+```
+
+7. Confirmar que los cinco componentes propios aparecen montados read-only y que el sitio responde correctamente.
+
+Esta recreación es necesaria solo al adoptar o cambiar los mounts; los deploys de código posteriores no requieren recrear el contenedor.
+
+## Ejecución del deploy
+
+El workflow invoca:
+
+```bash
+/opt/tecnimontacargas/app/scripts/deploy-production.sh <commit-sha>
+```
+
+El script:
+
+1. Rechaza el deploy si el checkout productivo tiene modificaciones locales.
+2. Ejecuta `git fetch --prune origin`.
+3. Verifica que el SHA exista.
+4. Crea un worktree temporal del SHA objetivo.
+5. Ejecuta `php -l` sobre todo el PHP de los componentes propios antes de publicarlo.
+6. Cambia el checkout productivo al SHA objetivo mediante `git checkout --detach`.
+7. Ejecuta un health check HTTP sobre el dominio canónico.
+8. Si falla el health check, restaura automáticamente el SHA anterior.
+
+## Deriva
+
+No editar PHP, CSS o JavaScript propio directamente en producción durante la operación normal.
+
+Si `git status --porcelain` devuelve cambios en `/opt/tecnimontacargas/app`, el deploy debe detenerse. Determinar primero por qué producción fue modificada fuera de Git.
+
+`scripts/sync-production.sh` se conserva para auditoría, comparación y recuperación excepcional de cambios autorizados realizados en producción. No es el mecanismo principal de despliegue y no debe convertir producción en fuente canónica del código.
+
+## Hotfix excepcional
+
+Si una emergencia obliga a modificar código directamente en producción:
+
+1. Crear backup del componente afectado.
+2. Aplicar únicamente el cambio mínimo autorizado.
+3. Verificar el sitio.
+4. Recuperar el cambio hacia una rama usando el mecanismo de sincronización correspondiente.
+5. Revisar y hacer commit.
+6. Volver a desplegar desde Git para restaurar la fuente canónica.
+
+No dejar cambios manuales sin reconciliar.
 
 ## No desplegar
 
 - WordPress core.
 - Tema padre.
 - Plugins de terceros.
-- Todo el child theme por un cambio puntual.
-- Uploads no relacionados.
-- Archivos temporales, cachés o backups.
+- Uploads.
 - `.env`, `wp-config.php`, certificados o secretos.
-- `.codex-tmp/`.
-- Código histórico.
+- Backups, logs, cachés o temporales.
+- Código histórico como `tmd-site-kit/`.
 - Cambios no relacionados con la tarea.
 
-## Preparación
+## Validaciones
 
-1. Confirmar alcance y fuente canónica.
-2. Ejecutar:
-
-```bash
-git status --short
-```
-
-3. Preservar cambios locales ajenos.
-4. Revisar el diff relevante.
-5. Ejecutar validaciones focalizadas.
-6. Confirmar que no se incluyan secretos.
-7. Comprobar sincronización:
-
-```bash
-./scripts/sync-production.sh --check
-```
-
-## Deriva
-
-- Código `0`: coincidencia en rutas comprobadas.
-- Código `1`: existe deriva.
-
-Si existe deriva:
-
-1. Detener el despliegue.
-2. Identificar rutas diferentes.
-3. Determinar el origen del cambio productivo.
-4. No sobrescribirlo automáticamente.
-5. Usar `--pull` solo para incorporar una modificación de emergencia autorizada.
-
-```bash
-./scripts/sync-production.sh --pull
-```
-
-No ejecutar `--pull` si sobrescribe cambios locales válidos.
-
-## Backups
-
-Antes de una escritura material:
-
-- Crear backup de base de datos si puede cambiar contenido persistente.
-- Crear backup del componente afectado.
-- Respaldar uploads si se modifica multimedia.
-- Registrar y verificar las rutas.
-
-Consultar `BACKUP_RESTORE.md`.
-
-## Validaciones previas
-
-### PHP
+Antes de mergear, ejecutar las validaciones focalizadas correspondientes. Para PHP:
 
 ```bash
 php -l ruta/al/archivo.php
 ```
 
-### JavaScript y CSS
+Después del deploy:
 
-- Ejecutar linter o validación disponible.
-- Revisar consola.
-- Confirmar carga de assets.
-- Validar responsive cuando aplique.
-
-### Cambios visuales
-
-- Escritorio y móvil.
-- Chrome y Safari cuando aplique.
-- Navegación por teclado.
-- Ausencia de overflow horizontal.
-
-### SEO
-
-- Title.
-- Description.
-- Canonical.
-- Robots.
-- Open Graph.
-- JSON-LD.
-- Sitemap.
-
-## Ejecución
-
-- Copiar únicamente archivos modificados.
-- Preservar permisos y propietarios.
-- No reemplazar el child theme completo.
-- No eliminar archivos sin comprobar referencias.
-- No modificar secretos.
-- No ejecutar cambios destructivos sin plan de reversión.
-
-Registrar archivos, fecha, componente, backup y mecanismo utilizado.
-
-## Validación posterior
-
-1. Validar sintaxis en producción.
-2. Revisar logs.
-3. Purgar únicamente las cachés necesarias.
-4. Verificar HTTP y navegador.
-5. Revisar consola.
-6. Probar el flujo modificado.
-7. Comprobar flujos críticos relacionados.
-8. Ejecutar nuevamente:
-
-```bash
-./scripts/sync-production.sh --check
-```
-
-No declarar éxito únicamente porque los archivos fueron copiados.
-
-## Validaciones específicas
-
-### Redirecciones
-
-- Código HTTP.
-- Destino exacto.
-- Parámetros cuando corresponda.
-- Ausencia de ciclos.
-
-### Inventario
-
-- Respuesta de la fuente real.
-- Estructura y estado válidos.
-- Renderizado, filtros y paginación.
-- Ausencia de elementos inválidos.
-
-### Correo
-
-- Envío desde el flujo real.
-- Recepción en una bandeja válida.
-- Logs del proveedor.
-- Errores de autorización.
-
-### Base de datos
-
-- Contenido final.
-- Renderizado público.
-- Snapshot de auditoría cuando corresponda.
-- Hashes o diferencias.
+- Verificar HTTP.
+- Probar el flujo modificado.
+- Revisar consola y logs cuando aplique.
+- Confirmar que el checkout productivo quedó en el SHA esperado.
 
 ## Rollback
 
-Realizar rollback cuando:
+Para rollback explícito, ejecutar nuevamente el workflow seleccionando un commit estable anterior o invocar en el servidor:
 
-- Aparezcan errores 5xx.
-- Se rompa una función crítica.
-- Exista riesgo de pérdida de datos.
-- Se afecte autenticación o cuenta.
-- Se produzca una regresión visual grave.
-- El sitio quede inaccesible.
-- Se expongan datos sensibles.
-- No sea posible corregir de forma inmediata y segura.
+```bash
+/opt/tecnimontacargas/app/scripts/deploy-production.sh <sha-estable>
+```
 
-### Procedimiento
+El script también revierte automáticamente al SHA previo si falla su health check posterior al checkout.
 
-1. Preservar logs y evidencia.
-2. Identificar el componente afectado.
-3. Restaurar únicamente ese componente.
-4. Restaurar la base de datos solo si se alteraron datos persistentes.
-5. Validar sintaxis, caché, HTTP y flujo afectado.
-6. Ejecutar control de sincronización.
-7. Documentar causa y resultado.
+Un rollback de código no revierte MariaDB ni uploads. Si el cambio modificó datos persistentes, aplicar el procedimiento de `BACKUP_RESTORE.md`.
 
-## Cierre
+## Seguridad de secretos
 
-Informar:
+Los archivos `.env*` reales no se versionan. Solo `.env.example` puede permanecer en Git.
 
-- Qué se desplegó.
-- Archivos modificados.
-- Backups creados.
-- Pruebas ejecutadas.
-- Validaciones productivas.
-- Resultado de sincronización.
-- Riesgos pendientes.
-- Si se realizó rollback.
+Si una credencial fue publicada alguna vez en Git, eliminar el archivo del árbol actual no es suficiente: la credencial debe rotarse y, cuando corresponda, el historial debe sanearse mediante un procedimiento coordinado.

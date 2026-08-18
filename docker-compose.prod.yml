@@ -30,6 +30,11 @@ services:
     volumes:
       - wp_data:/var/www/html
       - wp_data:/var/www/vhosts/localhost/html
+      - /opt/tecnimontacargas/app/wp-content/themes/blocksy-child:/var/www/vhosts/localhost/html/wp-content/themes/blocksy-child:ro
+      - /opt/tecnimontacargas/app/wp-content/plugins/tm-chatbot-fase1:/var/www/vhosts/localhost/html/wp-content/plugins/tm-chatbot-fase1:ro
+      - /opt/tecnimontacargas/app/wp-content/plugins/tm-equipos-destacados-v2:/var/www/vhosts/localhost/html/wp-content/plugins/tm-equipos-destacados-v2:ro
+      - /opt/tecnimontacargas/app/wp-content/plugins/tm-popup-bienvenida:/var/www/vhosts/localhost/html/wp-content/plugins/tm-popup-bienvenida:ro
+      - /opt/tecnimontacargas/app/wp-content/plugins/tm-quiz-equipo-ideal:/var/www/vhosts/localhost/html/wp-content/plugins/tm-quiz-equipo-ideal:ro
       - ols_conf:/usr/local/lsws/conf
       - ols_logs:/usr/local/lsws/logs
       - /etc/letsencrypt:/etc/letsencrypt:ro
