@@ -26,7 +26,7 @@ Los componentes propios se montan read-only desde `/opt/tecnimontacargas/app` de
 
 Workflow: `.github/workflows/deploy-production.yml`.
 
-Inicialmente el despliegue es manual mediante `workflow_dispatch` y el environment `production`.
+El despliegue es manual mediante `workflow_dispatch` y el environment `production`.
 
 Secrets requeridos:
 
@@ -36,6 +36,75 @@ Secrets requeridos:
 - `DEPLOY_KNOWN_HOSTS`
 
 No guardar estos valores en archivos del repositorio.
+
+## Modelo SSH validado
+
+El despliegue usa dos relaciones SSH independientes. No reutilizar la misma clave para ambos sentidos.
+
+### Producción -> GitHub
+
+El servidor de producción necesita acceso de lectura al repositorio para ejecutar `git fetch`. Usar una Deploy key exclusiva del repositorio y mantener **Allow write access** desactivado.
+
+El transporte validado usa GitHub SSH sobre el puerto 443:
+
+```text
+ssh://git@ssh.github.com:443/k-delta/PageTMD_v.3.git
+```
+
+Antes de confiar en `ssh.github.com`, obtener su host key y comparar el fingerprint con el publicado actualmente por GitHub. No aceptar un fingerprint sin verificarlo.
+
+Ejemplo:
+
+```bash
+TMP_HOSTKEY="$(mktemp)"
+ssh-keyscan -t ed25519 -p 443 ssh.github.com > "$TMP_HOSTKEY" 2>/dev/null
+ssh-keygen -lf "$TMP_HOSTKEY"
+```
+
+Después de verificar el fingerprint, registrar la host key en el `known_hosts` del usuario que ejecuta el deploy.
+
+La instalación validada usa una clave dedicada en el servidor y fija el remote y el comando SSH en el checkout:
+
+```bash
+cd /opt/tecnimontacargas/app
+
+git remote set-url origin \
+  ssh://git@ssh.github.com:443/k-delta/PageTMD_v.3.git
+
+git config --local core.sshCommand \
+  'ssh -i /root/.ssh/pagetmd_github -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes'
+```
+
+Comprobar siempre:
+
+```bash
+git ls-remote origin HEAD
+git fetch --prune origin
+```
+
+### GitHub Actions -> producción
+
+GitHub Actions usa una segunda clave SSH exclusiva para entrar al host de producción. La clave pública se instala en `authorized_keys` del usuario de deploy y la privada completa se guarda únicamente en `DEPLOY_SSH_KEY` dentro del environment `production`.
+
+`DEPLOY_KNOWN_HOSTS` debe contener la línea completa de `known_hosts` del host productivo, no solo el fingerprint. Obtenerla desde una máquina confiable y comparar primero el fingerprint con `/etc/ssh/ssh_host_ed25519_key.pub` del servidor.
+
+Ejemplo de validación desde la máquina administradora:
+
+```bash
+ssh-keyscan -t ed25519 <host-produccion> > /tmp/pagetmd_known_hosts
+ssh-keygen -lf /tmp/pagetmd_known_hosts
+
+ssh \
+  -i ~/.ssh/pagetmd_github_actions \
+  -o IdentitiesOnly=yes \
+  -o BatchMode=yes \
+  -o StrictHostKeyChecking=yes \
+  -o UserKnownHostsFile=/tmp/pagetmd_known_hosts \
+  <usuario-deploy>@<host-produccion> \
+  'echo github-actions-ssh=OK'
+```
+
+La salida esperada es `github-actions-ssh=OK`.
 
 ## Requisitos del servidor
 
@@ -47,26 +116,120 @@ El host de producción necesita únicamente para el flujo de código:
 
 La validación PHP se ejecuta con el runtime del contenedor `tmd_ols_wordpress`; no requiere instalar PHP adicional en Alpine.
 
+En Alpine, si falta Git:
+
+```bash
+apk add --no-cache git
+```
+
 El proyecto Compose productivo se llama `pagetmd_v3`. El `docker-compose.prod.yml` fija este nombre para que los comandos operen sobre los contenedores existentes aunque se ejecuten desde `/opt/tecnimontacargas`.
 
 ## Preparación única del servidor
 
-Antes del primer deploy con este modelo:
+### 1. Preparar acceso Git de solo lectura
 
-1. Crear un backup verificable del stack y del código propio actual.
-2. Asegurar que `/opt/tecnimontacargas/app` sea un checkout limpio de este repositorio en `main`.
-3. Mantener `/opt/tecnimontacargas/.env.prod` únicamente en el servidor.
-4. Actualizar `/opt/tecnimontacargas/docker-compose.prod.yml` con la versión aprobada del repositorio.
-5. Validar la configuración cargando explícitamente el archivo de entorno:
+Crear y registrar la Deploy key read-only, verificar la host key de GitHub y clonar `main` directamente sobre SSH 443:
+
+```bash
+GIT_SSH_COMMAND='ssh -i /root/.ssh/pagetmd_github -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes' \
+  git clone \
+    --branch main \
+    --single-branch \
+    ssh://git@ssh.github.com:443/k-delta/PageTMD_v.3.git \
+    /opt/tecnimontacargas/app
+```
+
+Después configurar `core.sshCommand` de forma local al repositorio como se indica arriba.
+
+Confirmar:
+
+```bash
+cd /opt/tecnimontacargas/app
+git status --short
+git branch --show-current
+git rev-parse HEAD
+git rev-parse origin/main
+```
+
+El checkout debe estar limpio y `HEAD` debe coincidir con `origin/main` antes del bootstrap.
+
+### 2. Comparar Git contra el código vivo
+
+Antes de introducir bind mounts, preservar una copia temporal de los cinco componentes canónicos que actualmente ejecuta WordPress y compararla con el checkout.
+
+```bash
+rm -rf /tmp/tmd-current
+mkdir -p /tmp/tmd-current/themes /tmp/tmd-current/plugins
+
+docker cp \
+  tmd_ols_wordpress:/var/www/vhosts/localhost/html/wp-content/themes/blocksy-child \
+  /tmp/tmd-current/themes/
+
+for plugin in \
+  tm-chatbot-fase1 \
+  tm-equipos-destacados-v2 \
+  tm-popup-bienvenida \
+  tm-quiz-equipo-ideal
+do
+  docker cp \
+    "tmd_ols_wordpress:/var/www/vhosts/localhost/html/wp-content/plugins/$plugin" \
+    /tmp/tmd-current/plugins/
+done
+```
+
+Comparar:
+
+```bash
+diff -qr \
+  /tmp/tmd-current/themes/blocksy-child \
+  /opt/tecnimontacargas/app/wp-content/themes/blocksy-child || true
+
+for plugin in \
+  tm-chatbot-fase1 \
+  tm-equipos-destacados-v2 \
+  tm-popup-bienvenida \
+  tm-quiz-equipo-ideal
+do
+  diff -qr \
+    "/tmp/tmd-current/plugins/$plugin" \
+    "/opt/tecnimontacargas/app/wp-content/plugins/$plugin" || true
+done
+```
+
+Detener el bootstrap ante cualquier diferencia de contenido canónico. Archivos auxiliares como AppleDouble (`._*`), `.DS_Store` o backups manuales `*.bak*` no deben convertirse en fuente canónica; preservarlos en el backup y revisarlos por separado.
+
+### 3. Crear y validar backup
+
+Aplicar `BACKUP_RESTORE.md` antes de cambiar Compose o recrear WordPress. El procedimiento validado para este bootstrap incluye:
+
+- dump completo de MariaDB;
+- copia de los cinco componentes propios;
+- copia del Compose productivo anterior;
+- copia local restringida de `.env.prod`;
+- tamaño, existencia y hashes de los artefactos.
+
+No continuar si el dump está vacío o si no existe una ruta de rollback identificada.
+
+### 4. Instalar el Compose aprobado
+
+Mantener `/opt/tecnimontacargas/.env.prod` únicamente en el servidor y copiar la versión aprobada del repositorio:
+
+```bash
+cp \
+  /opt/tecnimontacargas/app/docker-compose.prod.yml \
+  /opt/tecnimontacargas/docker-compose.prod.yml
+```
+
+Validar sin imprimir la configuración interpolada:
 
 ```bash
 docker compose \
   --env-file /opt/tecnimontacargas/.env.prod \
   -f /opt/tecnimontacargas/docker-compose.prod.yml \
-  config
+  config -q
 ```
 
-6. Confirmar que Compose identifica el stack existente:
+Confirmar que Compose identifica el stack existente:
 
 ```bash
 docker compose \
@@ -75,7 +238,11 @@ docker compose \
   ps
 ```
 
-7. Recrear únicamente el servicio WordPress para aplicar los bind mounts:
+Deben aparecer `tmd_db`, `tmd_ols_wordpress` y `tmd_phpmyadmin`.
+
+### 5. Activar los bind mounts
+
+Recrear únicamente WordPress:
 
 ```bash
 docker compose \
@@ -84,9 +251,64 @@ docker compose \
   up -d --no-deps wordpress
 ```
 
-8. Confirmar que los cinco componentes propios aparecen montados read-only y que el sitio responde correctamente.
+MariaDB y phpMyAdmin no deben recrearse en este paso.
 
-Esta recreación es necesaria solo al adoptar o cambiar los mounts; los deploys de código posteriores no requieren recrear el contenedor.
+Verificar los mounts:
+
+```bash
+docker inspect tmd_ols_wordpress \
+  --format '{{range .Mounts}}{{println .Type .Source "->" .Destination "RW=" .RW}}{{end}}'
+```
+
+Los siguientes cinco componentes deben aparecer como bind mounts con `RW= false`:
+
+- `wp-content/themes/blocksy-child`
+- `wp-content/plugins/tm-chatbot-fase1`
+- `wp-content/plugins/tm-equipos-destacados-v2`
+- `wp-content/plugins/tm-popup-bienvenida`
+- `wp-content/plugins/tm-quiz-equipo-ideal`
+
+Verificar salud HTTP:
+
+```bash
+curl -fsS \
+  -o /dev/null \
+  -w 'HTTP %{http_code}\n' \
+  https://tecnimontacargas.com/
+```
+
+La respuesta esperada es `HTTP 200`.
+
+### 6. Probar el deploy con el SHA actual
+
+Antes de depender de Actions, ejecutar el mecanismo con el mismo SHA ya publicado. Esta prueba valida fetch, pertenencia a `main`, lint PHP, checkout y health check sin introducir un cambio funcional:
+
+```bash
+cd /opt/tecnimontacargas/app
+TARGET="$(git rev-parse origin/main)"
+./scripts/deploy-production.sh "$TARGET"
+```
+
+Después:
+
+```bash
+git status --short
+git rev-parse HEAD
+git rev-parse origin/main
+curl -fsS -o /dev/null -w 'HTTP %{http_code}\n' https://tecnimontacargas.com/
+```
+
+`git status --short` debe quedar vacío, los SHA deben coincidir y el sitio debe responder `HTTP 200`.
+
+El script publica mediante `git checkout --detach`; por ello `git branch --show-current` puede quedar vacío después de un deploy correcto.
+
+### 7. Validar GitHub Actions
+
+Crear los cuatro secrets del environment `production`, usando una clave independiente de la Deploy key del repositorio, y ejecutar manualmente **Deploy production** sobre `main`.
+
+El primer workflow debe terminar en `Success`. Después de la ejecución, confirmar nuevamente que `HEAD` coincide con `origin/main` y que el sitio responde `HTTP 200`.
+
+Esta recreación del contenedor es necesaria solo al adoptar o cambiar los mounts; los deploys de código posteriores no requieren recrear WordPress.
 
 ## Ejecución del deploy
 
@@ -106,6 +328,61 @@ El script:
 6. Cambia el checkout productivo al SHA objetivo mediante `git checkout --detach`.
 7. Ejecuta un health check HTTP sobre el dominio canónico.
 8. Si falla el health check, restaura automáticamente el SHA anterior.
+
+## Troubleshooting validado
+
+### `docker compose ps` no muestra contenedores
+
+Durante una migración desde un Compose antiguo que todavía no contiene `name: pagetmd_v3`, Compose puede inferir otro nombre de proyecto a partir del directorio actual y no mostrar los contenedores existentes.
+
+Hasta instalar el Compose nuevo, consultar el stack explícitamente:
+
+```bash
+docker compose \
+  -p pagetmd_v3 \
+  --env-file /opt/tecnimontacargas/.env.prod \
+  -f /opt/tecnimontacargas/docker-compose.prod.yml \
+  ps
+```
+
+### Git HTTPS falla con `TLS alert handshake failure`
+
+Si `git` falla antes de autenticarse y `GIT_CURL_VERBOSE=1` muestra que intenta una ruta IPv6 que termina en `TLS alert, handshake failure`, mientras `curl -4` u OpenSSL por IPv4 validan correctamente GitHub, no desactivar `http.sslVerify`.
+
+Diagnóstico útil:
+
+```bash
+GIT_CURL_VERBOSE=1 \
+  git -c http.version=HTTP/1.1 \
+  ls-remote https://github.com/k-delta/PageTMD_v.3.git HEAD
+
+curl -4Iv --tlsv1.2 --tls-max 1.2 https://github.com/
+```
+
+La solución permanente validada para este host es usar el remote SSH por `ssh.github.com:443`. No fijar una IP de GitHub de forma permanente porque puede cambiar.
+
+### `Host key verification failed`
+
+Comprobar que `DEPLOY_KNOWN_HOSTS` contiene la línea completa generada por `ssh-keyscan` después de verificar su fingerprint. El fingerprint por sí solo no es un archivo `known_hosts` válido.
+
+### `Load key ... error in libcrypto`
+
+El secreto `DEPLOY_SSH_KEY` debe contener la clave privada OpenSSH completa, preservando saltos de línea, incluida la cabecera y el pie:
+
+```text
+-----BEGIN OPENSSH PRIVATE KEY-----
+...
+-----END OPENSSH PRIVATE KEY-----
+```
+
+Validar localmente sin imprimir la clave:
+
+```bash
+ssh-keygen -y -f ~/.ssh/pagetmd_github_actions >/dev/null \
+  && echo 'private-key=OK'
+```
+
+No usar la clave pública `.pub` como `DEPLOY_SSH_KEY`.
 
 ## Deriva
 
@@ -152,13 +429,29 @@ Después del deploy:
 
 ## Rollback
 
-Para rollback explícito, ejecutar nuevamente el workflow seleccionando un commit estable anterior que pertenezca a `main` o invocar en el servidor:
+Para rollback explícito de código, ejecutar nuevamente el workflow seleccionando un commit estable anterior que pertenezca a `main` o invocar en el servidor:
 
 ```bash
 /opt/tecnimontacargas/app/scripts/deploy-production.sh <sha-estable>
 ```
 
 El script también revierte automáticamente al SHA previo si falla su health check posterior al checkout.
+
+Para revertir específicamente el bootstrap de bind mounts, restaurar el Compose guardado en el backup y recrear únicamente WordPress. Como el Compose anterior puede no contener `name: pagetmd_v3`, fijar el project name explícitamente:
+
+```bash
+BACKUP=/opt/tecnimontacargas/backups/<backup-validado>
+
+cp \
+  "$BACKUP/docker-compose.prod.yml" \
+  /opt/tecnimontacargas/docker-compose.prod.yml
+
+docker compose \
+  -p pagetmd_v3 \
+  --env-file /opt/tecnimontacargas/.env.prod \
+  -f /opt/tecnimontacargas/docker-compose.prod.yml \
+  up -d --no-deps --force-recreate wordpress
+```
 
 Un rollback de código no revierte MariaDB ni uploads. Si el cambio modificó datos persistentes, aplicar el procedimiento de `BACKUP_RESTORE.md`.
 
@@ -167,3 +460,5 @@ Un rollback de código no revierte MariaDB ni uploads. Si el cambio modificó da
 Los archivos `.env*` reales no se versionan. Solo `.env.example` puede permanecer en Git.
 
 Si una credencial fue publicada alguna vez en Git, eliminar el archivo del árbol actual no es suficiente: la credencial debe rotarse y, cuando corresponda, el historial debe sanearse mediante un procedimiento coordinado.
+
+Mantener separadas las claves VPS -> GitHub y GitHub Actions -> VPS. La clave del repositorio debe ser read-only. El acceso SSH de Actions debe limitarse al usuario y permisos estrictamente necesarios; si el bootstrap inicial usa `root`, migrar posteriormente a un usuario de deploy dedicado como medida de endurecimiento.

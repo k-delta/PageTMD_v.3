@@ -69,20 +69,131 @@ Nomenclatura sugerida:
 YYYYMMDD-HHMM-entorno-componente.ext
 ```
 
+Para el bootstrap del modelo Git -> producción se usa una carpeta restringida bajo:
+
+```text
+/opt/tecnimontacargas/backups/pre-git-deploy-YYYYMMDD-HHMMSS
+```
+
+## Procedimiento validado antes del bootstrap de despliegue
+
+Este procedimiento cubre el cambio de Compose y la activación de bind mounts de los cinco componentes propios. Incluye base de datos, código propio y configuración productiva implicada.
+
+No sustituye un backup de `uploads` cuando la operación pueda modificar multimedia, ni un backup completo de los volúmenes Docker cuando el alcance lo requiera.
+
+### 1. Crear la carpeta restringida
+
+```bash
+STAMP="$(date -u +%Y%m%d-%H%M%S)"
+BACKUP="/opt/tecnimontacargas/backups/pre-git-deploy-$STAMP"
+
+mkdir -p \
+  "$BACKUP/wp-content/themes" \
+  "$BACKUP/wp-content/plugins"
+
+chmod 700 "$BACKUP"
+```
+
+### 2. Preservar configuración
+
+```bash
+cp -p \
+  /opt/tecnimontacargas/docker-compose.prod.yml \
+  "$BACKUP/docker-compose.prod.yml"
+
+cp -p \
+  /opt/tecnimontacargas/.env.prod \
+  "$BACKUP/.env.prod"
+```
+
+`.env.prod` contiene secretos. Esta copia debe permanecer únicamente en el servidor, con permisos restringidos, y nunca debe copiarse al repositorio, tickets, logs o conversaciones.
+
+### 3. Preservar los cinco componentes propios
+
+```bash
+docker cp \
+  tmd_ols_wordpress:/var/www/vhosts/localhost/html/wp-content/themes/blocksy-child \
+  "$BACKUP/wp-content/themes/"
+
+for plugin in \
+  tm-chatbot-fase1 \
+  tm-equipos-destacados-v2 \
+  tm-popup-bienvenida \
+  tm-quiz-equipo-ideal
+do
+  docker cp \
+    "tmd_ols_wordpress:/var/www/vhosts/localhost/html/wp-content/plugins/$plugin" \
+    "$BACKUP/wp-content/plugins/"
+done
+```
+
+### 4. Crear dump consistente de MariaDB
+
+El dump se ejecuta dentro de `tmd_db` para reutilizar el cliente y las variables de entorno ya presentes en el contenedor. La contraseña se expande dentro del contenedor y no debe imprimirse.
+
+```bash
+docker exec tmd_db sh -c '
+  exec mariadb-dump \
+    --single-transaction \
+    --quick \
+    --routines \
+    --events \
+    --triggers \
+    --hex-blob \
+    -uroot \
+    -p"$MYSQL_ROOT_PASSWORD" \
+    --databases "$MYSQL_DATABASE"
+' > "$BACKUP/database.sql"
+```
+
+Restringir el árbol completo:
+
+```bash
+chmod -R go-rwx "$BACKUP"
+```
+
 ## Verificación
 
-Comprobar:
+Comprobar siempre:
 
-- Existencia.
-- Tamaño razonable.
-- Archivo no vacío.
-- Permisos.
-- Lectura e integridad.
-- Formato correcto.
-- Hash cuando aplique.
-- Ruta de restauración identificada.
+- existencia;
+- tamaño razonable;
+- archivo no vacío;
+- permisos;
+- lectura e integridad;
+- formato correcto;
+- hash cuando aplique;
+- ruta de restauración identificada.
 
 No continuar con una operación destructiva si el backup no fue validado.
+
+Para el procedimiento de bootstrap anterior:
+
+```bash
+echo "=== BACKUP PATH ==="
+printf '%s\n' "$BACKUP"
+
+echo "=== DATABASE ==="
+ls -lh "$BACKUP/database.sql"
+test -s "$BACKUP/database.sql" \
+  && echo "database=NON_EMPTY" \
+  || echo "database=ERROR"
+
+echo "=== SQL HEADER ==="
+head -n 5 "$BACKUP/database.sql"
+
+echo "=== FILES ==="
+du -sh "$BACKUP"
+find "$BACKUP/wp-content" -type f | wc -l
+
+echo "=== HASHES ==="
+sha256sum \
+  "$BACKUP/database.sql" \
+  "$BACKUP/docker-compose.prod.yml" \
+  "$BACKUP/.env.prod"
+```
+
+La cabecera debe corresponder a un dump MariaDB y `database.sql` no debe estar vacío. No compartir contenido SQL, contraseñas ni el contenido de `.env.prod` durante la validación.
 
 ## Restauración
 
@@ -105,6 +216,26 @@ Antes de restaurar:
 6. Revisar logs, HTTP y flujo afectado.
 7. Ejecutar control de sincronización.
 
+### Rollback del bootstrap de bind mounts
+
+Si falla únicamente la adopción del Compose nuevo o los bind mounts y MariaDB no fue modificada, no restaurar la base de datos. Restaurar el Compose anterior y recrear solo WordPress:
+
+```bash
+BACKUP=/opt/tecnimontacargas/backups/<backup-validado>
+
+cp \
+  "$BACKUP/docker-compose.prod.yml" \
+  /opt/tecnimontacargas/docker-compose.prod.yml
+
+docker compose \
+  -p pagetmd_v3 \
+  --env-file /opt/tecnimontacargas/.env.prod \
+  -f /opt/tecnimontacargas/docker-compose.prod.yml \
+  up -d --no-deps --force-recreate wordpress
+```
+
+Usar `-p pagetmd_v3` durante este rollback porque el Compose anterior puede no contener el `name:` del proyecto.
+
 ### Base de datos
 
 Antes:
@@ -123,6 +254,8 @@ Después:
 3. Revisar errores y caché.
 4. Probar autenticación, formularios y contenido cuando aplique.
 5. Registrar el resultado.
+
+No restaurar `database.sql` únicamente porque existe. El dump es una red de seguridad; su restauración requiere confirmar que datos persistentes fueron afectados y evaluar la pérdida de información posterior al backup.
 
 ### Uploads
 
