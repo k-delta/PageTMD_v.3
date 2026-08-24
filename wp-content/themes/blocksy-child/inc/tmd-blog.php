@@ -201,7 +201,7 @@ function tmd_render_home_blog_preview() {
             <div class="tmd-blog-mini-grid">
                 <?php foreach ($posts as $post) { tmd_render_blog_mini_card($post); } ?>
             </div>
-            <p class="tmd-blog-center"><a class="tmd-blog-all-btn" href="<?php echo esc_url(tmd_blog_url()); ?>">Ver todos los artículos <span aria-hidden="true">→</span></a></p>
+            <p class="tmd-blog-center"><a class="tmd-blog-all-btn" href="<?php echo esc_url(tmd_blog_url()); ?>">Ver todos <span aria-hidden="true">→</span></a></p>
         </div>
     </section>
     <?php
