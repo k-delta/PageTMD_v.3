@@ -19,6 +19,21 @@ if (is_page(57)) {
             1
         );
 
+        $advisor_emails = [
+            '+573022734800' => 'consultor3@tmdual.com',
+            '+573244298326' => 'consultor2@tmdual.com',
+            '+573168770708' => 'consultor1@tmdual.com',
+        ];
+
+        foreach ($advisor_emails as $phone => $email) {
+            $content = preg_replace(
+                '/href=(["\'])tel:' . preg_quote($phone, '/') . '\1([^>]*)>\s*Llamar ahora\s*<\/a>/iu',
+                'href="mailto:' . $email . '"$2>Correo</a>',
+                $content,
+                1
+            );
+        }
+
         return $content;
     }, 20);
 }
