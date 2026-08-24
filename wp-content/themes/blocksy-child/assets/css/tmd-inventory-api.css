@@ -1,5 +1,5 @@
 .tmd-api-status {
-  display: none;
+  display: none !important;
   justify-content: space-between;
   gap: 16px;
   align-items: center;
