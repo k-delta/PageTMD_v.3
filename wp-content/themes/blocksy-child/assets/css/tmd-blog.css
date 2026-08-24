@@ -315,7 +315,12 @@
 .tmd-blog-breadcrumb a { color: var(--tmd-blog-blue); text-decoration: none; }
 .tmd-blog-breadcrumb span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.tmd-article-header { max-width: 900px; margin: 0 auto 36px; text-align: center; }
+.tmd-article-header {
+  width: 100%;
+  max-width: none;
+  margin: 0 auto 36px;
+  text-align: center;
+}
 .tmd-article-header .tmd-blog-category {
   font-size: 14px;
   letter-spacing: 1.3px;
@@ -335,8 +340,9 @@
 
 .tmd-article-layout {
   display: grid;
-  grid-template-columns: 90px minmax(0, 760px);
-  justify-content: center;
+  width: 100%;
+  grid-template-columns: 90px minmax(0, 1fr);
+  justify-content: stretch;
   gap: 28px;
 }
 
