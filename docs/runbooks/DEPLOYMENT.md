@@ -26,7 +26,11 @@ Los componentes propios se montan read-only desde `/opt/tecnimontacargas/app` de
 
 Workflow: `.github/workflows/deploy-production.yml`.
 
-El despliegue es manual mediante `workflow_dispatch` y el environment `production`.
+Cada push a `main` inicia automáticamente el despliegue del SHA asociado al evento. El workflow conserva `workflow_dispatch` como vía manual de respaldo y ambos disparos usan el environment `production`.
+
+Las reglas de protección configuradas en el environment siguen aplicando. Si exige aprobación, el workflow se inicia con el push, pero el job espera esa autorización antes de acceder a los secrets y desplegar.
+
+La concurrencia `production-deploy` permite una sola ejecución productiva activa y no cancela la que ya está en curso. Si llegan varios pushes mientras está activa, GitHub conserva el pendiente más reciente; al contener este el historial acumulado de `main`, producción converge al último SHA pendiente en lugar de ejecutar simultáneamente estados intermedios.
 
 Secrets requeridos:
 
@@ -304,13 +308,19 @@ El script publica mediante `git checkout --detach`; por ello `git branch --show-
 
 ### 7. Validar GitHub Actions
 
-Crear los cuatro secrets del environment `production`, usando una clave independiente de la Deploy key del repositorio, y ejecutar manualmente **Deploy production** sobre `main`.
+Antes de habilitar el trigger automático, crear los cuatro secrets del environment `production`, usando una clave independiente de la Deploy key del repositorio, y ejecutar manualmente **Deploy production** sobre `main`.
 
 El primer workflow debe terminar en `Success`. Después de la ejecución, confirmar nuevamente que `HEAD` coincide con `origin/main` y que el sitio responde `HTTP 200`.
+
+Con la preparación validada, cada push posterior a `main` inicia **Deploy production** automáticamente. La vía `workflow_dispatch` permanece disponible para volver a ejecutar de forma controlada el SHA de `main` o de otra referencia cuyo commit pertenezca a su historial.
 
 Esta recreación del contenedor es necesaria solo al adoptar o cambiar los mounts; los deploys de código posteriores no requieren recrear WordPress.
 
 ## Ejecución del deploy
+
+El trigger `push` está restringido a `main`. Para ese evento, `${{ github.sha }}` identifica el commit que originó la ejecución y se entrega al servidor como SHA objetivo. Los pushes a otras ramas no inician este workflow.
+
+Un cambio que solo afecte documentación u otros archivos no montados en WordPress también actualiza el checkout productivo. Esto mantiene `/opt/tecnimontacargas/app` alineado con el estado completo de `main`, aunque no cambie el contenido visible del sitio.
 
 El workflow invoca:
 
@@ -429,7 +439,7 @@ Después del deploy:
 
 ## Rollback
 
-Para rollback explícito de código, ejecutar nuevamente el workflow seleccionando un commit estable anterior que pertenezca a `main` o invocar en el servidor:
+Para volver a ejecutar el SHA actual de `main` o de una referencia cuyo commit pertenezca a su historial puede usarse `workflow_dispatch`. Para un rollback explícito a un commit estable anterior que pertenezca a `main`, invocar en el servidor:
 
 ```bash
 /opt/tecnimontacargas/app/scripts/deploy-production.sh <sha-estable>
