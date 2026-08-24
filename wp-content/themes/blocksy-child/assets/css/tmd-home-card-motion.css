@@ -1,0 +1,129 @@
+/* Motion for the Montacargas, Baterias and Cargadores cards on the home page. */
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_ba091a-80 > .kt-inside-inner-col,
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_6f15fb-12 > .kt-inside-inner-col,
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_a1bb23-84 > .kt-inside-inner-col {
+  transform: translateZ(0);
+  transform-origin: center;
+  transition:
+    transform .42s cubic-bezier(.2, .8, .2, 1),
+    box-shadow .42s ease,
+    background-position .6s cubic-bezier(.2, .8, .2, 1);
+  animation: tmd-home-card-enter .62s cubic-bezier(.2, .8, .2, 1) backwards;
+}
+
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_6f15fb-12 > .kt-inside-inner-col {
+  animation-delay: .1s;
+}
+
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_a1bb23-84 > .kt-inside-inner-col {
+  animation-delay: .18s;
+}
+
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_ba091a-80 > .kt-inside-inner-col::after,
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_6f15fb-12 > .kt-inside-inner-col::after,
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_a1bb23-84 > .kt-inside-inner-col::after {
+  content: '';
+  position: absolute;
+  inset: -35%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .78;
+  background: linear-gradient(
+    112deg,
+    transparent 37%,
+    rgba(255, 255, 255, .46) 48%,
+    rgba(255, 195, 60, .16) 52%,
+    transparent 64%
+  );
+  transform: translateX(-72%);
+  transition: transform .78s cubic-bezier(.2, .8, .2, 1);
+}
+
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_ba091a-80 > .kt-inside-inner-col > *,
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_6f15fb-12 > .kt-inside-inner-col > *,
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_a1bb23-84 > .kt-inside-inner-col > * {
+  transition: transform .36s cubic-bezier(.2, .8, .2, 1);
+}
+
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kb-button {
+  transition:
+    color .22s ease,
+    background-color .22s ease,
+    border-color .22s ease,
+    box-shadow .28s ease,
+    transform .28s cubic-bezier(.2, .8, .2, 1) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_ba091a-80:hover > .kt-inside-inner-col,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_6f15fb-12:hover > .kt-inside-inner-col,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_a1bb23-84:hover > .kt-inside-inner-col {
+    transform: translateY(-8px) scale(1.012);
+    box-shadow: 0 24px 54px rgba(38, 46, 79, .17) !important;
+  }
+
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_ba091a-80:hover > .kt-inside-inner-col::after,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_6f15fb-12:hover > .kt-inside-inner-col::after,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_a1bb23-84:hover > .kt-inside-inner-col::after {
+    transform: translateX(72%);
+  }
+
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_ba091a-80:hover > .kt-inside-inner-col > *,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_6f15fb-12:hover > .kt-inside-inner-col > *,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_a1bb23-84:hover > .kt-inside-inner-col > * {
+    transform: translateX(4px);
+  }
+
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_ba091a-80:hover > .kt-inside-inner-col {
+    background-position: 61% center !important;
+  }
+
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_6f15fb-12:hover > .kt-inside-inner-col {
+    background-position: calc(100% - 8px) center !important;
+  }
+
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_a1bb23-84:hover > .kt-inside-inner-col {
+    background-position: calc(100% + 64px) center !important;
+  }
+
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kb-button:hover,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kb-button:focus-visible {
+    transform: translateY(-3px) scale(1.035);
+  }
+}
+
+body.page-id-47 .kb-row-layout-id47_83d64e-ce .kb-button:active {
+  transform: translateY(1px) scale(.985) !important;
+}
+
+@keyframes tmd-home-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_ba091a-80 > .kt-inside-inner-col,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_6f15fb-12 > .kt-inside-inner-col,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_a1bb23-84 > .kt-inside-inner-col,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_ba091a-80 > .kt-inside-inner-col > *,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_6f15fb-12 > .kt-inside-inner-col > *,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_a1bb23-84 > .kt-inside-inner-col > *,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kb-button {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_ba091a-80 > .kt-inside-inner-col::after,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_6f15fb-12 > .kt-inside-inner-col::after,
+  body.page-id-47 .kb-row-layout-id47_83d64e-ce .kadence-column47_a1bb23-84 > .kt-inside-inner-col::after {
+    display: none;
+  }
+}
