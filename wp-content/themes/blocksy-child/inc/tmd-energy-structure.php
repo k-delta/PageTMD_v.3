@@ -48,6 +48,36 @@ add_filter('the_content', static function (string $content): string {
 }, 99);
 
 /*
+ * Alinea el CTA final de /energia/cargadores/ como un único bloque visual:
+ * título, texto y botón comparten el mismo ancho y borde izquierdo.
+ */
+add_action('wp_head', static function (): void {
+    if (! is_page(255)) {
+        return;
+    }
+    ?>
+    <style id="tmd-energy-charger-cta-alignment">
+        body.page-id-255 .tmd-energy-cta > h2,
+        body.page-id-255 .tmd-energy-cta > p,
+        body.page-id-255 .tmd-energy-cta > .tmd-energy-actions {
+            width: min(760px, 100%);
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        body.page-id-255 .tmd-energy-cta > p {
+            margin-bottom: 0;
+        }
+
+        body.page-id-255 .tmd-energy-cta > .tmd-energy-actions {
+            justify-content: flex-start;
+            margin-top: 26px !important;
+        }
+    </style>
+    <?php
+}, 99);
+
+/*
  * Rank Math debe publicar únicamente la URL canónica /energia/bms/.
  */
 add_filter('rank_math/sitemap/posts_to_exclude', static function (array $post_ids): array {
