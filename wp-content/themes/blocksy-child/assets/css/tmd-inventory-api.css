@@ -132,7 +132,7 @@
 .tmd-api-actions a.is-primary,
 .tmd-api-quote { background: #128ceb; color: #fff; }
 
-.tmd-api-pagination { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; margin-top: 34px; }
+.tmd-api-pagination { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; margin-top: 34px; align-items: center; }
 .tmd-api-pagination a,
 .tmd-api-pagination button {
   display: grid;
@@ -152,20 +152,35 @@
 .tmd-api-pagination a.is-current,
 .tmd-api-pagination button.is-current { border-color: #262e4f; background: #262e4f; color: #fff; }
 .tmd-api-pagination button.is-nav {
-  border-color: #128ceb;
-  color: #128ceb;
-  font-size: 17px;
-  line-height: 1;
-}
-.tmd-api-pagination button.is-nav:hover:not(:disabled) {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
   background: #128ceb;
   color: #fff;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 6px 16px rgba(18, 140, 235, .24);
+  transition: background-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.tmd-api-pagination button.is-nav:first-child { margin-right: 8px; }
+.tmd-api-pagination button.is-nav:last-child { margin-left: 8px; }
+.tmd-api-pagination button.is-nav:hover:not(:disabled) {
+  background: #0b75c9;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(18, 140, 235, .3);
 }
 .tmd-api-pagination button.is-nav:disabled {
-  border-color: #d8e0e9;
-  color: #aab6c5;
+  border: 0;
+  background: #e8eef5;
+  color: #93a4b7;
   cursor: default;
-  opacity: .55;
+  box-shadow: none;
+  opacity: 1;
 }
 .tmd-api-message { padding: 30px; border-radius: 10px; background: #f4f6f9; color: #5e748b; text-align: center; }
 
