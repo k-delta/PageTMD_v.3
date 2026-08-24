@@ -162,6 +162,13 @@ body.page-id-57 .tmd-round-btn {
   min-height: 36px !important;
 }
 
+/* Contact page: keep the form heading proportional to the form. */
+body.page-id-57 .tmd-form-card > h2.tmd-field-wide {
+  font-size: clamp(30px, 3vw, 38px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.03em !important;
+}
+
 @media (max-width: 860px) {
   body.page-id-57 .tmd-dark-band {
     padding-top: 24px !important;
@@ -170,6 +177,10 @@ body.page-id-57 .tmd-round-btn {
 
   body.page-id-57 .tmd-advisor-card {
     padding: 18px !important;
+  }
+
+  body.page-id-57 .tmd-form-card > h2.tmd-field-wide {
+    font-size: 30px !important;
   }
 }
 
