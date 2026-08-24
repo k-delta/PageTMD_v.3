@@ -252,6 +252,27 @@
     pagination.replaceChildren();
     pagination.hidden = totalPages <= 1;
 
+    if (totalPages <= 1) {
+      return;
+    }
+
+    const goToPage = (page) => {
+      currentPage = page;
+      render(false);
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    const previous = document.createElement('button');
+    previous.type = 'button';
+    previous.textContent = '←';
+    previous.className = 'is-nav';
+    previous.setAttribute('aria-label', 'Página anterior');
+    previous.disabled = currentPage === 1;
+    if (!previous.disabled) {
+      previous.addEventListener('click', () => goToPage(currentPage - 1));
+    }
+    pagination.append(previous);
+
     for (let page = 1; page <= totalPages; page += 1) {
       const button = document.createElement('button');
       button.type = 'button';
@@ -261,13 +282,20 @@
       if (page === currentPage) {
         button.setAttribute('aria-current', 'page');
       }
-      button.addEventListener('click', () => {
-        currentPage = page;
-        render(false);
-        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
+      button.addEventListener('click', () => goToPage(page));
       pagination.append(button);
     }
+
+    const next = document.createElement('button');
+    next.type = 'button';
+    next.textContent = '→';
+    next.className = 'is-nav';
+    next.setAttribute('aria-label', 'Página siguiente');
+    next.disabled = currentPage === totalPages;
+    if (!next.disabled) {
+      next.addEventListener('click', () => goToPage(currentPage + 1));
+    }
+    pagination.append(next);
   };
 
   function render(resetPage = true, preserveGrid = false) {
