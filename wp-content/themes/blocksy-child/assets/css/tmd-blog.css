@@ -316,10 +316,14 @@
 .tmd-blog-breadcrumb span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .tmd-article-header { max-width: 900px; margin: 0 auto 36px; text-align: center; }
+.tmd-article-header .tmd-blog-category {
+  font-size: 14px;
+  letter-spacing: 1.3px;
+}
 .tmd-article-header h1 {
   margin: 14px 0;
   color: var(--tmd-blog-navy);
-  font-size: clamp(38px, 5vw, 62px);
+  font-size: clamp(34px, 4vw, 52px);
   line-height: 1.08;
 }
 .tmd-article-meta { color: var(--tmd-blog-muted); }
