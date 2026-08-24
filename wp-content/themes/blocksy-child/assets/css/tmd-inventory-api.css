@@ -90,11 +90,19 @@
 /* Equipment cards: brand/model title first, classification tags below it. */
 .tmd-equipment-card.tmd-api-card .tmd-equipment-body > h3 {
   order: 1;
-  margin: 0 0 12px;
+  margin: 0 0 10px;
+  font-size: 17px;
+  line-height: 1.2;
 }
 .tmd-equipment-card.tmd-api-card .tmd-equipment-body > .tmd-api-tags {
   order: 2;
-  margin-bottom: 16px;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.tmd-equipment-card.tmd-api-card .tmd-equipment-body > .tmd-api-tags span {
+  padding: 4px 8px;
+  font-size: 9px;
+  letter-spacing: .3px;
 }
 .tmd-equipment-card.tmd-api-card .tmd-equipment-body > .tmd-api-specs { order: 3; }
 .tmd-equipment-card.tmd-api-card .tmd-equipment-body > .tmd-api-actions { order: 4; }
