@@ -136,7 +136,7 @@ body.page-id-47 .kb-btn47_23547f-fc:hover {
 
   body.page-id-47 .kb-btn47_e9dd8c-4a::after {
     margin-left: 7px;
-    font-size: 18px;
+    font-size: 18px !important;
   }
 }
 
@@ -414,6 +414,18 @@ body.page-id-47 .tmd-success-showcase,
 body.page-id-47 .tmd-home-services {
   padding-top: 48px !important;
   padding-bottom: 48px !important;
+}
+
+/* Do not render an empty success-stories block or its fallback message. */
+body.page-id-47 .tmd-success-showcase:not(:has(article, blockquote, [data-tmd-success-slide], .tmd-success-card, .tmd-success-slide)) {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
 }
 
 body.page-id-47 .tmd-success-showcase {
