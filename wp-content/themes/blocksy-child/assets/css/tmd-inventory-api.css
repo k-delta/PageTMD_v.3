@@ -86,6 +86,11 @@
   background: rgba(246, 181, 31, .16);
   color: #8b6200;
 }
+
+/* Battery cards do not need redundant type/status tags. */
+.tmde-card.tmd-api-card .tmd-api-tags { display: none; }
+.tmde-card.tmd-api-card h3 { margin-top: 0; }
+
 .tmd-api-specs { display: grid; gap: 0; margin-top: auto; border-top: 1px solid #e7ebf0; }
 .tmd-api-specs > div { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid #e7ebf0; }
 .tmd-api-specs span { color: #6b7f95; font-size: 12px; }
