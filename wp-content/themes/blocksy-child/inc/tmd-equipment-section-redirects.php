@@ -18,6 +18,20 @@ add_action('template_redirect', static function () {
 }, 1);
 
 /* TMD_HOME_EQUIPMENT_CARD_START */
+add_action('wp_enqueue_scripts', static function () {
+    if (!is_page(47)) {
+        return;
+    }
+
+    $motion_css = get_stylesheet_directory() . '/assets/css/tmd-home-card-motion.css';
+    wp_enqueue_style(
+        'tmd-home-card-motion',
+        get_stylesheet_directory_uri() . '/assets/css/tmd-home-card-motion.css',
+        ['tmd-home-blocks'],
+        file_exists($motion_css) ? filemtime($motion_css) : '1.0.0'
+    );
+}, 56);
+
 add_filter('the_content', static function ($content) {
     if (!is_page(47) || strpos((string) $content, '47_83d64e-ce') === false) {
         return $content;
