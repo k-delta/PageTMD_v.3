@@ -48,15 +48,31 @@ add_filter('the_content', static function (string $content): string {
 }, 99);
 
 /*
- * Alinea el CTA final de /energia/cargadores/ como un único bloque visual:
- * título, texto y botón comparten el mismo ancho y borde izquierdo.
+ * Marca únicamente la sección "Compatibilidad antes que velocidad" para poder
+ * aplicar el tratamiento visual de referencia sin afectar las demás tarjetas
+ * de Energía.
+ */
+add_filter('the_content', static function (string $content): string {
+    if (is_admin() || ! is_page(255) || ! str_contains($content, 'Compatibilidad antes que velocidad')) {
+        return $content;
+    }
+
+    return str_replace(
+        '<h2>Compatibilidad antes que velocidad</h2>',
+        '<h2 class="tmd-energy-compatibility-title">Compatibilidad antes que velocidad</h2>',
+        $content
+    );
+}, 98);
+
+/*
+ * Ajustes visuales específicos de /energia/cargadores/.
  */
 add_action('wp_head', static function (): void {
     if (! is_page(255)) {
         return;
     }
     ?>
-    <style id="tmd-energy-charger-cta-alignment">
+    <style id="tmd-energy-charger-page-adjustments">
         body.page-id-255 .tmd-energy-cta > h2,
         body.page-id-255 .tmd-energy-cta > p,
         body.page-id-255 .tmd-energy-cta > .tmd-energy-actions {
@@ -72,6 +88,109 @@ add_action('wp_head', static function (): void {
         body.page-id-255 .tmd-energy-cta > .tmd-energy-actions {
             justify-content: flex-start;
             margin-top: 26px !important;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title {
+            max-width: none !important;
+            margin: 0 auto 30px !important;
+            text-align: center;
+            font-size: clamp(28px, 3vw, 36px) !important;
+            line-height: 1.1 !important;
+            letter-spacing: -.025em !important;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards {
+            gap: 22px;
+            align-items: stretch;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card {
+            position: relative;
+            min-height: 190px;
+            padding: 62px 22px 22px !important;
+            overflow: hidden;
+            border: 1px solid rgba(38, 46, 79, .10) !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 26px rgba(38, 46, 79, .10) !important;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card::before {
+            position: absolute;
+            top: 18px;
+            left: 22px;
+            display: grid;
+            width: 34px;
+            height: 34px;
+            place-items: center;
+            border-radius: 7px;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(1) {
+            border-top: 4px solid #128ceb !important;
+            background: #262e4f !important;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(1)::before {
+            content: '⚡';
+            color: #ffc33c;
+            background: rgba(255, 255, 255, .08);
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(1) h3 {
+            color: #fff !important;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(1) p {
+            color: rgba(255, 255, 255, .76) !important;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(2) {
+            border-top: 4px solid #ff9f1a !important;
+            background: #fff !important;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(2)::before {
+            content: '▭';
+            color: #ff8f00;
+            background: #fff4e7;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(3) {
+            border-top: 4px solid #262e4f !important;
+            background: #eef4f9 !important;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(3)::before {
+            content: '⚙';
+            color: #ff8f00;
+            background: #fff;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card h3 {
+            margin: 0 0 10px !important;
+            font-size: 18px !important;
+            line-height: 1.2 !important;
+        }
+
+        body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card p {
+            margin: 0 !important;
+            font-size: 13px !important;
+            line-height: 1.55 !important;
+        }
+
+        @media (max-width: 781px) {
+            body.page-id-255 .tmd-energy-compatibility-title {
+                margin-bottom: 22px !important;
+                font-size: 28px !important;
+            }
+
+            body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card {
+                min-height: 0;
+            }
         }
     </style>
     <?php
