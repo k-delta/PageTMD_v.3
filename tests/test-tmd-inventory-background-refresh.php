@@ -54,6 +54,7 @@ function tmd_inventory_test_item($id = 'eq-1', $type = 'montacargas') {
         'especificaciones' => $type === 'montacargas'
             ? [
                 'subtipo' => 'REACH',
+                'capacidad_ton' => 2,
                 'alturaMastilContraido_m' => 2.5,
                 'alturaLevantamiento_m' => 7,
                 'condicionEspecial' => 'PANTOGRAFO',
@@ -356,11 +357,46 @@ $energy_grid = tmd_inventory_api_grid('bateria', 12);
 tmd_inventory_test_assert(str_contains($equipment_filters, 'action="https://example.test/equipos/"'), 'Equipos debe conservar su formulario de filtros.');
 tmd_inventory_test_assert(
     array_reduce(
-        ['api_marca', 'api_categoria', 'api_subcategoria', 'api_altura_colapsada', 'api_altura_levante', 'api_condicion', 'api_operario', 'api_reach'],
+        ['api_altura_colapsada', 'api_altura_levante', 'api_capacidad'],
         static fn($found, $name) => $found && str_contains($equipment_filters, 'name="' . $name . '"'),
         true
     ),
-    'Equipos debe conservar todos sus controles de filtro.'
+    'Equipos debe mostrar únicamente sus tres controles de filtro aprobados.'
+);
+tmd_inventory_test_assert(
+    array_reduce(
+        ['api_marca', 'api_categoria', 'api_subcategoria', 'api_condicion', 'api_operario', 'api_reach'],
+        static fn($hidden, $name) => $hidden && ! str_contains($equipment_filters, 'name="' . $name . '"'),
+        true
+    ),
+    'Equipos no debe renderizar los controles ocultos.'
+);
+tmd_inventory_test_assert(
+    str_contains($equipment_filters, '<option value="2 ton">2 ton</option>')
+        && ! str_contains($equipment_filters, '2 ton ('),
+    'Capacidad debe mostrar toneladas disponibles sin conteos.'
+);
+tmd_inventory_test_assert(3 === substr_count($equipment_filters, '<select name="'), 'Equipos debe renderizar exactamente tres selectores visibles.');
+
+$capacity_items = [];
+foreach ([2, 2.0, 1.5, 10, 0, 'inválida', null] as $index => $capacity) {
+    $capacity_item = tmd_inventory_test_item('capacity-' . $index);
+    $capacity_item['especificaciones']['capacidad_ton'] = $capacity;
+    $capacity_items[] = $capacity_item;
+}
+$capacity_options = tmd_inventory_api_equipment_capacity_options($capacity_items);
+tmd_inventory_test_assert(
+    ['1.5 ton', '2 ton', '10 ton'] === array_keys($capacity_options)
+        && 2 === $capacity_options['2 ton'],
+    'Capacidad debe normalizar, deduplicar, ordenar y excluir valores inválidos.'
+);
+ob_start();
+tmd_inventory_api_select('api_capacidad', 'Capacidad', $capacity_options, '', false);
+$capacity_select = ob_get_clean();
+tmd_inventory_test_assert(
+    3 === substr_count($capacity_select, '<option value="') - 1
+        && ! str_contains($capacity_select, ' ton ('),
+    'El selector de capacidad debe mostrar exactamente las opciones válidas sin conteos.'
 );
 tmd_inventory_test_assert(
     str_contains($equipment_grid, 'data-api-type="montacargas"')
@@ -380,6 +416,17 @@ tmd_inventory_test_assert(
     ),
     'Energía debe conservar todos sus controles de filtro.'
 );
+tmd_inventory_test_assert(4 === substr_count($energy_filters, '<select name="'), 'Energía debe conservar exactamente sus cuatro selectores.');
+tmd_inventory_test_assert(
+    str_contains($energy_filters, '<option value="CROWN">CROWN</option>')
+        && str_contains($energy_filters, '<option value="48 V">48 V</option>')
+        && str_contains($energy_filters, '<option value="625 Ah">625 Ah</option>')
+        && str_contains($energy_filters, '<option value="Nueva">Nueva</option>')
+        && ! str_contains($energy_filters, 'CROWN (')
+        && ! str_contains($energy_filters, '48 V (')
+        && ! str_contains($energy_filters, '625 Ah ('),
+    'Energía debe conservar etiquetas, valores y unidades sin conteos visibles.'
+);
 tmd_inventory_test_assert(
     str_contains($energy_grid, 'data-api-type="bateria"')
         && str_contains($energy_grid, 'data-api-per-page="12"')
@@ -390,6 +437,15 @@ tmd_inventory_test_assert(
     'Energía debe conservar tarjeta, paginación, ficha y parámetros de cotización.'
 );
 tmd_inventory_test_assert(0 === $tmd_test_remote_calls, 'Renderizar ambos catálogos con copia local no debe llamar Firebase.');
+
+$_GET = ['api_categoria' => 'Reach'];
+$legacy_equipment_filters = tmd_inventory_api_filter_form('montacargas');
+tmd_inventory_test_assert(
+    str_contains($legacy_equipment_filters, '<input type="hidden" name="api_categoria" value="Reach" data-api-preserved-filter>')
+        && ! str_contains($legacy_equipment_filters, '<select name="api_categoria"'),
+    'Una URL existente debe preservar el filtro de categoría sin volver a mostrar su control.'
+);
+$_GET = [];
 
 $_GET['ficha'] = 'forklift-public';
 $detail = tmd_inventory_api_grid('montacargas', 12);
@@ -450,6 +506,11 @@ tmd_inventory_test_assert(
     [] === array_intersect(['estado', 'especificaciones', 'media'], array_keys($public_payload['items'][0] ?? [])),
     'El JSON público no debe exponer estructuras internas completas.'
 );
+tmd_inventory_test_assert(
+    '2 ton' === ($public_payload['items'][0]['filters']['capacity'] ?? '')
+        && 'Reach' === ($public_payload['items'][0]['filters']['category'] ?? ''),
+    'El modelo público debe conservar clasificación y exponer capacidad de montacargas.'
+);
 
 $_GET['api_marca'] = 'JUNGHEINRICH';
 $filtered_grid = tmd_inventory_api_grid('montacargas', 12);
@@ -482,6 +543,7 @@ $equipment_filter_cases = [
     ['api_condicion' => 'pantografo'],
     ['api_operario' => 'sentado'],
     ['api_reach' => 'doble'],
+    ['api_capacidad' => '2 ton'],
 ];
 foreach ($equipment_filter_cases as $query) {
     $_GET = $query;

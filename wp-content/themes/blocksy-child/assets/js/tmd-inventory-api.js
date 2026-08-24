@@ -33,6 +33,19 @@
       && exactMatch(values.capacity, filters.capacity);
   };
 
+  const clearPreservedFilters = (form) => {
+    form.querySelectorAll('[data-api-preserved-filter]').forEach((input) => {
+      input.value = '';
+    });
+  };
+
+  const restoreFormControls = (form, search) => {
+    const params = new URLSearchParams(search);
+    form.querySelectorAll('[name]').forEach((control) => {
+      control.value = params.get(control.name) || '';
+    });
+  };
+
   const pageItems = (items, page, perPage) => {
     const firstVisible = (page - 1) * perPage;
     return items.slice(firstVisible, firstVisible + perPage);
@@ -48,7 +61,16 @@
   };
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { normalize, exactMatch, rangeMatch, cardMatches, pageItems, parsePayload };
+    module.exports = {
+      normalize,
+      exactMatch,
+      rangeMatch,
+      cardMatches,
+      clearPreservedFilters,
+      restoreFormControls,
+      pageItems,
+      parsePayload,
+    };
   }
 
   if (typeof document === 'undefined') {
@@ -290,15 +312,13 @@
   clearLink?.addEventListener('click', (event) => {
     event.preventDefault();
     form.reset();
+    clearPreservedFilters(form);
     updateSubcategoryOptions();
     render(true);
   });
 
   window.addEventListener('popstate', () => {
-    const params = new URLSearchParams(window.location.search);
-    form.querySelectorAll('select[name]').forEach((select) => {
-      select.value = params.get(select.name) || '';
-    });
+    restoreFormControls(form, window.location.search);
     updateSubcategoryOptions();
     render(true);
   });

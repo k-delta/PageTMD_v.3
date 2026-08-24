@@ -3,9 +3,11 @@
 const assert = require('node:assert/strict');
 const {
   cardMatches,
+  clearPreservedFilters,
   pageItems,
   parsePayload,
   rangeMatch,
+  restoreFormControls,
 } = require('../wp-content/themes/blocksy-child/assets/js/tmd-inventory-api.js');
 
 const items = Array.from({ length: 25 }, (_, index) => ({
@@ -20,7 +22,7 @@ const items = Array.from({ length: 25 }, (_, index) => ({
     operator: 'Sentado',
     reach: 'DOBLE',
     voltage: '',
-    capacity: '',
+    capacity: '2 ton',
   },
 }));
 
@@ -39,8 +41,26 @@ assert.equal(items.filter((item) => cardMatches(item, { ...noFilters, liftHeight
 assert.equal(items.filter((item) => cardMatches(item, { ...noFilters, condition: 'pantografo' })).length, 25);
 assert.equal(items.filter((item) => cardMatches(item, { ...noFilters, operator: 'sentado' })).length, 25);
 assert.equal(items.filter((item) => cardMatches(item, { ...noFilters, reach: 'doble' })).length, 25);
+assert.equal(items.filter((item) => cardMatches(item, { ...noFilters, capacity: '2 ton' })).length, 25);
+assert.equal(items.filter((item) => cardMatches(item, { ...noFilters, capacity: '2.5 ton' })).length, 0);
 assert.equal(rangeMatch('7', '6-8'), true);
 assert.equal(rangeMatch('', '6-8'), false);
+
+const preservedCategory = { name: 'api_categoria', value: 'Reach' };
+const capacityControl = { name: 'api_capacidad', value: '' };
+const formControls = {
+  querySelectorAll(selector) {
+    return selector === '[data-api-preserved-filter]'
+      ? [preservedCategory]
+      : [preservedCategory, capacityControl];
+  },
+};
+restoreFormControls(formControls, '?api_categoria=Apiladores&api_capacidad=2%20ton');
+assert.equal(preservedCategory.value, 'Apiladores');
+assert.equal(capacityControl.value, '2 ton');
+clearPreservedFilters(formControls);
+assert.equal(preservedCategory.value, '');
+assert.equal(capacityControl.value, '2 ton');
 
 const battery = {
   filters: {
