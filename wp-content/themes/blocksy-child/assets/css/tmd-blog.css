@@ -303,7 +303,7 @@
   text-align: center;
 }
 
-.tmd-article-page { padding: 60px 0 80px; }
+.tmd-article-page { padding: 24px 0 80px; }
 .tmd-blog-breadcrumb {
   display: flex;
   gap: 8px;
@@ -416,7 +416,7 @@
   .tmd-blog-latest, .tmd-blog-related, .tmd-home-blog { padding: 32px 0; }
   .tmd-blog-card, .tmd-blog-card > a { min-height: 260px; }
   .tmd-blog-card > a { padding: 22px; }
-  .tmd-article-page { padding: 34px 0 55px; }
+  .tmd-article-page { padding: 18px 0 55px; }
   .tmd-blog-breadcrumb { margin-bottom: 28px; }
   .tmd-article-cover { margin-bottom: 34px; }
   .tmd-article-content { font-size: 17px; }
