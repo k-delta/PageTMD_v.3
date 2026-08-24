@@ -120,9 +120,16 @@
 .tmd-type-guide__hero h1 {
     color: #fff;
     font-size: clamp(2.65rem, 5.3vw, 5.2rem);
+    hyphens: none;
     letter-spacing: -.05em;
     line-height: .98;
     margin: 1rem 0 1.4rem;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+body.page-id-355 .tmd-type-guide__hero h1 {
+    font-size: clamp(2.65rem, 4.7vw, 4.65rem);
 }
 
 .tmd-type-guide__hero p {
