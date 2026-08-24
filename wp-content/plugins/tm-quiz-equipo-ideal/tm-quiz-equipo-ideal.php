@@ -781,7 +781,7 @@ if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
                       <input type="radio" name="aplicacion" value="almacenamiento_apilado">
                       <span class="tmd-q-card">
                         <span class="tmd-q-icon">▤</span>
-                        <strong>Almacenamiento/Apilado</strong>
+                        <strong>Almacenamiento / Apilado</strong>
                         <span>Estantería, racks y operación en altura.</span>
                       </span>
                     </label>
