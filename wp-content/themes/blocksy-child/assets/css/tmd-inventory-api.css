@@ -140,6 +140,25 @@
 .tmd-api-specs.is-detail { margin-bottom: 24px; }
 .tmd-api-quote { width: fit-content; padding: 0 24px; }
 
+/* Detail view: hide the catalog heading and keep the equipment image compact. */
+body.page-id-49 .tmd-catalog-layout:has(.tmd-api-detail) .tmd-catalog-heading-row {
+  display: none !important;
+  margin: 0 !important;
+}
+
+body.page-id-49 .tmd-api-detail-image {
+  align-self: start;
+  height: clamp(400px, 34vw, 520px);
+}
+
+body.page-id-49 .tmd-api-detail-image img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+  object-position: center;
+}
+
 @media (max-width: 1100px) {
   .tmd-api-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -147,5 +166,6 @@
   .tmd-api-status { align-items: flex-start; flex-direction: column; }
   .tmd-api-grid { grid-template-columns: 1fr; }
   .tmd-api-detail-grid { grid-template-columns: 1fr; }
-  .tmd-api-detail-image img { min-height: 260px; max-height: 420px; }
+  .tmd-api-detail-image { height: 340px; }
+  .tmd-api-detail-image img { min-height: 0; max-height: none; }
 }
