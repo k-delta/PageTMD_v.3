@@ -18,6 +18,17 @@ add_action('wp_head', static function () {
         .page-title {
             display: none !important;
         }
+
+        .tmd-quiz-v3 .tmd-q-option {
+            display: flex;
+        }
+
+        .tmd-quiz-v3 .tmd-q-card {
+            width: 100%;
+            min-height: 200px;
+            height: 100%;
+            padding: 28px 24px;
+        }
     </style>
     <?php
 }, 99);
