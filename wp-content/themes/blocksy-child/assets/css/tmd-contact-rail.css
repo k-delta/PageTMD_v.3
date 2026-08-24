@@ -95,6 +95,84 @@
   visibility: visible;
 }
 
+/* Contact page: compact advisor section. */
+body.page-id-57 .tmd-dark-band {
+  padding-top: 30px !important;
+  padding-bottom: 30px !important;
+}
+
+body.page-id-57 .tmd-band-head {
+  gap: 14px !important;
+  margin-bottom: 18px !important;
+}
+
+body.page-id-57 .tmd-band-head h2 {
+  font-size: clamp(26px, 2.4vw, 34px) !important;
+  line-height: 1.08 !important;
+}
+
+body.page-id-57 .tmd-advisors-track {
+  gap: 16px !important;
+}
+
+body.page-id-57 .tmd-advisor-card {
+  padding: 20px !important;
+  border-radius: 16px !important;
+}
+
+body.page-id-57 .tmd-avatar.tmd-avatar-photo {
+  width: 64px !important;
+  height: 64px !important;
+  margin-bottom: 10px !important;
+  border-radius: 14px !important;
+}
+
+body.page-id-57 .tmd-advisor-card h3 {
+  margin: 8px 0 6px !important;
+  font-size: 20px !important;
+  line-height: 1.12 !important;
+}
+
+body.page-id-57 .tmd-advisor-role,
+body.page-id-57 .tmd-advisor-phone {
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+}
+
+body.page-id-57 .tmd-advisor-phone {
+  margin-top: 3px !important;
+}
+
+body.page-id-57 .tmd-advisor-actions {
+  gap: 8px !important;
+  margin-top: 14px !important;
+}
+
+body.page-id-57 .tmd-call,
+body.page-id-57 .tmd-whatsapp {
+  min-height: 36px !important;
+  padding: 0 14px !important;
+  font-size: 12px !important;
+}
+
+body.page-id-57 .tmd-round-btn {
+  width: 36px !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+}
+
+@media (max-width: 860px) {
+  body.page-id-57 .tmd-dark-band {
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+  }
+
+  body.page-id-57 .tmd-advisor-card {
+    padding: 18px !important;
+  }
+}
+
 @media (max-width: 767px) {
   .tmd-contact-rail {
     display: none;
