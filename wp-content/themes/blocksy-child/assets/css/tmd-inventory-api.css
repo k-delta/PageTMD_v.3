@@ -87,6 +87,18 @@
   color: #8b6200;
 }
 
+/* Equipment cards: brand/model title first, classification tags below it. */
+.tmd-equipment-card.tmd-api-card .tmd-equipment-body > h3 {
+  order: 1;
+  margin: 0 0 12px;
+}
+.tmd-equipment-card.tmd-api-card .tmd-equipment-body > .tmd-api-tags {
+  order: 2;
+  margin-bottom: 16px;
+}
+.tmd-equipment-card.tmd-api-card .tmd-equipment-body > .tmd-api-specs { order: 3; }
+.tmd-equipment-card.tmd-api-card .tmd-equipment-body > .tmd-api-actions { order: 4; }
+
 /* Battery cards do not need redundant type/status tags. */
 .tmde-card.tmd-api-card .tmd-api-tags { display: none; }
 .tmde-card.tmd-api-card h3 { margin-top: 0; }
