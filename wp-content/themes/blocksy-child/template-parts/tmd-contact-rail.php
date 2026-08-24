@@ -2,6 +2,26 @@
 /**
  * Accesos globales de contacto para escritorio y tablet.
  */
+
+if (is_page(57)) {
+    add_filter('the_content', static function ($content) {
+        $content = preg_replace(
+            '/(<h1\b[^>]*>)\s*Contactanos\s*(<\/h1>)/iu',
+            '$1CONTÁCTANOS$2',
+            $content,
+            1
+        );
+
+        $content = preg_replace(
+            '/(<h2\b[^>]*>)\s*Nuestro equipo de asesores\s*(<\/h2>)/iu',
+            '$1Nuestro equipo$2',
+            $content,
+            1
+        );
+
+        return $content;
+    }, 20);
+}
 ?>
 <nav class="tmd-contact-rail" aria-label="Contacto rápido">
   <a
