@@ -1,6 +1,12 @@
 (function () {
   'use strict';
 
+  var heroImage = document.querySelector('.tmd-jobs-hero-card img');
+  if (heroImage) {
+    heroImage.src = '/wp-content/plugins/tm-quiz-equipo-ideal/assets/images/quiz/quiz-load.webp';
+    heroImage.alt = 'Operación logística con montacargas';
+  }
+
   var config = window.tmdJobApplication || {};
   var form = document.querySelector('[data-tmd-job-application]');
 
