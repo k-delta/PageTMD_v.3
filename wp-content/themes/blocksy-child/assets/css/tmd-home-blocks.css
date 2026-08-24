@@ -455,6 +455,14 @@ body.page-id-47 .kb-row-layout-id47_8d038e-4f > .kt-row-column-wrap {
   min-height: 0;
 }
 
+body.page-id-47 .kadence-column47_ba091a-80,
+body.page-id-47 .kadence-column47_6f15fb-12,
+body.page-id-47 .kadence-column47_a1bb23-84 {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
 body.page-id-47 .kadence-column47_4193d6-af > .kt-inside-inner-col,
 body.page-id-47 .kb-row-layout-id47_8d038e-4f > .kt-row-column-wrap {
   gap: 18px !important;
@@ -469,9 +477,12 @@ body.page-id-47 .kadence-column47_a1bb23-84 > .kt-inside-inner-col {
   align-items: flex-start !important;
   background-color: #fff !important;
   border: 0 !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
   outline: 0 !important;
   border-radius: 22px !important;
-  box-shadow: 0 12px 30px rgba(38, 46, 79, .1);
+  box-shadow: 0 14px 38px rgba(38, 46, 79, .08) !important;
 }
 
 body.page-id-47 .kadence-column47_ba091a-80 > .kt-inside-inner-col {
@@ -505,6 +516,9 @@ body.page-id-47 .kadence-column47_a1bb23-84 > .kt-inside-inner-col::before {
   mix-blend-mode: normal !important;
   background-color: transparent !important;
   border: 0 !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
   outline: 0 !important;
   box-shadow: none !important;
   border-radius: 22px !important;
@@ -516,7 +530,7 @@ body.page-id-47 .kadence-column47_ba091a-80 > .kt-inside-inner-col::before {
 
 body.page-id-47 .kadence-column47_6f15fb-12 > .kt-inside-inner-col::before,
 body.page-id-47 .kadence-column47_a1bb23-84 > .kt-inside-inner-col::before {
-  background-image: linear-gradient(90deg, #fff 0%, rgba(255, 255, 255, .98) 42%, rgba(255, 255, 255, .58) 55%, rgba(255, 255, 255, .02) 70%) !important;
+  background-image: linear-gradient(90deg, #fff 0%, #fff 50%, rgba(255, 255, 255, .97) 58%, rgba(255, 255, 255, .78) 66%, rgba(255, 255, 255, .34) 76%, rgba(255, 255, 255, .02) 88%) !important;
 }
 
 body.page-id-47 .kadence-column47_ba091a-80 > .kt-inside-inner-col > *,
