@@ -306,6 +306,14 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
     radial-gradient(circle at 80% 70%, rgba(18,140,235,.25), transparent 30%);
 }
 
+/* Las fotos de Nosotros y Servicios deben mostrarse sin tintas superpuestas. */
+#tmd-mm-panel-nosotros .tmd-mm-img::after,
+#tmd-mm-panel-mant .tmd-mm-img::after {
+  content: none;
+  display: none;
+  background: none;
+}
+
 .tmd-mm-img--compania {
   background-image: url('../images/mega-menu/menu-company.webp');
 }
