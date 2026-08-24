@@ -151,6 +151,22 @@
 }
 .tmd-api-pagination a.is-current,
 .tmd-api-pagination button.is-current { border-color: #262e4f; background: #262e4f; color: #fff; }
+.tmd-api-pagination button.is-nav {
+  border-color: #128ceb;
+  color: #128ceb;
+  font-size: 17px;
+  line-height: 1;
+}
+.tmd-api-pagination button.is-nav:hover:not(:disabled) {
+  background: #128ceb;
+  color: #fff;
+}
+.tmd-api-pagination button.is-nav:disabled {
+  border-color: #d8e0e9;
+  color: #aab6c5;
+  cursor: default;
+  opacity: .55;
+}
 .tmd-api-message { padding: 30px; border-radius: 10px; background: #f4f6f9; color: #5e748b; text-align: center; }
 
 .tmd-api-detail { padding: 24px; border: 1px solid #e2e8ef; border-radius: 14px; background: #fff; }
