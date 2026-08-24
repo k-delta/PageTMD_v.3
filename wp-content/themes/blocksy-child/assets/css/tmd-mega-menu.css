@@ -339,6 +339,10 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
   background-size: cover;
 }
 
+.tmd-mm-img--compania {
+  background-position: center 20%;
+}
+
 #tmd-mm-panel-nosotros .tmd-mm-img,
 #tmd-mm-panel-mant .tmd-mm-img {
   height: 150px;
