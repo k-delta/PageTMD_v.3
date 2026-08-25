@@ -241,7 +241,7 @@ add_action('wp_head', static function (): void {
         body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card {
             position: relative;
             min-height: 190px;
-            padding: 62px 22px 22px !important;
+            padding: 82px 22px 22px !important;
             overflow: hidden;
             border: 1px solid rgba(38, 46, 79, .10) !important;
             border-radius: 12px !important;
@@ -253,14 +253,14 @@ add_action('wp_head', static function (): void {
             top: 18px;
             left: 22px;
             display: grid;
-            width: 34px;
-            height: 34px;
+            width: 46px;
+            height: 46px;
             place-items: center;
-            border-radius: 7px;
-            font-family: Arial, sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            line-height: 1;
+            border-radius: 10px;
+            content: '';
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 28px 28px;
         }
 
         body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(1) {
@@ -269,9 +269,8 @@ add_action('wp_head', static function (): void {
         }
 
         body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(1)::before {
-            content: '⚡';
-            color: #ffc33c;
-            background: rgba(255, 255, 255, .08);
+            background-color: rgba(255, 255, 255, .08);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffc33c' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13 2 4.5 14h7L11 22l8.5-12h-7L13 2Z'/%3E%3C/svg%3E");
         }
 
         body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(1) h3 {
@@ -288,9 +287,8 @@ add_action('wp_head', static function (): void {
         }
 
         body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(2)::before {
-            content: '▭';
-            color: #ff8f00;
-            background: #fff4e7;
+            background-color: #fff4e7;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff8f00' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='6' width='16' height='12' rx='2'/%3E%3Cpath d='M21 10v4'/%3E%3C/svg%3E");
         }
 
         body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(3) {
@@ -299,9 +297,8 @@ add_action('wp_head', static function (): void {
         }
 
         body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card:nth-child(3)::before {
-            content: '⚙';
-            color: #ff8f00;
-            background: #fff;
+            background-color: #fff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff8f00' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.09a2 2 0 0 1 1 1.74v.5a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
         }
 
         body.page-id-255 .tmd-energy-compatibility-title + .tmd-energy-cards > .tmd-energy-card h3 {
