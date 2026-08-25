@@ -132,6 +132,26 @@ add_action('wp_head', static function (): void {
             grid-column: 1 / -1 !important;
         }
 
+        html body.page-id-255 .tmd-energy-cta {
+            text-align: center !important;
+        }
+
+        html body.page-id-255 .tmd-energy-cta > h2,
+        html body.page-id-255 .tmd-energy-cta > p {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            text-align: center !important;
+        }
+
+        html body.page-id-255 .tmd-energy-cta > .tmd-energy-actions {
+            display: flex !important;
+            width: min(760px, 100%) !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
         @media (max-width: 820px) {
             html body.page-id-255 .tmd-energy-split > .wp-block-columns {
                 grid-template-columns: 1fr !important;
