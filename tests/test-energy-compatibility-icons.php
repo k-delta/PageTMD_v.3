@@ -42,6 +42,7 @@ $icon_rules = [
     2 => tmd_energy_icon_rule($source, $card_selector . ':nth-child(2)::before'),
     3 => tmd_energy_icon_rule($source, $card_selector . ':nth-child(3)::before'),
 ];
+$card_two_rule = tmd_energy_icon_rule($source, $card_selector . ':nth-child(2)');
 $semantic_shapes = [
     1 => "M13 2 4.5 14h7L11 22l8.5-12h-7L13 2Z",
     2 => "%3Crect x='3' y='6' width='16' height='12' rx='2'/%3E",
@@ -60,6 +61,19 @@ foreach ($icon_rules as $card_number => $rule) {
         false !== strpos($rule, $semantic_shapes[$card_number]),
         "La tarjeta {$card_number} debe conservar el icono semantico asignado."
     );
+    tmd_energy_icon_assert(
+        false !== strpos($rule, "stroke='%23ffc33c'"),
+        "La tarjeta {$card_number} debe usar el amarillo de marca en su icono."
+    );
+}
+
+tmd_energy_icon_assert(
+    false !== strpos($card_two_rule, 'border-top: 4px solid #ffc33c !important;')
+        && false !== strpos($icon_rules[2], 'background-color: rgba(255, 195, 60, .12);'),
+    'Capacidad adecuada debe usar el amarillo de marca y su tinte claro.'
+);
+foreach (['#ff9f1a', '%23ff8f00', '#fff4e7'] as $legacy_orange) {
+    tmd_energy_icon_assert(false === strpos($source, $legacy_orange), 'No deben permanecer acentos naranjas en la seccion.');
 }
 
 foreach (["content: '⚡';", "content: '▭';", "content: '⚙';"] as $legacy_glyph) {

@@ -18,6 +18,8 @@
 
 [Evidencia: wp-content/themes/blocksy-child/inc/tmd-energy-structure.php:251] Los iconos actuales son glifos de texto distintos (`⚡`, `▭`, `⚙`) renderizados con Arial a `18px` dentro de cajas de `34px`; su forma, peso y proporción dependen de cada carácter.
 
+[Solicitud: captura aportada el 2026-08-25] Los acentos naranjas de la sección deben sustituirse por el amarillo de marca `#ffc33c` utilizado en el resto de la página.
+
 ## Problema
 
 [Solicitud] El estilo colorido debe activarse sobre el marcado real de WordPress y sus iconos deben comunicar el significado de cada tarjeta con un tamaño y un lenguaje gráfico coherentes. Los glifos actuales tienen pesos y proporciones diferentes y resultan demasiado pequeños.
@@ -37,8 +39,8 @@
 
 1. [Solicitud] El título “Compatibilidad antes que velocidad” debe conservar su texto y mostrarse centrado sobre las tres tarjetas en escritorio.
 2. [Solicitud] La tarjeta “Voltaje correcto” debe usar fondo azul oscuro, borde superior azul, título blanco, texto blanco atenuado e icono de rayo amarillo dentro de un recuadro azulado.
-3. [Solicitud] La tarjeta “Capacidad adecuada” debe usar fondo blanco, borde superior naranja e icono de batería naranja dentro de un recuadro crema.
-4. [Solicitud] La tarjeta “Instalación segura” debe usar fondo azul grisáceo claro, borde superior azul oscuro e icono de engranaje naranja dentro de un recuadro blanco.
+3. [Solicitud] La tarjeta “Capacidad adecuada” debe usar fondo blanco, borde superior amarillo `#ffc33c` e icono de batería amarillo dentro de un recuadro con tinte amarillo claro.
+4. [Solicitud] La tarjeta “Instalación segura” debe usar fondo azul grisáceo claro, borde superior azul oscuro e icono de engranaje amarillo `#ffc33c` dentro de un recuadro blanco.
 5. [Solicitud] Las tres tarjetas deben conservar esquinas redondeadas, sombra suave, alturas alineadas y separación uniforme, de acuerdo con la Imagen #1.
 6. [Regla: AGENTS.md] El cambio debe limitarse a la página de Cargadores, identificada por `body.page-id-255`, y no debe alterar tarjetas similares en otras páginas.
 7. [Solicitud] En móvil, las tarjetas deben conservar el orden actual, el tratamiento de color y todo su contenido visible sin solapamientos ni overflow horizontal.
@@ -92,8 +94,8 @@
 
 ## Criterios de aceptación
 
-1. [Solicitud] En escritorio, la sección coincide visualmente con la Imagen #1: primera tarjeta azul oscura, segunda blanca con acento naranja y tercera azul grisácea clara.
-2. [Solicitud] Cada tarjeta muestra su icono y borde superior con los colores correspondientes de la referencia.
+1. [Solicitud] En escritorio, la sección conserva la composición de la Imagen #1: primera tarjeta azul oscura, segunda blanca con acento amarillo y tercera azul grisácea clara.
+2. [Solicitud] Los tres iconos y el borde superior de “Capacidad adecuada” usan el amarillo de marca `#ffc33c`; no permanecen acentos naranjas en esta sección.
 3. [Solicitud] El título y los seis textos existentes permanecen sin cambios.
 4. [Evidencia: producción https://tecnimontacargas.com/energia/cargadores/, 2026-08-25] El marcado real con `class="wp-block-heading"` activa el estilo focalizado de compatibilidad.
 5. [Regla: AGENTS.md] Ninguna otra sección de Cargadores ni otra página recibe cambios visuales por este ajuste.
