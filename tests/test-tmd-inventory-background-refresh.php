@@ -357,15 +357,15 @@ $energy_grid = tmd_inventory_api_grid('bateria', 12);
 tmd_inventory_test_assert(str_contains($equipment_filters, 'action="https://example.test/equipos/"'), 'Equipos debe conservar su formulario de filtros.');
 tmd_inventory_test_assert(
     array_reduce(
-        ['api_altura_colapsada', 'api_altura_levante', 'api_capacidad'],
+        ['api_marca', 'api_altura_colapsada', 'api_altura_levante', 'api_capacidad'],
         static fn($found, $name) => $found && str_contains($equipment_filters, 'name="' . $name . '"'),
         true
     ),
-    'Equipos debe mostrar únicamente sus tres controles de filtro aprobados.'
+    'Equipos debe conservar Marca, Altura colapsada, Altura de levante y Capacidad.'
 );
 tmd_inventory_test_assert(
     array_reduce(
-        ['api_marca', 'api_categoria', 'api_subcategoria', 'api_condicion', 'api_operario', 'api_reach'],
+        ['api_categoria', 'api_subcategoria', 'api_condicion', 'api_operario', 'api_reach'],
         static fn($hidden, $name) => $hidden && ! str_contains($equipment_filters, 'name="' . $name . '"'),
         true
     ),
@@ -376,7 +376,7 @@ tmd_inventory_test_assert(
         && ! str_contains($equipment_filters, '2 ton ('),
     'Capacidad debe mostrar toneladas disponibles sin conteos.'
 );
-tmd_inventory_test_assert(3 === substr_count($equipment_filters, '<select name="'), 'Equipos debe renderizar exactamente tres selectores visibles.');
+tmd_inventory_test_assert(4 === substr_count($equipment_filters, '<select name="'), 'Equipos debe conservar exactamente sus cuatro selectores visibles.');
 
 $capacity_items = [];
 foreach ([2, 2.0, 1.5, 10, 0, 'inválida', null] as $index => $capacity) {
@@ -410,16 +410,22 @@ tmd_inventory_test_assert(
 tmd_inventory_test_assert(str_contains($energy_filters, 'action="https://example.test/energia/"'), 'Energía debe conservar su formulario de filtros.');
 tmd_inventory_test_assert(
     array_reduce(
-        ['api_marca', 'api_voltaje', 'api_capacidad', 'api_condicion'],
+        ['api_voltaje', 'api_capacidad', 'api_condicion'],
         static fn($found, $name) => $found && str_contains($energy_filters, 'name="' . $name . '"'),
         true
-    ),
-    'Energía debe conservar todos sus controles de filtro.'
+    )
+        && ! str_contains($energy_filters, 'name="api_marca"')
+        && ! str_contains($energy_filters, '<span>Marca</span>'),
+    'Energía debe mostrar Voltaje, Capacidad y Condición sin el filtro Marca.'
 );
-tmd_inventory_test_assert(4 === substr_count($energy_filters, '<select name="'), 'Energía debe conservar exactamente sus cuatro selectores.');
+tmd_inventory_test_assert(3 === substr_count($energy_filters, '<select name="'), 'Energía debe renderizar exactamente sus tres selectores aprobados.');
+preg_match_all('/<select name="([^"]+)"/', $energy_filters, $energy_filter_names);
 tmd_inventory_test_assert(
-    str_contains($energy_filters, '<option value="CROWN">CROWN</option>')
-        && str_contains($energy_filters, '<option value="48 V">48 V</option>')
+    ['api_voltaje', 'api_capacidad', 'api_condicion'] === ($energy_filter_names[1] ?? []),
+    'Energía debe conservar el orden Voltaje, Capacidad y Condición.'
+);
+tmd_inventory_test_assert(
+    str_contains($energy_filters, '<option value="48 V">48 V</option>')
         && str_contains($energy_filters, '<option value="625 Ah">625 Ah</option>')
         && str_contains($energy_filters, '<option value="Nueva">Nueva</option>')
         && ! str_contains($energy_filters, 'CROWN (')
@@ -561,7 +567,6 @@ $other_battery = tmd_inventory_test_item('battery-filter-other', 'bateria');
 $other_battery['marca'] = 'OTRA';
 $other_battery['especificaciones'] = ['voltaje_v' => 24, 'amperaje_ah' => 300];
 $battery_filter_cases = [
-    ['api_marca' => 'JUNGHEINRÍCH'],
     ['api_voltaje' => '48 V'],
     ['api_capacidad' => '625 Ah'],
     ['api_condicion' => 'Nueva'],
@@ -572,6 +577,27 @@ foreach ($battery_filter_cases as $query) {
     tmd_inventory_test_assert(
         ['battery-filter-match'] === array_column($matches, 'id'),
         'Cada filtro de energía debe conservar la coincidencia del servidor: ' . array_key_first($query)
+    );
+}
+
+$_GET = ['api_marca' => 'JUNGHEINRÍCH'];
+$matches = tmd_inventory_api_filter_items([$matching_battery, $other_battery], 'bateria');
+tmd_inventory_test_assert(
+    ['battery-filter-match', 'battery-filter-other'] === array_column($matches, 'id'),
+    'Energía debe ignorar api_marca heredado para evitar un filtro invisible.'
+);
+
+$legacy_brand_combinations = [
+    'api_voltaje' => '48 V',
+    'api_capacidad' => '625 Ah',
+    'api_condicion' => 'Nueva',
+];
+foreach ($legacy_brand_combinations as $filter_name => $filter_value) {
+    $_GET = ['api_marca' => 'OTRA', $filter_name => $filter_value];
+    $matches = tmd_inventory_api_filter_items([$matching_battery, $other_battery], 'bateria');
+    tmd_inventory_test_assert(
+        ['battery-filter-match'] === array_column($matches, 'id'),
+        'Energía debe ignorar Marca y conservar el filtro válido ' . $filter_name . '.'
     );
 }
 

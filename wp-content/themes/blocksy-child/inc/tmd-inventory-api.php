@@ -423,7 +423,7 @@ function tmd_inventory_api_subcategory_select($options, $selected) {
 }
 
 function tmd_inventory_api_filter_items($items, $type) {
-    $brand = tmd_inventory_api_request_value('api_marca');
+    $brand = $type === 'montacargas' ? tmd_inventory_api_request_value('api_marca') : '';
     $category = tmd_inventory_api_request_value('api_categoria');
     $subcategory = tmd_inventory_api_request_value('api_subcategoria');
     $collapsed_height = tmd_inventory_api_request_value('api_altura_colapsada');
@@ -522,7 +522,6 @@ function tmd_inventory_api_filter_form($type) {
         ], tmd_inventory_api_request_value('api_altura_levante'));
         tmd_inventory_api_select('api_capacidad', 'Capacidad', tmd_inventory_api_equipment_capacity_options($items), tmd_inventory_api_request_value('api_capacidad'), false);
     } else {
-        tmd_inventory_api_select('api_marca', 'Marca', tmd_inventory_api_brand_options($items), tmd_inventory_api_request_value('api_marca'), false);
         tmd_inventory_api_select('api_voltaje', 'Voltaje', tmd_inventory_api_voltage_options($items), tmd_inventory_api_request_value('api_voltaje'), false);
         tmd_inventory_api_select('api_capacidad', 'Capacidad', tmd_inventory_api_battery_capacity_options($items), tmd_inventory_api_request_value('api_capacidad'), false);
         tmd_inventory_api_select('api_condicion', 'Condición', ['Nueva' => 'Nueva', 'Usada' => 'Usada'], tmd_inventory_api_request_value('api_condicion'));
