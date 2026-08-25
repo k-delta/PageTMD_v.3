@@ -52,17 +52,38 @@ add_filter('the_content', static function (string $content): string {
  * aplicar el tratamiento visual de referencia sin afectar las demás tarjetas
  * de Energía.
  */
-add_filter('the_content', static function (string $content): string {
+function tmd_mark_energy_compatibility_title(string $content): string {
     if (is_admin() || ! is_page(255) || ! str_contains($content, 'Compatibilidad antes que velocidad')) {
         return $content;
     }
 
-    return str_replace(
-        '<h2>Compatibilidad antes que velocidad</h2>',
-        '<h2 class="tmd-energy-compatibility-title">Compatibilidad antes que velocidad</h2>',
-        $content
-    );
-}, 98);
+    $processor = new WP_HTML_Tag_Processor($content);
+
+    while ($processor->next_tag('H2')) {
+        if (! $processor->set_bookmark('tmd-energy-compatibility-heading')) {
+            continue;
+        }
+
+        $has_title = $processor->next_token()
+            && '#text' === $processor->get_token_name()
+            && 'Compatibilidad antes que velocidad' === trim($processor->get_modifiable_text());
+
+        if (! $has_title) {
+            $processor->release_bookmark('tmd-energy-compatibility-heading');
+            continue;
+        }
+
+        if ($processor->seek('tmd-energy-compatibility-heading')) {
+            $processor->add_class('tmd-energy-compatibility-title');
+        }
+
+        $processor->release_bookmark('tmd-energy-compatibility-heading');
+        return $processor->get_updated_html();
+    }
+
+    return $content;
+}
+add_filter('the_content', 'tmd_mark_energy_compatibility_title', 98);
 
 /*
  * Ajustes visuales específicos de /energia/cargadores/.
