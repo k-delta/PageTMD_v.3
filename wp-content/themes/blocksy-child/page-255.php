@@ -15,6 +15,8 @@ add_action('wp_head', static function (): void {
             margin: 0 !important;
             padding: 52px 0 56px !important;
             background: transparent !important;
+            box-shadow: none !important;
+            clip-path: none !important;
         }
 
         html body.page-id-255 .tmd-energy-split::after {
