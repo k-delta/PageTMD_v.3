@@ -14,6 +14,7 @@ add_action('wp_head', static function (): void {
             max-width: none !important;
             margin: 0 !important;
             padding: 52px 0 56px !important;
+            background: transparent !important;
         }
 
         html body.page-id-255 .tmd-energy-split::after {
@@ -26,9 +27,13 @@ add_action('wp_head', static function (): void {
             grid-template-columns: minmax(260px, .78fr) minmax(0, 1.65fr) !important;
             gap: clamp(30px, 4vw, 56px) !important;
             align-items: center !important;
-            width: min(1180px, calc(100% - 40px)) !important;
+            width: min(1180px, calc(100% - 64px)) !important;
             max-width: 1180px !important;
             margin: 0 auto !important;
+            padding: clamp(30px, 3.2vw, 46px) !important;
+            box-sizing: border-box !important;
+            border-radius: 26px !important;
+            background: #f4f6f8 !important;
         }
 
         html body.page-id-255 .tmd-energy-split > .wp-block-columns > .wp-block-column {
@@ -124,7 +129,8 @@ add_action('wp_head', static function (): void {
             html body.page-id-255 .tmd-energy-split > .wp-block-columns {
                 grid-template-columns: 1fr !important;
                 gap: 28px !important;
-                width: min(100% - 32px, 720px) !important;
+                width: min(calc(100% - 32px), 720px) !important;
+                padding: 26px !important;
             }
 
             html body.page-id-255 .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child,
@@ -137,6 +143,12 @@ add_action('wp_head', static function (): void {
         @media (max-width: 560px) {
             html body.page-id-255 .tmd-energy-split {
                 padding: 38px 0 42px !important;
+            }
+
+            html body.page-id-255 .tmd-energy-split > .wp-block-columns {
+                width: calc(100% - 24px) !important;
+                padding: 22px 18px !important;
+                border-radius: 20px !important;
             }
 
             html body.page-id-255 .tmd-energy-split h2 {
