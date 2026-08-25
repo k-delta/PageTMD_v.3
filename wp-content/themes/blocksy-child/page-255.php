@@ -16,6 +16,11 @@ add_action('wp_head', static function (): void {
             padding: 52px 0 56px !important;
         }
 
+        html body.page-id-255 .tmd-energy-split::after {
+            content: none !important;
+            display: none !important;
+        }
+
         html body.page-id-255 .tmd-energy-split > .wp-block-columns {
             display: grid !important;
             grid-template-columns: minmax(260px, .78fr) minmax(0, 1.65fr) !important;
