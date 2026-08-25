@@ -12,6 +12,8 @@
 
 [Solicitud: Imagen #3 aportada el 2026-08-25] La sección “Qué revisamos para recomendar un cargador” sirve como guía para presentar “Criterios para seleccionar la batería” sobre un fondo gris claro, con texto a la izquierda y los criterios en tarjetas compactas a la derecha.
 
+[Solicitud: capturas de revisión aportadas el 2026-08-25] Las tres tarjetas resultantes deben ser considerablemente más compactas; el título de “Operaciones programadas” debe mostrarse blanco sobre la tarjeta azul. El fondo gris de “Criterios para seleccionar la batería” debe quedar centrado y limitado al mismo ancho de las demás secciones, sin la línea amarilla inferior de ancho completo.
+
 [Evidencia: production-snapshot/pages.json:283] La página versionada de referencia tiene ID `401`, slug `plomo` y utiliza el contenedor `tmd-energy-inner--plomo`; el contenido persistido no es fuente canónica para implementar estilos, pero confirma el identificador y la estructura histórica disponibles para focalizar el ajuste.
 
 [Evidencia: wp-content/themes/blocksy-child/style.css:1693] Los estilos compartidos actuales de Energía aplican fondo blanco, borde claro y sombra uniforme a todas las tarjetas `.tmd-energy-card`.
@@ -42,17 +44,19 @@
 
 1. [Solicitud] El título, los tres títulos de tarjeta, los tres párrafos y su orden en “¿Cuándo elegir una batería de plomo-ácido?” deben permanecer exactamente iguales al contenido visible al iniciar la implementación.
 2. [Solicitud] La sección “¿Cuándo elegir una batería de plomo-ácido?” debe conservar tres tarjetas alineadas en escritorio y adoptar el lenguaje visual de la Imagen #2: primera tarjeta azul oscura, segunda blanca con acento amarillo y tercera azul grisácea clara.
-3. [Solicitud] Las tres tarjetas deben tener borde superior de color, esquinas redondeadas, sombra suave, separación uniforme y altura visual alineada.
+3. [Solicitud] Las tres tarjetas deben ser considerablemente más compactas que en la primera implementación, conservar borde superior de color, esquinas redondeadas, sombra suave, separación uniforme y altura visual alineada.
 4. [Solicitud] La tarjeta “Operaciones programadas” debe mostrar un icono de calendario; la tarjeta de compatibilidad debe mostrar un icono de conector o enlace técnico; la tarjeta “Mantenimiento preventivo” debe mostrar un icono de llave de mantenimiento.
 5. [Solicitud] Los tres iconos deben pertenecer a una misma familia vectorial lineal, compartir grosor, terminaciones redondeadas, tamaño y peso visual, y no depender de emojis o glifos tipográficos del sistema.
 6. [Solicitud] Los iconos deben usar amarillo de marca `#ffc33c` dentro de cajas visuales coherentes con el color de cada tarjeta, sin solaparse con títulos o párrafos.
 7. [Solicitud] El título, el párrafo introductorio y todos los criterios de “Criterios para seleccionar la batería” deben permanecer exactamente iguales al contenido visible al iniciar la implementación.
-8. [Solicitud] “Criterios para seleccionar la batería” debe adoptar el lenguaje visual de la Imagen #3: fondo gris claro de ancho completo, texto en la columna izquierda y criterios en tarjetas compactas en la columna derecha.
+8. [Solicitud] “Criterios para seleccionar la batería” debe adoptar el lenguaje visual de la Imagen #3: fondo gris claro centrado y limitado al mismo ancho de las demás secciones, texto en la columna izquierda y criterios en tarjetas compactas en la columna derecha.
 9. [Solicitud] La columna izquierda debe incorporar una línea corta de acento amarillo bajo el párrafo, y la derecha debe presentar los criterios en dos columnas en escritorio con indicadores de check amarillos.
 10. [Solicitud] Cuando la cantidad de criterios sea impar, la última tarjeta debe ocupar el ancho disponible de la cuadrícula, como en la referencia, sin cambiar su posición relativa en la lista.
 11. [Solicitud] En móvil, ambas secciones deben pasar a una sola columna, conservar el orden actual y mantener todo el contenido visible sin recortes, solapamientos ni overflow horizontal.
 12. [Regla: AGENTS.md] Los estilos y cualquier marcado auxiliar deben limitarse a la página de Baterías de plomo, identificada por `body.page-id-401` o su contenedor específico `tmd-energy-inner--plomo`, sin alterar componentes compartidos en otras páginas.
 13. [Regla: AGENTS.md] El cambio debe implementarse en el child theme canónico y sin añadir dependencias externas.
+14. [Solicitud] El título de “Operaciones programadas” debe mostrarse blanco sobre la tarjeta azul, incluidos los elementos de texto anidados que WordPress pueda generar dentro del encabezado.
+15. [Solicitud] “Criterios para seleccionar la batería” no debe mostrar una línea amarilla inferior extendida de esquina a esquina; solo debe conservar la línea corta de acento bajo el texto de la columna izquierda.
 
 ## Reglas de negocio
 
@@ -80,7 +84,7 @@
 ```json
 {
   "firstSection": "tres tarjetas azul, blanca y azul grisácea con iconos SVG semánticos",
-  "secondSection": "bloque gris dividido con checklist técnico amarillo",
+  "secondSection": "bloque gris centrado, sin línea inferior de ancho completo y con checklist técnico amarillo",
   "contentChanged": false,
   "otherSectionsChanged": false,
   "otherPagesChanged": false
@@ -107,12 +111,13 @@
 1. [Solicitud] Los títulos, párrafos, elementos de lista y su orden en las dos secciones coinciden exactamente con el contenido visible anterior al cambio.
 2. [Solicitud] En escritorio, “¿Cuándo elegir una batería de plomo-ácido?” muestra tres tarjetas alineadas: azul oscura, blanca con acento amarillo y azul grisácea clara.
 3. [Solicitud] Las tres tarjetas muestran respectivamente un calendario, un conector o enlace técnico y una llave de mantenimiento, todos como SVG lineales coherentes y en amarillo `#ffc33c`.
-4. [Solicitud] Ningún icono invade el título o el párrafo y las tres tarjetas mantienen altura, bordes, sombras y separación consistentes.
-5. [Solicitud] “Criterios para seleccionar la batería” muestra fondo gris claro, contenido introductorio a la izquierda con línea amarilla y checklist a la derecha en tarjetas con checks amarillos.
+4. [Solicitud] Ningún icono invade el título o el párrafo y las tres tarjetas mantienen altura compacta, bordes, sombras y separación consistentes; “Operaciones programadas” se lee en blanco sobre el fondo azul.
+5. [Solicitud] “Criterios para seleccionar la batería” muestra un fondo gris claro centrado y del mismo ancho que las demás secciones, contenido introductorio a la izquierda con una línea amarilla corta y checklist a la derecha en tarjetas con checks amarillos.
 6. [Solicitud] En escritorio, el checklist usa dos columnas y, si la cantidad es impar, su última tarjeta ocupa el ancho completo disponible.
 7. [Solicitud] En `390x844`, las tarjetas y el checklist se apilan en el orden existente sin texto recortado, superposición ni overflow horizontal.
 8. [Regla: AGENTS.md] El ajuste solo actúa en la página 401 o dentro de `tmd-energy-inner--plomo`; Cargadores y las demás páginas que usan `.tmd-energy-card`, `.tmd-energy-split` o `.tmd-energy-checklist` no cambian.
 9. [Solicitud] El hero, CTA y demás secciones de Baterías de plomo permanecen visual y funcionalmente fuera del cambio.
+10. [Solicitud] No existe una línea amarilla inferior ni un fondo gris extendidos de esquina a esquina en “Criterios para seleccionar la batería”.
 
 ## Validación
 
@@ -125,7 +130,7 @@
 
 - [Inferencia técnica] Reutilizar selectores globales de Energía sin el ámbito de página puede cambiar Cargadores u otras páginas que comparten las mismas clases.
 - [Inferencia técnica] Usar el orden de las tarjetas como único identificador vincula cada icono a la estructura persistida; la validación debe detectar un reordenamiento futuro para evitar iconos semánticamente incorrectos.
-- [Inferencia técnica] El fondo de ancho completo puede producir overflow horizontal si se combina incorrectamente con el contenedor de WordPress.
+- [Inferencia técnica] El padding interno del fondo gris centrado debe incluirse en su ancho para no superar el contenedor de WordPress.
 - [Inferencia técnica] LiteSpeed puede conservar temporalmente la presentación anterior tras un eventual despliegue hasta completar la purga de caché.
 
 ## Decisiones pendientes

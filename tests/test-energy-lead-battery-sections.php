@@ -45,8 +45,15 @@ tmd_lead_battery_assert(str_contains($styles, "%3Cpath d='M8 12h8'/%3E"), 'La se
 tmd_lead_battery_assert(str_contains($styles, "%3Cpath d='m14.7 6.3 3-3"), 'La tercera tarjeta debe incluir una llave SVG.');
 
 tmd_lead_battery_assert(str_contains($styles, 'background: #262e4f !important;'), 'La primera tarjeta debe usar azul oscuro.');
+tmd_lead_battery_assert(str_contains($styles, 'min-height: 190px;'), 'Las tarjetas deben usar una altura mínima compacta.');
+tmd_lead_battery_assert(str_contains($styles, '.tmd-energy-card:nth-child(1) h3 *'), 'El blanco del primer título debe alcanzar elementos anidados.');
+tmd_lead_battery_assert(str_contains($styles, '-webkit-text-fill-color: #fff !important;'), 'El primer título debe permanecer blanco ante estilos tipográficos heredados.');
 tmd_lead_battery_assert(str_contains($styles, 'border-top: 4px solid #ffc33c !important;'), 'La segunda tarjeta debe usar acento amarillo.');
 tmd_lead_battery_assert(str_contains($styles, 'background: #eef4f9 !important;'), 'La tercera tarjeta debe usar azul grisáceo.');
+tmd_lead_battery_assert(str_contains($styles, 'box-sizing: border-box;'), 'El fondo gris centrado debe incluir su padding dentro del ancho disponible.');
+tmd_lead_battery_assert(str_contains($styles, 'border-radius: 20px;'), 'El fondo gris debe presentarse como un bloque centrado.');
+tmd_lead_battery_assert(! str_contains($styles, 'box-shadow: 0 0 0 100vmax'), 'El fondo gris no debe extenderse de esquina a esquina.');
+tmd_lead_battery_assert(! str_contains($styles, '> .tmd-energy-split::after'), 'La sección de criterios no debe renderizar una línea inferior de ancho completo.');
 tmd_lead_battery_assert(str_contains($styles, 'grid-template-columns: repeat(2, minmax(0, 1fr)) !important;'), 'El checklist debe usar dos columnas en escritorio.');
 tmd_lead_battery_assert(str_contains($styles, '@media (max-width: 781px)'), 'Debe existir un ajuste responsive para móvil.');
 tmd_lead_battery_assert(str_contains($styles, 'grid-template-columns: 1fr !important;'), 'Las composiciones deben apilarse en móvil.');
