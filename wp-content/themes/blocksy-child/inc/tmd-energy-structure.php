@@ -377,6 +377,287 @@ add_action('wp_head', static function (): void {
 }, 99);
 
 /*
+ * Ajustes visuales específicos de /energia/baterias/plomo/.
+ * El ámbito de página y del contenedor evita alterar los componentes
+ * compartidos de Energía o la composición equivalente de Cargadores.
+ */
+add_action('wp_head', static function (): void {
+    if (! is_page(401)) {
+        return;
+    }
+    ?>
+    <style id="tmd-energy-lead-battery-page-adjustments">
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > h2 {
+            max-width: none !important;
+            margin: 0 auto 30px !important;
+            text-align: center;
+            font-size: clamp(28px, 3vw, 36px) !important;
+            line-height: 1.1 !important;
+            letter-spacing: -.025em !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards {
+            display: grid !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 22px !important;
+            align-items: stretch;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card {
+            position: relative;
+            min-width: 0;
+            min-height: 218px;
+            margin: 0 !important;
+            padding: 86px 24px 26px !important;
+            overflow: hidden;
+            border: 1px solid rgba(38, 46, 79, .10) !important;
+            border-radius: 14px !important;
+            box-shadow: 0 12px 30px rgba(38, 46, 79, .11) !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card::before {
+            position: absolute;
+            top: 20px;
+            left: 24px;
+            display: grid;
+            width: 46px;
+            height: 46px;
+            place-items: center;
+            border-radius: 11px;
+            content: '';
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 28px 28px;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card:nth-child(1) {
+            border-top: 4px solid #128ceb !important;
+            background: #262e4f !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card:nth-child(1)::before {
+            background-color: rgba(255, 255, 255, .09);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffc33c' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='5' width='16' height='15' rx='2'/%3E%3Cpath d='M8 3v4M16 3v4M4 10h16M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01'/%3E%3C/svg%3E");
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card:nth-child(1) h3 {
+            color: #fff !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card:nth-child(1) p {
+            color: rgba(255, 255, 255, .76) !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card:nth-child(2) {
+            border-top: 4px solid #ffc33c !important;
+            background: #fff !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card:nth-child(2)::before {
+            background-color: rgba(255, 195, 60, .14);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffc33c' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 12h8'/%3E%3Cpath d='M6 9v6M18 9v6M3 10v4M21 10v4'/%3E%3C/svg%3E");
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card:nth-child(3) {
+            border-top: 4px solid #262e4f !important;
+            background: #eef4f9 !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card:nth-child(3)::before {
+            background-color: #fff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffc33c' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m14.7 6.3 3-3a4.5 4.5 0 0 0-5.9 5.9l-7.5 7.5a2.1 2.1 0 0 0 3 3l7.5-7.5a4.5 4.5 0 0 0 5.9-5.9l-3 3-4-1-1-4Z'/%3E%3Cpath d='m5.7 18.3.01.01'/%3E%3C/svg%3E");
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card h3 {
+            margin: 0 0 10px !important;
+            font-size: 20px !important;
+            line-height: 1.25 !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card p {
+            margin: 0 !important;
+            font-size: 15px !important;
+            line-height: 1.6 !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-split {
+            position: relative;
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto !important;
+            padding: clamp(48px, 6vw, 72px) 0 clamp(46px, 5vw, 64px) !important;
+            border-top: 0 !important;
+            background: #f5f6f8;
+            box-shadow: 0 0 0 100vmax #f5f6f8;
+            clip-path: inset(0 -100vmax);
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-split::after {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 50%;
+            width: 100vw;
+            height: 3px;
+            transform: translateX(-50%);
+            content: '';
+            background: #ffc33c;
+            pointer-events: none;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-split > .wp-block-columns {
+            display: grid !important;
+            grid-template-columns: minmax(0, .9fr) minmax(0, 1.6fr) !important;
+            gap: clamp(36px, 5vw, 72px) !important;
+            align-items: center !important;
+            margin: 0 !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child {
+            max-width: 440px;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child::after {
+            display: block;
+            width: 62px;
+            height: 4px;
+            margin-top: 28px;
+            border-radius: 99px;
+            content: '';
+            background: #ffc33c;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-split h2 {
+            max-width: 430px !important;
+            margin: 0 0 22px !important;
+            color: #262e4f !important;
+            font-size: clamp(36px, 3.8vw, 50px) !important;
+            font-weight: 700 !important;
+            line-height: 1.04 !important;
+            letter-spacing: -.035em !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child > p {
+            max-width: 430px;
+            margin: 0 !important;
+            color: #5e748b !important;
+            font-size: 17px !important;
+            line-height: 1.55 !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo .tmd-energy-checklist {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 16px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo .tmd-energy-checklist li {
+            position: relative;
+            display: flex;
+            min-width: 0;
+            min-height: 86px;
+            align-items: center;
+            margin: 0 !important;
+            padding: 17px 20px 17px 72px !important;
+            border: 1px solid rgba(38, 46, 79, .24) !important;
+            border-radius: 8px !important;
+            color: #262e4f !important;
+            background: #fff !important;
+            box-shadow: 0 4px 12px rgba(38, 46, 79, .05) !important;
+            font-size: 15px !important;
+            font-weight: 600 !important;
+            line-height: 1.45 !important;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo .tmd-energy-checklist li::before {
+            position: absolute;
+            top: 50% !important;
+            left: 17px !important;
+            display: grid;
+            width: 40px;
+            height: 44px;
+            place-items: center;
+            transform: translateY(-50%);
+            border-radius: 12px;
+            content: '✓';
+            color: #fff !important;
+            background: radial-gradient(circle at center, #ffc33c 0 10px, rgba(255, 195, 60, .24) 11px 100%);
+            font-family: Arial, sans-serif;
+            font-size: 14px !important;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        body.page-id-401 .tmd-energy-inner--plomo .tmd-energy-checklist li:last-child:nth-child(odd) {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 900px) {
+            body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-split > .wp-block-columns {
+                grid-template-columns: 1fr !important;
+                gap: 30px !important;
+            }
+
+            body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child {
+                max-width: 620px;
+            }
+        }
+
+        @media (max-width: 781px) {
+            body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > h2 {
+                margin-bottom: 22px !important;
+                font-size: 28px !important;
+            }
+
+            body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards,
+            body.page-id-401 .tmd-energy-inner--plomo .tmd-energy-checklist {
+                grid-template-columns: 1fr !important;
+            }
+
+            body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-section:not(.tmd-energy-split) > .tmd-energy-cards > .tmd-energy-card {
+                min-height: 0;
+            }
+
+            body.page-id-401 .tmd-energy-inner--plomo .tmd-energy-checklist li:last-child:nth-child(odd) {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-split {
+                width: min(100% - 28px, 1180px);
+                padding: 38px 0 42px !important;
+            }
+
+            body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-split h2 {
+                font-size: 32px !important;
+            }
+
+            body.page-id-401 .tmd-energy-inner--plomo > .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child > p {
+                font-size: 15px !important;
+            }
+
+            body.page-id-401 .tmd-energy-inner--plomo .tmd-energy-checklist {
+                gap: 12px !important;
+            }
+
+            body.page-id-401 .tmd-energy-inner--plomo .tmd-energy-checklist li {
+                min-height: 80px;
+                padding: 16px 16px 16px 68px !important;
+            }
+
+            body.page-id-401 .tmd-energy-inner--plomo .tmd-energy-checklist li::before {
+                left: 14px !important;
+                width: 38px;
+                height: 40px;
+            }
+        }
+    </style>
+    <?php
+}, 99);
+
+/*
  * Rank Math debe publicar únicamente la URL canónica /energia/bms/.
  */
 add_filter('rank_math/sitemap/posts_to_exclude', static function (array $post_ids): array {
