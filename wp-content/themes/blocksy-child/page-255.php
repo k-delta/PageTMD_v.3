@@ -41,6 +41,21 @@ add_action('wp_head', static function (): void {
             max-width: 360px !important;
         }
 
+        html body.page-id-255 .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child::after {
+            content: '';
+            display: block;
+            width: 58px;
+            height: 3px;
+            margin-top: 22px;
+            border-radius: 99px;
+            background: #ffb52b;
+        }
+
+        html body.page-id-255 .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child .wp-block-separator,
+        html body.page-id-255 .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child hr {
+            display: none !important;
+        }
+
         html body.page-id-255 .tmd-energy-split h2 {
             max-width: 350px !important;
             margin: 0 0 16px !important;
