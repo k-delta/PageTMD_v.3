@@ -24,6 +24,11 @@ add_action('wp_head', static function (): void {
             display: none !important;
         }
 
+        html body.page-id-255 .tmd-energy-split > div:first-child::after {
+            content: none !important;
+            display: none !important;
+        }
+
         html body.page-id-255 .tmd-energy-split > .wp-block-columns {
             display: grid !important;
             grid-template-columns: minmax(260px, .78fr) minmax(0, 1.65fr) !important;
