@@ -9,24 +9,48 @@ add_action('wp_head', static function (): void {
     ?>
     <style id="tmd-charger-review-layout-fix">
         html body.page-id-255 .tmd-energy-split {
-            grid-template-columns: minmax(220px, .78fr) minmax(0, 1.65fr) !important;
-            gap: clamp(24px, 4vw, 54px) !important;
-            align-items: center !important;
+            display: block !important;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
             padding: 52px 0 56px !important;
         }
 
-        html body.page-id-255 .tmd-energy-split > * {
-            min-width: 0;
+        html body.page-id-255 .tmd-energy-split > .wp-block-columns {
+            display: grid !important;
+            grid-template-columns: minmax(260px, .78fr) minmax(0, 1.65fr) !important;
+            gap: clamp(30px, 4vw, 56px) !important;
+            align-items: center !important;
+            width: min(1180px, calc(100% - 40px)) !important;
+            max-width: 1180px !important;
+            margin: 0 auto !important;
         }
 
-        html body.page-id-255 .tmd-energy-split > div:first-child {
-            max-width: 320px !important;
+        html body.page-id-255 .tmd-energy-split > .wp-block-columns > .wp-block-column {
+            min-width: 0 !important;
+            flex-basis: auto !important;
+            margin: 0 !important;
+        }
+
+        html body.page-id-255 .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child {
+            max-width: 360px !important;
+        }
+
+        html body.page-id-255 .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child::after {
+            content: '';
+            display: block;
+            width: 58px;
+            height: 3px;
+            margin-top: 22px;
+            border-radius: 99px;
+            background: #ffb52b;
         }
 
         html body.page-id-255 .tmd-energy-split h2 {
-            max-width: 310px !important;
+            max-width: 350px !important;
             margin: 0 0 16px !important;
-            font-size: clamp(26px, 2.4vw, 34px) !important;
+            color: #262e4f !important;
+            font-size: clamp(28px, 2.4vw, 36px) !important;
             line-height: 1.08 !important;
             letter-spacing: -.03em !important;
             word-break: normal !important;
@@ -34,34 +58,40 @@ add_action('wp_head', static function (): void {
             hyphens: none !important;
         }
 
-        html body.page-id-255 .tmd-energy-split > div:first-child > p {
-            max-width: 310px !important;
+        html body.page-id-255 .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child > p {
+            max-width: 340px !important;
+            margin: 0 !important;
+            color: #5e748b !important;
             font-size: 14px !important;
-            line-height: 1.55 !important;
+            line-height: 1.6 !important;
             word-break: normal !important;
             overflow-wrap: normal !important;
             hyphens: none !important;
         }
 
-        html body.page-id-255 .tmd-energy-split > div:first-child::after {
-            width: 58px !important;
-            height: 3px !important;
-            margin-top: 22px !important;
-        }
-
         html body.page-id-255 .tmd-energy-checklist {
+            display: grid !important;
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
             gap: 12px 14px !important;
-            width: 100%;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
         html body.page-id-255 .tmd-energy-checklist li {
             min-width: 0;
-            min-height: 74px !important;
-            padding: 13px 16px 13px 62px !important;
+            min-height: 78px !important;
+            margin: 0 !important;
+            padding: 14px 18px 14px 64px !important;
+            border: 1px solid rgba(38, 46, 79, .24) !important;
             border-radius: 6px !important;
+            background: #fff !important;
+            box-shadow: 0 4px 12px rgba(38, 46, 79, .05) !important;
+            color: #262e4f !important;
             font-size: 13px !important;
-            line-height: 1.35 !important;
+            font-weight: 600 !important;
+            line-height: 1.4 !important;
             word-break: normal !important;
             overflow-wrap: break-word !important;
             hyphens: none !important;
@@ -69,8 +99,8 @@ add_action('wp_head', static function (): void {
 
         html body.page-id-255 .tmd-energy-checklist li::before {
             left: 14px !important;
-            width: 34px !important;
-            height: 38px !important;
+            width: 36px !important;
+            height: 40px !important;
             border-radius: 10px !important;
             font-size: 12px !important;
             background: radial-gradient(circle at center, #ffb52b 0 9px, rgba(255, 195, 60, .22) 10px 100%) !important;
@@ -80,21 +110,25 @@ add_action('wp_head', static function (): void {
             grid-column: 1 / -1 !important;
         }
 
-        @media (max-width: 760px) {
-            html body.page-id-255 .tmd-energy-split {
+        @media (max-width: 820px) {
+            html body.page-id-255 .tmd-energy-split > .wp-block-columns {
                 grid-template-columns: 1fr !important;
                 gap: 28px !important;
-                padding: 40px 0 44px !important;
+                width: min(100% - 32px, 720px) !important;
             }
 
-            html body.page-id-255 .tmd-energy-split > div:first-child,
+            html body.page-id-255 .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child,
             html body.page-id-255 .tmd-energy-split h2,
-            html body.page-id-255 .tmd-energy-split > div:first-child > p {
+            html body.page-id-255 .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child > p {
                 max-width: 620px !important;
             }
         }
 
         @media (max-width: 560px) {
+            html body.page-id-255 .tmd-energy-split {
+                padding: 38px 0 42px !important;
+            }
+
             html body.page-id-255 .tmd-energy-split h2 {
                 font-size: 28px !important;
             }
@@ -106,7 +140,7 @@ add_action('wp_head', static function (): void {
             html body.page-id-255 .tmd-energy-checklist li,
             html body.page-id-255 .tmd-energy-checklist li:nth-child(5) {
                 grid-column: auto !important;
-                min-height: 70px !important;
+                min-height: 72px !important;
             }
         }
     </style>
