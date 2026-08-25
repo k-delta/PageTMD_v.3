@@ -298,6 +298,14 @@ if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
             font-weight:900;
           }
 
+          .tmd-q-step[data-step="6"] .tmd-q-title{
+            max-width:780px;
+            margin-bottom:20px;
+            font-size:clamp(28px,3vw,38px);
+            line-height:1.08;
+            letter-spacing:-.04em;
+          }
+
           .tmd-q-text{
             margin:0 0 28px;
             color:var(--muted);
@@ -514,7 +522,10 @@ if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
 
           .tmd-q-result{
             display:grid;
-            gap:22px;
+            grid-template-columns:minmax(0,760px) max-content minmax(0,1fr);
+            column-gap:14px;
+            row-gap:18px;
+            align-items:end;
           }
 
           .tmd-quiz-v3.is-result .tmd-q-layout{
@@ -526,6 +537,7 @@ if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
           }
 
           .tmd-q-machines{
+            grid-column:1/-1;
             display:grid;
             grid-template-columns:repeat(3,minmax(0,1fr));
             grid-auto-rows:1fr;
@@ -670,50 +682,70 @@ if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
           }
 
           .tmd-q-email{
+            grid-column:1;
             display:grid;
             grid-template-columns:minmax(0,1fr) auto;
-            gap:12px;
+            gap:10px;
             align-items:end;
-            padding:20px;
+            width:100%;
+            max-width:760px;
+            padding:14px 16px;
             border:1px solid var(--line);
-            border-radius:16px;
+            border-radius:14px;
             background:#fff;
           }
 
           .tmd-q-email label{
             display:grid;
-            gap:8px;
+            gap:6px;
             color:var(--navy);
-            font-size:14px;
+            font-size:13px;
             font-weight:900;
           }
 
           .tmd-q-email input[type="email"]{
             width:100%;
-            min-height:48px;
-            padding:10px 13px;
+            min-height:42px;
+            padding:8px 12px;
             border:1px solid #C9D7E7;
-            border-radius:9px;
+            border-radius:8px;
             color:var(--navy);
-            font-size:15px;
+            font-size:14px;
           }
 
-          .tmd-q-email button{min-height:48px}
+          .tmd-q-email button{
+            min-height:42px;
+            padding:0 18px;
+            border-radius:10px;
+            font-size:14px;
+          }
+
           .tmd-q-email-hp{position:absolute!important;left:-9999px!important}
           .tmd-q-email-status{
             grid-column:1/-1;
-            min-height:20px;
+            min-height:0;
             color:var(--muted);
-            font-size:13px;
+            font-size:12px;
             font-weight:700;
           }
 
+          .tmd-q-email-status:empty{display:none}
           .tmd-q-email-status.is-error{color:#B42318}
           .tmd-q-email-status.is-success{color:#067647}
 
           .tmd-q-result-actions{
+            grid-column:2;
             display:flex;
-            justify-content:flex-end;
+            justify-content:flex-start;
+            align-items:flex-end;
+          }
+
+          .tmd-q-result-actions .tmd-q-btn{
+            min-height:42px;
+            padding:0 18px;
+            border-radius:10px;
+            font-size:14px;
+            white-space:nowrap;
           }
 
           @media(max-width:960px){
@@ -727,7 +759,9 @@ if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
             .tmd-q-options,
             .tmd-q-fields{grid-template-columns:1fr}
             .tmd-q-title{font-size:34px}
-            .tmd-q-machines{grid-template-columns:1fr}
+            .tmd-q-step[data-step="6"] .tmd-q-title{font-size:28px}
+            .tmd-q-result{grid-template-columns:1fr}
+            .tmd-q-machines{grid-column:1;grid-template-columns:1fr}
             .tmd-q-machine{
               grid-template-columns:1fr;
               grid-template-rows:220px minmax(0,1fr);
@@ -738,7 +772,8 @@ if (! function_exists('tmd_quiz_equipo_ideal_v3_shortcode')) {
               min-height:0;
               max-height:none;
             }
-            .tmd-q-email{grid-template-columns:1fr}
+            .tmd-q-email{grid-column:1;grid-template-columns:1fr;max-width:none}
+            .tmd-q-result-actions{grid-column:1;justify-content:stretch}
             .tmd-q-nav{flex-direction:column}
             .tmd-q-btn{width:100%}
           }
