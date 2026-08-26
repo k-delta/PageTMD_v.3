@@ -1,0 +1,385 @@
+/*
+ * Consistencia visual global basada en el manual de marca y el Word de revisión.
+ * Alcance deliberadamente excluye Cargadores (255), Baterías (401) y BMS (792).
+ */
+
+/* Base compartida de las páginas auditadas. */
+body.page-id-47,
+body.page-id-49,
+body.page-id-57,
+body.page-id-275,
+body.page-id-278,
+body.page-id-284,
+.tmd-blog-page,
+.tmd-article-page {
+  --tmd-brand-blue: #128ceb;
+  --tmd-brand-navy: #262e4f;
+  --tmd-brand-yellow: #ffc33c;
+  --tmd-brand-steel: #5e748b;
+  --tmd-brand-ink: #3c3c3c;
+  --tmd-brand-light: #e6e6e6;
+  font-family: 'Work Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Home: conservar composición, imágenes, enlaces y ritmo aprobado. */
+body.page-id-47 .kt-adv-heading47_d357b9-97 {
+  font-size: clamp(48px, 3.6vw, 52px) !important;
+}
+
+body.page-id-47 .kb-btns47_224d06-d7 .kb-button,
+body.page-id-47 .tmd-btn-primary .wp-block-button__link,
+body.page-id-47 .tmd-btn-outline .wp-block-button__link,
+body.page-id-47 .tmd-btn-blue .wp-block-button__link,
+body.page-id-47 .tmd-home-btn {
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+body.page-id-47 .tmd-hero-block h1,
+body.page-id-47 .tmd-home-title {
+  font-size: clamp(48px, 4vw, 52px) !important;
+}
+
+body.page-id-47 .tmd-section-title,
+body.page-id-47 .tmd-home-section-title,
+body.page-id-47 .tmd-home-services__title-row h2 {
+  font-size: clamp(34px, 3vw, 40px) !important;
+}
+
+body.page-id-47 .tmd-card,
+body.page-id-47 .tmd-home-category,
+body.page-id-47 .tmd-home-energy-card,
+body.page-id-47 .tmd-home-service-card,
+body.page-id-47 .tmd-home-hero-card,
+body.page-id-47 .tmd-home-hero-card-inner,
+body.page-id-47 .tmd-dark-panel,
+body.page-id-47 .tmd-final-cta,
+body.page-id-47 .tmd-home-energy-panel,
+body.page-id-47 .tmd-home-final-cta,
+body.page-id-47 .tmd-home-services__grid .tmd-home-service-card {
+  border-radius: 12px !important;
+}
+
+body.page-id-47 .tmd-card,
+body.page-id-47 .tmd-home-category,
+body.page-id-47 .tmd-home-energy-card,
+body.page-id-47 .tmd-home-service-card,
+body.page-id-47 .tmd-home-services__grid .tmd-home-service-card {
+  box-shadow: 0 8px 22px rgba(38, 46, 79, .07) !important;
+}
+
+body.page-id-47 .tmd-home-hero-card {
+  box-shadow: 0 14px 34px rgba(38, 46, 79, .14) !important;
+}
+
+body.page-id-47 .tmd-card h3,
+body.page-id-47 .tmd-home-category h3,
+body.page-id-47 .tmd-home-energy-card h3,
+body.page-id-47 .tm-eqd-info h3 {
+  font-size: clamp(19px, 1.7vw, 22px) !important;
+}
+
+body.page-id-47 .tmd-card p,
+body.page-id-47 .tmd-home-category p,
+body.page-id-47 .tmd-home-energy-card p,
+body.page-id-47 .tmd-home-service-card p,
+body.page-id-47 .tmd-home-services__grid .tmd-home-service-card p {
+  font-size: 16px !important;
+}
+
+body.page-id-47 .tmd-home-service-card__cta,
+body.page-id-47 .tm-eqd-cta {
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+body.page-id-47 .tm-eqd-card {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 22px rgba(38, 46, 79, .07) !important;
+}
+
+body.page-id-47 .tm-eqd-heading h2 {
+  font-size: clamp(34px, 3vw, 40px) !important;
+}
+
+/* Equipos. */
+body.page-id-49 .tmd-catalog-hero h1 {
+  font-size: clamp(48px, 4vw, 52px) !important;
+}
+
+body.page-id-49 .tmd-catalog-heading-row h2 {
+  font-size: clamp(34px, 3vw, 40px) !important;
+}
+
+body.page-id-49 .tmd-catalog-filters,
+body.page-id-49 .tmd-equipment-card,
+body.page-id-49 .tmd-equipment-empty,
+body.page-id-49 .tmd-catalog-cta {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 22px rgba(38, 46, 79, .07) !important;
+}
+
+body.page-id-49 .tmd-catalog-filters p,
+body.page-id-49 .tmd-equipment-excerpt {
+  font-size: 16px !important;
+}
+
+body.page-id-49 .tmd-equipment-title {
+  font-size: clamp(19px, 1.7vw, 22px) !important;
+}
+
+body.page-id-49 .tmd-equipment-spec span {
+  font-size: 14px !important;
+}
+
+body.page-id-49 .tmd-equipment-spec strong {
+  font-size: 15px !important;
+}
+
+body.page-id-49 .tmd-equipment-btn,
+body.page-id-49 .tmd-catalog-btn-yellow {
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+body.page-id-49 .tmd-equipment-btn-primary {
+  color: #fff !important;
+  background: var(--tmd-brand-blue) !important;
+}
+
+body.page-id-49 .tmd-equipment-btn-secondary {
+  border-color: var(--tmd-brand-blue) !important;
+  color: var(--tmd-brand-blue) !important;
+  background: transparent !important;
+}
+
+body.page-id-49 .tmd-catalog-btn-yellow {
+  color: var(--tmd-brand-navy) !important;
+  background: var(--tmd-brand-yellow) !important;
+}
+
+/* Contacto. */
+body.page-id-57 .tmd-form-card,
+body.page-id-57 .wpcf7 form.tmd-form-card,
+body.page-id-57 form.wpcf7-form.tmd-form-card {
+  border-radius: 12px !important;
+  box-shadow: 0 9px 26px rgba(38, 46, 79, .07) !important;
+}
+
+body.page-id-57 .wpcf7-submit,
+body.page-id-57 input[type='submit'],
+body.page-id-57 button[type='submit'] {
+  border-radius: 8px !important;
+  font-family: 'Work Sans', sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+/* Alianzas y socios. */
+body.page-id-275 .tmd-alliance-page {
+  --tmd-alliance-yellow: #ffc33c;
+}
+
+body.page-id-275 .tmd-alliance-hero,
+body.page-id-275 .tmd-alliance-card,
+body.page-id-275 .tmd-alliance-split,
+body.page-id-275 .tmd-alliance-principle,
+body.page-id-275 .tmd-alliance-process li,
+body.page-id-275 .tmd-alliance-route__option,
+body.page-id-275 .tmd-alliance-faq details,
+body.page-id-275 .tmd-alliance-cta {
+  border-radius: 12px !important;
+}
+
+body.page-id-275 .tmd-alliance-hero,
+body.page-id-275 .tmd-alliance-card,
+body.page-id-275 .tmd-alliance-split,
+body.page-id-275 .tmd-alliance-faq details,
+body.page-id-275 .tmd-alliance-cta {
+  box-shadow: 0 8px 24px rgba(38, 46, 79, .07) !important;
+}
+
+body.page-id-275 .tmd-alliance-hero h2,
+body.page-id-275 .tmd-alliance-section__header h2,
+body.page-id-275 .tmd-alliance-split h2,
+body.page-id-275 .tmd-alliance-cta h2 {
+  font-size: clamp(34px, 3vw, 40px) !important;
+}
+
+body.page-id-275 .tmd-alliance-button {
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+body.page-id-275 .tmd-alliance-button--primary {
+  color: var(--tmd-alliance-navy) !important;
+  background: var(--tmd-brand-yellow) !important;
+}
+
+body.page-id-275 .tmd-alliance-card h3,
+body.page-id-275 .tmd-alliance-process h3,
+body.page-id-275 .tmd-alliance-route__option h3 {
+  font-size: clamp(19px, 1.7vw, 22px) !important;
+}
+
+body.page-id-275 .tmd-alliance-card p,
+body.page-id-275 .tmd-alliance-process p,
+body.page-id-275 .tmd-alliance-route__option p,
+body.page-id-275 .tmd-alliance-principle strong,
+body.page-id-275 .tmd-alliance-route__option a {
+  font-size: 16px !important;
+}
+
+body.page-id-275 .tmd-alliance-principle span {
+  font-size: 15px !important;
+}
+
+/* Quiénes somos. */
+body.page-id-278 {
+  --tmd-about-yellow: #ffc33c;
+}
+
+body.page-id-278 .hero-section .page-title {
+  font-size: clamp(48px, 4vw, 52px) !important;
+}
+
+body.page-id-278 .tmd-about__intro h2,
+body.page-id-278 .tmd-about__values h2,
+body.page-id-278 .tmd-about__pillar h2 {
+  font-size: clamp(34px, 3vw, 40px) !important;
+}
+
+body.page-id-278 .tmd-about__lead {
+  font-size: clamp(18px, 1.7vw, 20px) !important;
+}
+
+body.page-id-278 .tmd-about__pillar,
+body.page-id-278 .tmd-about__values,
+body.page-id-278 .tmd-about__value {
+  border-radius: 12px !important;
+}
+
+body.page-id-278 .tmd-about__pillar,
+body.page-id-278 .tmd-about__values {
+  box-shadow: 0 9px 26px rgba(38, 46, 79, .08) !important;
+}
+
+body.page-id-278 .tmd-about__value h3 {
+  font-size: clamp(19px, 1.7vw, 22px) !important;
+}
+
+body.page-id-278 .tmd-about__value p {
+  font-size: 16px !important;
+}
+
+/* PQR. */
+body.page-id-284 .tmd-pqr-card {
+  border-radius: 12px !important;
+  box-shadow: 0 9px 26px rgba(38, 46, 79, .08) !important;
+}
+
+body.page-id-284 .tmd-pqr-card > h1 {
+  font-size: clamp(48px, 4vw, 52px) !important;
+}
+
+body.page-id-284 .tmd-choice-btn,
+body.page-id-284 .tmd-submit {
+  border-radius: 8px !important;
+  font-family: 'Work Sans', sans-serif !important;
+  font-size: 16px !important;
+}
+
+/* Blog y artículos. Los filtros y botones de compartir conservan forma de chip/control. */
+.tmd-blog-page .tmd-blog-intro h1,
+.tmd-article-page .tmd-article-header h1 {
+  font-size: clamp(48px, 4vw, 52px) !important;
+}
+
+.tmd-blog-page .tmd-blog-hero-panel h2,
+.tmd-blog-page .tmd-blog-latest h2,
+.tmd-blog-page .tmd-blog-related h2,
+.tmd-article-page .tmd-blog-related h2,
+.tmd-article-page .tmd-article-cta h2 {
+  font-size: clamp(34px, 3vw, 40px) !important;
+}
+
+.tmd-blog-page .tmd-blog-hero {
+  border-radius: 12px !important;
+  box-shadow: 0 9px 26px rgba(38, 46, 79, .08) !important;
+}
+
+.tmd-blog-page .tmd-blog-outline-btn,
+.tmd-blog-page .tmd-blog-all-btn,
+.tmd-article-page .tmd-article-cta a {
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+.tmd-blog-page .tmd-blog-card-content strong {
+  font-size: 22px !important;
+}
+
+.tmd-blog-page .tmd-blog-card-excerpt {
+  font-size: 16px !important;
+}
+
+.tmd-blog-page .tmd-blog-mini-card strong,
+.tmd-article-page .tmd-blog-mini-card strong {
+  font-size: 19px !important;
+}
+
+.tmd-blog-page .tmd-blog-mini-image,
+.tmd-article-page .tmd-blog-mini-image,
+.tmd-article-page .tmd-article-cover img {
+  border-radius: 8px !important;
+}
+
+/* No convertir párrafos largos en bloques centrados. */
+body.page-id-47 .tmd-section-text,
+body.page-id-49 .tmd-catalog-heading-row p,
+body.page-id-275 .tmd-alliance-section__header p,
+body.page-id-275 .tmd-alliance-split p,
+body.page-id-278 .tmd-about__pillar p,
+.tmd-article-page .tmd-article-content {
+  text-align: left;
+}
+
+@media (max-width: 767px) {
+  body.page-id-47 .kt-adv-heading47_d357b9-97,
+  body.page-id-47 .tmd-hero-block h1,
+  body.page-id-47 .tmd-home-title,
+  body.page-id-49 .tmd-catalog-hero h1,
+  body.page-id-278 .hero-section .page-title,
+  body.page-id-284 .tmd-pqr-card > h1,
+  .tmd-blog-page .tmd-blog-intro h1,
+  .tmd-article-page .tmd-article-header h1 {
+    font-size: 36px !important;
+  }
+
+  body.page-id-47 .kb-btns47_224d06-d7 .kb-button {
+    font-size: 16px !important;
+  }
+
+  body.page-id-47 .tmd-section-title,
+  body.page-id-47 .tmd-home-section-title,
+  body.page-id-47 .tmd-home-services__title-row h2,
+  body.page-id-49 .tmd-catalog-heading-row h2,
+  body.page-id-275 .tmd-alliance-hero h2,
+  body.page-id-275 .tmd-alliance-section__header h2,
+  body.page-id-275 .tmd-alliance-split h2,
+  body.page-id-275 .tmd-alliance-cta h2,
+  body.page-id-278 .tmd-about__intro h2,
+  body.page-id-278 .tmd-about__values h2,
+  body.page-id-278 .tmd-about__pillar h2,
+  .tmd-blog-page .tmd-blog-hero-panel h2,
+  .tmd-blog-page .tmd-blog-latest h2,
+  .tmd-article-page .tmd-blog-related h2,
+  .tmd-article-page .tmd-article-cta h2 {
+    font-size: 30px !important;
+  }
+}

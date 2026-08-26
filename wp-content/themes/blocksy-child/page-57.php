@@ -5,15 +5,18 @@
 
 defined('ABSPATH') || exit;
 
+require_once get_stylesheet_directory() . '/inc/tmd-brand-consistency.php';
+tmd_use_brand_consistency();
+
 add_action('wp_head', static function (): void {
     ?>
     <style id="tmd-contact-form-title-size">
         body.page-id-57 .tmd-form-card h2,
         body.page-id-57 .wpcf7 form.tmd-form-card h2,
         body.page-id-57 form.wpcf7-form.tmd-form-card h2 {
-            font-size: clamp(34px, 3.2vw, 48px) !important;
-            line-height: 1.02 !important;
-            letter-spacing: -.045em !important;
+            font-size: clamp(34px, 3vw, 40px) !important;
+            line-height: 1.08 !important;
+            letter-spacing: -.035em !important;
         }
 
         body.page-id-57 .tmd-form-card .tmd-field {
@@ -45,7 +48,7 @@ add_action('wp_head', static function (): void {
             body.page-id-57 .tmd-form-card h2,
             body.page-id-57 .wpcf7 form.tmd-form-card h2,
             body.page-id-57 form.wpcf7-form.tmd-form-card h2 {
-                font-size: 34px !important;
+                font-size: 30px !important;
             }
         }
     </style>

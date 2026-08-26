@@ -2,6 +2,9 @@
 /**
  * Artículo individual del blog.
  */
+require_once get_stylesheet_directory() . '/inc/tmd-brand-consistency.php';
+tmd_use_brand_consistency();
+
 get_header();
 the_post();
 $post_id = get_the_ID();
