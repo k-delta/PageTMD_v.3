@@ -133,23 +133,69 @@ add_action('wp_head', static function (): void {
         }
 
         html body.page-id-255 .tmd-energy-cta {
-            text-align: center !important;
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) auto !important;
+            gap: 10px clamp(32px, 5vw, 72px) !important;
+            align-items: center !important;
+            padding: clamp(32px, 4vw, 46px) clamp(28px, 5vw, 56px) !important;
+            border: 1px solid rgba(255, 255, 255, .08) !important;
+            border-top: 4px solid #ffc33c !important;
+            border-radius: 24px !important;
+            text-align: left !important;
         }
 
-        html body.page-id-255 .tmd-energy-cta > h2,
+        html body.page-id-255 .tmd-energy-cta > h2 {
+            grid-column: 1;
+            max-width: 650px !important;
+            margin: 0 !important;
+            font-size: clamp(30px, 3vw, 42px) !important;
+            line-height: 1.08 !important;
+            text-align: left !important;
+        }
+
         html body.page-id-255 .tmd-energy-cta > p {
-            margin-left: auto !important;
-            margin-right: auto !important;
-            text-align: center !important;
+            grid-column: 1;
+            max-width: 680px !important;
+            margin: 0 !important;
+            line-height: 1.6 !important;
+            text-align: left !important;
         }
 
         html body.page-id-255 .tmd-energy-cta > .tmd-energy-actions {
             display: flex !important;
-            width: min(760px, 100%) !important;
+            grid-column: 2;
+            grid-row: 1 / span 2;
+            width: auto !important;
             align-items: center !important;
-            justify-content: center !important;
-            margin-left: auto !important;
-            margin-right: auto !important;
+            justify-content: flex-end !important;
+            align-self: center;
+            margin: 0 !important;
+        }
+
+        html body.page-id-255 .tmd-energy-cta .tmd-btn-primary .wp-block-button__link {
+            display: inline-flex;
+            min-width: 184px;
+            min-height: 52px;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 22px;
+            border-radius: 12px;
+            background: #ffc33c !important;
+            color: #262e4f !important;
+            box-shadow: none;
+            text-align: center;
+            transition: background-color .18s ease, transform .18s ease;
+        }
+
+        html body.page-id-255 .tmd-energy-cta .tmd-btn-primary .wp-block-button__link:hover {
+            background: #ffd15f !important;
+            color: #262e4f !important;
+            transform: translateY(-1px);
+        }
+
+        html body.page-id-255 .tmd-energy-cta .tmd-btn-primary .wp-block-button__link:focus-visible {
+            outline: 3px solid #fff;
+            outline-offset: 3px;
         }
 
         @media (max-width: 820px) {
@@ -164,6 +210,22 @@ add_action('wp_head', static function (): void {
             html body.page-id-255 .tmd-energy-split h2,
             html body.page-id-255 .tmd-energy-split > .wp-block-columns > .wp-block-column:first-child > p {
                 max-width: 620px !important;
+            }
+
+            html body.page-id-255 .tmd-energy-cta {
+                grid-template-columns: 1fr !important;
+                gap: 22px !important;
+            }
+
+            html body.page-id-255 .tmd-energy-cta > h2,
+            html body.page-id-255 .tmd-energy-cta > p,
+            html body.page-id-255 .tmd-energy-cta > .tmd-energy-actions {
+                grid-column: 1;
+            }
+
+            html body.page-id-255 .tmd-energy-cta > .tmd-energy-actions {
+                grid-row: auto;
+                justify-content: flex-start !important;
             }
         }
 
@@ -190,6 +252,32 @@ add_action('wp_head', static function (): void {
             html body.page-id-255 .tmd-energy-checklist li:nth-child(5) {
                 grid-column: auto !important;
                 min-height: 72px !important;
+            }
+
+            html body.page-id-255 .tmd-energy-cta {
+                width: calc(100% - 24px) !important;
+                padding: 26px 20px !important;
+                border-radius: 20px !important;
+            }
+
+            html body.page-id-255 .tmd-energy-cta > h2 {
+                font-size: 30px !important;
+            }
+
+            html body.page-id-255 .tmd-energy-cta > .tmd-energy-actions,
+            html body.page-id-255 .tmd-energy-cta .wp-block-button,
+            html body.page-id-255 .tmd-energy-cta .wp-block-button__link {
+                width: 100% !important;
+            }
+
+            html body.page-id-255 .tmd-energy-cta .tmd-btn-primary .wp-block-button__link {
+                min-width: 0;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html body.page-id-255 .tmd-energy-cta .tmd-btn-primary .wp-block-button__link {
+                transition: none;
             }
         }
     </style>
