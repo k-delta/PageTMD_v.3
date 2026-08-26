@@ -20,5 +20,16 @@ function tmd_maintenance_enqueue_assets() {
 		array(),
 		$version
 	);
+
+	$brand_relative_path = '/assets/css/tmd-maintenance-brand-consistency.css';
+	$brand_absolute_path = get_stylesheet_directory() . $brand_relative_path;
+	$brand_version       = file_exists( $brand_absolute_path ) ? (string) filemtime( $brand_absolute_path ) : null;
+
+	wp_enqueue_style(
+		'tmd-maintenance-brand-consistency',
+		get_stylesheet_directory_uri() . $brand_relative_path,
+		array( 'tmd-maintenance' ),
+		$brand_version
+	);
 }
 add_action( 'wp_enqueue_scripts', 'tmd_maintenance_enqueue_assets', 30 );
