@@ -29,13 +29,6 @@ if (! function_exists('tmd_jobs_testimonial_new_image_url')) {
     }
 }
 
-if (! function_exists('tmd_jobs_testimonial_new_image_sha256')) {
-    function tmd_jobs_testimonial_new_image_sha256()
-    {
-        return 'e86fc460e8e10fa6ac91b38f12ed65b9807ad611b2ee41515760614c63317149';
-    }
-}
-
 if (! function_exists('tmd_jobs_testimonial_section_bounds')) {
     function tmd_jobs_testimonial_section_bounds($content, &$errors)
     {
@@ -181,12 +174,28 @@ if (! function_exists('tmd_jobs_testimonial_validate_new_image')) {
             );
         }
 
-        $hash = hash_file('sha256', $path);
+        $imageInfo = @getimagesize($path);
 
-        if (tmd_jobs_testimonial_new_image_sha256() !== $hash) {
+        if (false === $imageInfo) {
             return new WP_Error(
-                'tmd_testimonial_image_hash',
-                'La fotografía encontrada no coincide con la imagen #2 suministrada.'
+                'tmd_invalid_testimonial_image',
+                'El archivo de la fotografía no es una imagen válida.'
+            );
+        }
+
+        $width = isset($imageInfo[0]) ? (int) $imageInfo[0] : 0;
+        $height = isset($imageInfo[1]) ? (int) $imageInfo[1] : 0;
+        $mime = isset($imageInfo['mime']) ? (string) $imageInfo['mime'] : '';
+
+        if ('image/jpeg' !== $mime || 1080 !== $width || 1350 !== $height) {
+            return new WP_Error(
+                'tmd_testimonial_image_spec',
+                sprintf(
+                    'La fotografía no cumple las especificaciones esperadas (mime=%s, ancho=%d, alto=%d).',
+                    $mime,
+                    $width,
+                    $height
+                )
             );
         }
 
