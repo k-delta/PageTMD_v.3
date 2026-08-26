@@ -3,6 +3,20 @@
  * Header global TM-Dual con mega menú.
  */
 
+if (! function_exists('tmd_menu_asset_url')) {
+    function tmd_menu_asset_url($relative_path) {
+        $relative_path = ltrim((string) $relative_path, '/');
+        $path = get_stylesheet_directory() . '/' . $relative_path;
+        $url = get_stylesheet_directory_uri() . '/' . $relative_path;
+
+        if (is_file($path)) {
+            $url = add_query_arg('ver', (string) filemtime($path), $url);
+        }
+
+        return $url;
+    }
+}
+
 $equipos = [
     [
         'title' => 'Estibadores y Apiladores',
@@ -171,7 +185,7 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
         <?php foreach ($equipos as $item) : ?>
           <div class="tmd-mm-card">
             <a class="tmd-mm-img" href="<?php echo esc_url($item['url']); ?>" aria-label="<?php echo esc_attr($item['title']); ?>">
-              <img src="<?php echo esc_url(get_stylesheet_directory_uri() . '/assets/img/mega-menu/' . $item['image']); ?>" alt="" decoding="async">
+              <img src="<?php echo esc_url(tmd_menu_asset_url('assets/img/mega-menu/' . $item['image'])); ?>" alt="" decoding="async">
             </a>
             <a class="tmd-mm-title" href="<?php echo esc_url($item['url']); ?>"><?php echo esc_html($item['title']); ?></a>
             <ul class="tmd-mm-items">
@@ -195,7 +209,7 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
         <?php foreach ($energia as $item) : ?>
           <div class="tmd-mm-card">
             <a class="tmd-mm-img" href="<?php echo esc_url($item['url']); ?>" aria-label="<?php echo esc_attr($item['title']); ?>">
-              <img src="<?php echo esc_url(get_stylesheet_directory_uri() . '/assets/img/mega-menu/' . $item['image']); ?>" alt="" decoding="async">
+              <img src="<?php echo esc_url(tmd_menu_asset_url('assets/img/mega-menu/' . $item['image'])); ?>" alt="" decoding="async">
             </a>
             <a class="tmd-mm-title" href="<?php echo esc_url($item['url']); ?>"><?php echo esc_html($item['title']); ?></a>
             <?php if (! empty($item['description'])) : ?>
@@ -218,7 +232,12 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
     <div class="tmd-mm-panel" id="tmd-mm-panel-mant">
       <div class="tmd-mm-inner tmd-mm-grid-3">
         <div class="tmd-mm-card">
-          <a class="tmd-mm-img tmd-mm-img--maintenance" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>" aria-label="Mantenimientos"></a>
+          <a
+            class="tmd-mm-img tmd-mm-img--maintenance"
+            href="<?php echo esc_url(home_url('/mantenimiento/')); ?>"
+            aria-label="Mantenimientos"
+            style="<?php echo esc_attr('background-image: url(\'' . tmd_menu_asset_url('assets/images/mega-menu/menu-maintenance.webp') . '\');'); ?>"
+          ></a>
           <a class="tmd-mm-title" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>">Mantenimientos</a>
           <ul class="tmd-mm-items">
             <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-preventivo/')); ?>">Preventivo</a></li>
