@@ -1,0 +1,149 @@
+:root {
+  --tmd-maint-yellow: #ffc33c;
+}
+
+/*
+ * Brand-consistency layer for maintenance pages only.
+ * Keeps deliberate page-specific emphasis while normalizing shared defaults.
+ */
+.page-id-506 .tmd-maintenance-page,
+.page-id-288 .tmd-maintenance-page,
+.page-id-290 .tmd-maintenance-page {
+  --tmd-maint-yellow: #ffc33c;
+}
+
+.page-id-506 .tmd-maint-hero,
+.page-id-288 .tmd-maint-hero,
+.page-id-290 .tmd-maint-hero {
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 88% 12%, rgb(255 195 60 / 28%), transparent 18rem),
+    linear-gradient(135deg, var(--tmd-maint-navy) 0%, #1d4e7a 100%);
+  box-shadow: 0 14px 34px rgb(38 46 79 / 14%);
+}
+
+.page-id-506 .tmd-maint-button,
+.page-id-288 .tmd-maint-button,
+.page-id-290 .tmd-maint-button {
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.page-id-506 .tmd-maint-button--primary,
+.page-id-288 .tmd-maint-button--primary,
+.page-id-290 .tmd-maint-button--primary {
+  box-shadow: 0 7px 18px rgb(255 195 60 / 18%);
+}
+
+.page-id-506 .tmd-maint-button--blue,
+.page-id-288 .tmd-maint-button--blue,
+.page-id-290 .tmd-maint-button--blue {
+  box-shadow: 0 7px 18px rgb(18 140 235 / 18%);
+}
+
+.page-id-506 .tmd-maint-service-nav,
+.page-id-288 .tmd-maint-service-nav,
+.page-id-290 .tmd-maint-service-nav {
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgb(38 46 79 / 5%);
+}
+
+.page-id-506 .tmd-maint-section,
+.page-id-288 .tmd-maint-section,
+.page-id-290 .tmd-maint-section,
+.page-id-506 .tmd-maint-cta,
+.page-id-288 .tmd-maint-cta,
+.page-id-290 .tmd-maint-cta {
+  margin-top: 48px;
+}
+
+.page-id-506 .tmd-maint-card,
+.page-id-288 .tmd-maint-card,
+.page-id-290 .tmd-maint-card {
+  border-radius: 12px;
+  box-shadow: 0 8px 22px rgb(38 46 79 / 6%);
+}
+
+.page-id-506 .tmd-maint-card p,
+.page-id-288 .tmd-maint-card p,
+.page-id-290 .tmd-maint-card p,
+.page-id-506 .tmd-maint-card__link,
+.page-id-288 .tmd-maint-card__link,
+.page-id-290 .tmd-maint-card__link {
+  font-size: 16px;
+}
+
+.page-id-506 .tmd-maint-split,
+.page-id-288 .tmd-maint-split,
+.page-id-290 .tmd-maint-split {
+  border-radius: 12px;
+  box-shadow: 0 9px 24px rgb(38 46 79 / 6%);
+}
+
+.page-id-506 .tmd-maint-system,
+.page-id-288 .tmd-maint-system,
+.page-id-290 .tmd-maint-system {
+  border-radius: 12px;
+}
+
+.page-id-506 .tmd-maint-system strong,
+.page-id-288 .tmd-maint-system strong,
+.page-id-290 .tmd-maint-system strong {
+  font-size: 16px;
+}
+
+.page-id-506 .tmd-maint-system span,
+.page-id-288 .tmd-maint-system span,
+.page-id-290 .tmd-maint-system span {
+  font-size: 15px;
+}
+
+.page-id-506 .tmd-maint-process li,
+.page-id-288 .tmd-maint-process li,
+.page-id-290 .tmd-maint-process li {
+  border-radius: 12px;
+}
+
+.page-id-506 .tmd-maint-process h3,
+.page-id-288 .tmd-maint-process h3,
+.page-id-290 .tmd-maint-process h3 {
+  font-size: 19px;
+}
+
+.page-id-506 .tmd-maint-process p,
+.page-id-288 .tmd-maint-process p,
+.page-id-290 .tmd-maint-process p {
+  font-size: 16px;
+}
+
+.page-id-506 .tmd-maint-faq details,
+.page-id-288 .tmd-maint-faq details,
+.page-id-290 .tmd-maint-faq details {
+  border-radius: 12px;
+  box-shadow: 0 5px 16px rgb(38 46 79 / 5%);
+}
+
+.page-id-506 .tmd-maint-cta,
+.page-id-288 .tmd-maint-cta,
+.page-id-290 .tmd-maint-cta {
+  border-radius: 12px;
+  box-shadow: 0 9px 26px rgb(38 46 79 / 6%);
+}
+
+@media (max-width: 640px) {
+  .page-id-506 .tmd-maint-hero,
+  .page-id-288 .tmd-maint-hero,
+  .page-id-290 .tmd-maint-hero {
+    border-radius: 12px;
+  }
+
+  .page-id-506 .tmd-maint-section,
+  .page-id-288 .tmd-maint-section,
+  .page-id-290 .tmd-maint-section,
+  .page-id-506 .tmd-maint-cta,
+  .page-id-288 .tmd-maint-cta,
+  .page-id-290 .tmd-maint-cta {
+    margin-top: 32px;
+  }
+}

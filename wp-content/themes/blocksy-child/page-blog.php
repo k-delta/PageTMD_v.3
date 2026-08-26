@@ -2,6 +2,9 @@
 /**
  * Página editorial del blog.
  */
+require_once get_stylesheet_directory() . '/inc/tmd-brand-consistency.php';
+tmd_use_brand_consistency();
+
 get_header();
 
 $posts = get_posts([

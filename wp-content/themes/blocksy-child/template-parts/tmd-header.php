@@ -103,14 +103,13 @@ $nosotros = [
     ],
 ];
 
-$tmd_account_url       = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/mi-cuenta/' );
+$tmd_account_url       = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('myaccount') : home_url('/mi-cuenta/');
 $tmd_account_logged_in = is_user_logged_in();
 $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o registrarse';
 ?>
 <header class="tmd-mm-header" role="banner">
   <div class="tmd-mm-wrap" id="tmdMegaMenu" data-current-panel="">
     <nav class="tmd-mm-navbar" aria-label="Menú principal de Tecnimontacargas">
-
       <a class="tmd-mm-logo" href="<?php echo esc_url(home_url('/')); ?>" aria-label="Tecnimontacargas">
         <img
           src="https://tecnimontacargas.com/wp-content/uploads/2026/08/logo-blanco.webp"
@@ -122,8 +121,15 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
         >
       </a>
 
-      <button class="tmd-mm-mobile-toggle" type="button" data-mobile-toggle aria-label="Abrir menú">
-        <i class="ti ti-menu-2"></i>
+      <button
+        class="tmd-mm-mobile-toggle"
+        type="button"
+        data-mobile-toggle
+        aria-label="Abrir menú"
+        aria-controls="tmd-mm-mobile-drawer"
+        aria-expanded="false"
+      >
+        <i class="ti ti-menu-2" aria-hidden="true"></i>
       </button>
 
       <a class="tmd-mm-home tmd-mm-nav-first" href="<?php echo esc_url(home_url('/')); ?>">INICIO</a>
@@ -158,7 +164,6 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
           <?php endif; ?>
         </a>
       </div>
-
     </nav>
 
     <div class="tmd-mm-panel" id="tmd-mm-panel-equipos">
@@ -210,18 +215,18 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
       </div>
     </div>
 
-          <div class="tmd-mm-panel" id="tmd-mm-panel-mant">
-        <div class="tmd-mm-inner tmd-mm-grid-3">
-          <div class="tmd-mm-card">
-            <a class="tmd-mm-img tmd-mm-img--maintenance" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>" aria-label="Mantenimientos"></a>
-            <a class="tmd-mm-title" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>">Mantenimientos</a>
-            <ul class="tmd-mm-items">
-              <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-preventivo/')); ?>">Preventivo</a></li>
-              <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-correctivo/')); ?>">Correctivo</a></li>
-            </ul>
-          </div>
+    <div class="tmd-mm-panel" id="tmd-mm-panel-mant">
+      <div class="tmd-mm-inner tmd-mm-grid-3">
+        <div class="tmd-mm-card">
+          <a class="tmd-mm-img tmd-mm-img--maintenance" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>" aria-label="Mantenimientos"></a>
+          <a class="tmd-mm-title" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>">Mantenimientos</a>
+          <ul class="tmd-mm-items">
+            <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-preventivo/')); ?>">Preventivo</a></li>
+            <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-correctivo/')); ?>">Correctivo</a></li>
+          </ul>
         </div>
       </div>
+    </div>
 
     <div class="tmd-mm-panel" id="tmd-mm-panel-nosotros">
       <div class="tmd-mm-inner tmd-mm-grid-3">
@@ -245,5 +250,152 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
       </div>
     </div>
 
+    <div class="tmd-mm-mobile-backdrop" data-mobile-backdrop aria-hidden="true" hidden></div>
+
+    <aside
+      class="tmd-mm-mobile-drawer"
+      id="tmd-mm-mobile-drawer"
+      aria-label="Navegación móvil de Tecnimontacargas"
+      aria-hidden="true"
+      hidden
+      inert
+    >
+      <nav class="tmd-mm-mobile-nav" aria-label="Menú móvil">
+        <a class="tmd-mm-mobile-root-link" href="<?php echo esc_url(home_url('/')); ?>">
+          <span>Inicio</span>
+        </a>
+
+        <section class="tmd-mm-mobile-section" data-mobile-section="equipos">
+          <div class="tmd-mm-mobile-section-row">
+            <a class="tmd-mm-mobile-section-link" href="<?php echo esc_url(home_url('/equipos/')); ?>">Equipos</a>
+            <button
+              class="tmd-mm-mobile-section-toggle"
+              type="button"
+              data-mobile-section-toggle="equipos"
+              data-mobile-section-label="Equipos"
+              aria-controls="tmd-mm-mobile-panel-equipos"
+              aria-expanded="false"
+              aria-label="Mostrar opciones de Equipos"
+            >
+              <i class="ti ti-chevron-down" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="tmd-mm-mobile-submenu" id="tmd-mm-mobile-panel-equipos" hidden>
+            <?php foreach ($equipos as $item) : ?>
+              <div class="tmd-mm-mobile-group">
+                <a class="tmd-mm-mobile-group-title" href="<?php echo esc_url($item['url']); ?>"><?php echo esc_html($item['title']); ?></a>
+                <ul>
+                  <?php foreach ($item['items'] as $subitem) : ?>
+                    <li><a href="<?php echo esc_url($subitem['url']); ?>"><?php echo esc_html($subitem['label']); ?></a></li>
+                  <?php endforeach; ?>
+                </ul>
+              </div>
+            <?php endforeach; ?>
+            <div class="tmd-mm-mobile-submenu-actions">
+              <a href="<?php echo esc_url(home_url('/equipos/')); ?>">Ver catálogo de equipos</a>
+              <a href="<?php echo esc_url(home_url('/encuentra-tu-equipo/')); ?>">Encuentra tu equipo</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="tmd-mm-mobile-section" data-mobile-section="energia">
+          <div class="tmd-mm-mobile-section-row">
+            <a class="tmd-mm-mobile-section-link" href="<?php echo esc_url(home_url('/energia/')); ?>">Energía</a>
+            <button
+              class="tmd-mm-mobile-section-toggle"
+              type="button"
+              data-mobile-section-toggle="energia"
+              data-mobile-section-label="Energía"
+              aria-controls="tmd-mm-mobile-panel-energia"
+              aria-expanded="false"
+              aria-label="Mostrar opciones de Energía"
+            >
+              <i class="ti ti-chevron-down" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="tmd-mm-mobile-submenu" id="tmd-mm-mobile-panel-energia" hidden>
+            <?php foreach ($energia as $item) : ?>
+              <div class="tmd-mm-mobile-group">
+                <a class="tmd-mm-mobile-group-title" href="<?php echo esc_url($item['url']); ?>"><?php echo esc_html($item['title']); ?></a>
+                <ul>
+                  <?php foreach ($item['items'] as $subitem) : ?>
+                    <li><a href="<?php echo esc_url($subitem['url']); ?>"><?php echo esc_html($subitem['label']); ?></a></li>
+                  <?php endforeach; ?>
+                </ul>
+              </div>
+            <?php endforeach; ?>
+            <div class="tmd-mm-mobile-submenu-actions">
+              <a href="<?php echo esc_url(home_url('/energia/')); ?>">Ver catálogo de energía</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="tmd-mm-mobile-section" data-mobile-section="mant">
+          <div class="tmd-mm-mobile-section-row">
+            <a class="tmd-mm-mobile-section-link" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>">Servicios</a>
+            <button
+              class="tmd-mm-mobile-section-toggle"
+              type="button"
+              data-mobile-section-toggle="mant"
+              data-mobile-section-label="Servicios"
+              aria-controls="tmd-mm-mobile-panel-mant"
+              aria-expanded="false"
+              aria-label="Mostrar opciones de Servicios"
+            >
+              <i class="ti ti-chevron-down" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="tmd-mm-mobile-submenu" id="tmd-mm-mobile-panel-mant" hidden>
+            <div class="tmd-mm-mobile-group">
+              <a class="tmd-mm-mobile-group-title" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>">Mantenimientos</a>
+              <ul>
+                <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-preventivo/')); ?>">Preventivo</a></li>
+                <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-correctivo/')); ?>">Correctivo</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="tmd-mm-mobile-section" data-mobile-section="nosotros">
+          <div class="tmd-mm-mobile-section-row">
+            <a class="tmd-mm-mobile-section-link" href="<?php echo esc_url(home_url('/nosotros/quienes-somos/')); ?>">Nosotros</a>
+            <button
+              class="tmd-mm-mobile-section-toggle"
+              type="button"
+              data-mobile-section-toggle="nosotros"
+              data-mobile-section-label="Nosotros"
+              aria-controls="tmd-mm-mobile-panel-nosotros"
+              aria-expanded="false"
+              aria-label="Mostrar opciones de Nosotros"
+            >
+              <i class="ti ti-chevron-down" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="tmd-mm-mobile-submenu" id="tmd-mm-mobile-panel-nosotros" hidden>
+            <?php foreach ($nosotros as $col) : ?>
+              <div class="tmd-mm-mobile-group">
+                <a class="tmd-mm-mobile-group-title" href="<?php echo esc_url($col['url']); ?>"><?php echo esc_html($col['title']); ?></a>
+                <ul>
+                  <?php foreach ($col['items'] as $link) : ?>
+                    <li><a href="<?php echo esc_url($link['url']); ?>"><?php echo esc_html($link['label']); ?></a></li>
+                  <?php endforeach; ?>
+                </ul>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        </section>
+
+        <div class="tmd-mm-mobile-actions">
+          <a href="<?php echo esc_url(home_url('/?s=')); ?>">
+            <i class="ti ti-search" aria-hidden="true"></i>
+            <span>Buscar</span>
+          </a>
+          <a href="<?php echo esc_url($tmd_account_url); ?>">
+            <i class="ti ti-user" aria-hidden="true"></i>
+            <span><?php echo esc_html($tmd_account_label); ?></span>
+          </a>
+        </div>
+      </nav>
+    </aside>
   </div>
 </header>
