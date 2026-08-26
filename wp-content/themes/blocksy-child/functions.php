@@ -79,7 +79,10 @@ add_action('wp_enqueue_scripts', function () {
     );
 }, 45);
 
-add_action('wp_footer', function () {
+// El footer corporativo sustituye estructuralmente al footer del tema padre.
+add_filter('blocksy:builder:footer:enabled', '__return_false', 20);
+
+add_action('blocksy:footer:before', function () {
     get_template_part('template-parts/tmd-footer');
 }, 5);
 /* TMD_FOOTER_END */

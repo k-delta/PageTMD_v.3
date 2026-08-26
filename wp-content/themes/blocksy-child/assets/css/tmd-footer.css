@@ -1,9 +1,3 @@
-body.tmd-custom-shell .ct-footer,
-body.tmd-custom-shell footer#footer,
-body.tmd-custom-shell #footer {
-  display: none !important;
-}
-
 .tmd-site-footer,
 .tmd-site-footer * {
   box-sizing: border-box;
