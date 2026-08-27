@@ -48,7 +48,7 @@ function tm_chatbot_fase1_config() {
     return [
         'whatsapp_number' => '573015556180', // Número con indicativo de país, sin +
         'company_name' => 'Tecni Montacargas',
-        'human_schedule' => 'Atención humana: lunes a viernes de 8:00 a.m. a 5:00 p.m.',
+        'human_schedule' => 'Atención humana: lunes a viernes de 7:00 a.m. a 5:00 p.m.',
     ];
 }
 
@@ -585,7 +585,7 @@ function tm_chatbot_fase1_render() {
                     msg.includes('atienden') ||
                     msg.includes('abierto')
                 ) {
-                    return 'La atención humana es de lunes a viernes de 8:00 a.m. a 5:00 p.m. Puedes dejar tu solicitud aquí y un asesor la revisará.';
+                    return 'La atención humana es de lunes a viernes de 7:00 a.m. a 5:00 p.m. Puedes dejar tu solicitud aquí y un asesor la revisará.';
                 }
 
                 if (
