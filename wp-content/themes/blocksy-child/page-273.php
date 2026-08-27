@@ -36,6 +36,21 @@ add_action('wp_head', static function (): void {
             padding: 52px 20px !important;
         }
 
+        /* Nuestro equipo: más alto y con un encuadre bastante más abierto. */
+        body.page-id-273 img[src*="gerencia"] {
+            width: 100% !important;
+            height: 380px !important;
+            max-height: none !important;
+            object-fit: cover !important;
+            object-position: 50% 42% !important;
+        }
+
+        body.page-id-273 *:has(> img[src*="gerencia"]) {
+            height: 380px !important;
+            max-height: none !important;
+            overflow: hidden !important;
+        }
+
         body.page-id-273 .tmd-jobs-avatar-wrap {
             width: 260px !important;
             height: 260px !important;
@@ -62,6 +77,11 @@ add_action('wp_head', static function (): void {
                 padding: 46px 20px !important;
             }
 
+            body.page-id-273 img[src*="gerencia"],
+            body.page-id-273 *:has(> img[src*="gerencia"]) {
+                height: 340px !important;
+            }
+
             body.page-id-273 .tmd-jobs-avatar-wrap {
                 width: 240px !important;
                 height: 240px !important;
@@ -71,6 +91,11 @@ add_action('wp_head', static function (): void {
         @media (max-width: 640px) {
             body.page-id-273 .tmd-jobs-testimonial {
                 padding: 38px 16px !important;
+            }
+
+            body.page-id-273 img[src*="gerencia"],
+            body.page-id-273 *:has(> img[src*="gerencia"]) {
+                height: 300px !important;
             }
 
             body.page-id-273 .tmd-jobs-avatar-wrap {
