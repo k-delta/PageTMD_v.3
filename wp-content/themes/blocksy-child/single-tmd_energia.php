@@ -101,8 +101,8 @@ if ($category_slug) {
 
 $contact_page = get_page_by_path('nosotros/contacto', OBJECT, 'page');
 $contact_base_url = $contact_page ? get_permalink($contact_page->ID) : home_url('/nosotros/contacto/');
-$contact_url = add_query_arg('tmd_cotizacion_energia', $title, $contact_base_url);
-$whatsapp_url = 'https://wa.me/573244298326?text=' . rawurlencode('Hola, quiero cotizar esta solución de energía: ' . $title);
+$contact_url = tmd_conversion_quote_url('bateria', (string) $post_id, $title, $contact_base_url);
+$whatsapp_url = tmd_conversion_whatsapp_url('Hola, quiero cotizar esta solución de energía: ' . $title);
 
 $highlight_items = [
     'Categoría'  => $category,

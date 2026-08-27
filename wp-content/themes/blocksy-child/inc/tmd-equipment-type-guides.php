@@ -334,8 +334,7 @@ function tmd_equipment_type_guide_content(string $content): string
         return $content;
     }
 
-    $whatsapp = 'https://wa.me/573015556180?text='
-        . rawurlencode('Hola, quiero asesoría sobre ' . $guide['title'] . '.');
+    $whatsapp = tmd_conversion_whatsapp_url('Hola, quiero asesoría sobre ' . $guide['title'] . '.');
     $section_number = 1;
 
     ob_start();

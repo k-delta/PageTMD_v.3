@@ -235,6 +235,7 @@ function add_query_arg($key, $value = null, $url = null) {
     return $base . (str_contains($base, '?') ? '&' : '?') . http_build_query($args);
 }
 
+require_once dirname(__DIR__) . '/wp-content/themes/blocksy-child/inc/tmd-conversion.php';
 require_once dirname(__DIR__) . '/wp-content/themes/blocksy-child/inc/tmd-inventory-api.php';
 
 tmd_inventory_test_assert(function_exists('tmd_inventory_api_refresh'), 'Debe existir la tarea de refresco remoto.');
@@ -357,15 +358,15 @@ $energy_grid = tmd_inventory_api_grid('bateria', 12);
 tmd_inventory_test_assert(str_contains($equipment_filters, 'action="https://example.test/equipos/"'), 'Equipos debe conservar su formulario de filtros.');
 tmd_inventory_test_assert(
     array_reduce(
-        ['api_marca', 'api_altura_colapsada', 'api_altura_levante', 'api_capacidad'],
+        ['api_altura_colapsada', 'api_altura_levante', 'api_capacidad'],
         static fn($found, $name) => $found && str_contains($equipment_filters, 'name="' . $name . '"'),
         true
     ),
-    'Equipos debe conservar Marca, Altura colapsada, Altura de levante y Capacidad.'
+    'Equipos debe conservar Altura colapsada, Altura de levante y Capacidad.'
 );
 tmd_inventory_test_assert(
     array_reduce(
-        ['api_categoria', 'api_subcategoria', 'api_condicion', 'api_operario', 'api_reach'],
+        ['api_marca', 'api_categoria', 'api_subcategoria', 'api_condicion', 'api_operario', 'api_reach'],
         static fn($hidden, $name) => $hidden && ! str_contains($equipment_filters, 'name="' . $name . '"'),
         true
     ),
@@ -376,7 +377,7 @@ tmd_inventory_test_assert(
         && ! str_contains($equipment_filters, '2 ton ('),
     'Capacidad debe mostrar toneladas disponibles sin conteos.'
 );
-tmd_inventory_test_assert(4 === substr_count($equipment_filters, '<select name="'), 'Equipos debe conservar exactamente sus cuatro selectores visibles.');
+tmd_inventory_test_assert(3 === substr_count($equipment_filters, '<select name="'), 'Equipos debe conservar exactamente sus tres selectores visibles.');
 
 $capacity_items = [];
 foreach ([2, 2.0, 1.5, 10, 0, 'inválida', null] as $index => $capacity) {
@@ -403,8 +404,9 @@ tmd_inventory_test_assert(
         && str_contains($equipment_grid, 'data-api-per-page="12"')
         && str_contains($equipment_grid, '<nav class="tmd-api-pagination"')
         && str_contains($equipment_grid, 'ficha=forklift-public')
-        && str_contains($equipment_grid, 'equipo_id=forklift-public')
-        && str_contains($equipment_grid, 'equipo=CROWN+RD5200'),
+        && str_contains($equipment_grid, 'tmd_cotizacion_id=forklift-public')
+        && str_contains($equipment_grid, 'tmd_tipo_cotizacion=montacargas')
+        && str_contains($equipment_grid, 'tmd_cotizacion=CROWN+RD5200'),
     'Equipos debe conservar tarjeta, paginación, ficha y parámetros de cotización.'
 );
 tmd_inventory_test_assert(str_contains($energy_filters, 'action="https://example.test/energia/"'), 'Energía debe conservar su formulario de filtros.');
@@ -438,8 +440,9 @@ tmd_inventory_test_assert(
         && str_contains($energy_grid, 'data-api-per-page="12"')
         && str_contains($energy_grid, '<nav class="tmd-api-pagination"')
         && str_contains($energy_grid, 'ficha=battery-public')
-        && str_contains($energy_grid, 'equipo_id=battery-public')
-        && str_contains($energy_grid, 'tmd_cotizacion_energia=Bater%C3%ADa+CROWN+BAT-100'),
+        && str_contains($energy_grid, 'tmd_cotizacion_id=battery-public')
+        && str_contains($energy_grid, 'tmd_tipo_cotizacion=bateria')
+        && str_contains($energy_grid, 'tmd_cotizacion=Bater%C3%ADa+CROWN+BAT-100'),
     'Energía debe conservar tarjeta, paginación, ficha y parámetros de cotización.'
 );
 tmd_inventory_test_assert(0 === $tmd_test_remote_calls, 'Renderizar ambos catálogos con copia local no debe llamar Firebase.');
@@ -457,16 +460,18 @@ $_GET['ficha'] = 'forklift-public';
 $detail = tmd_inventory_api_grid('montacargas', 12);
 tmd_inventory_test_assert(
     str_contains($detail, 'tmd-api-detail')
-        && str_contains($detail, 'equipo_id=forklift-public')
-        && str_contains($detail, 'equipo=CROWN+RD5200'),
+        && str_contains($detail, 'tmd_cotizacion_id=forklift-public')
+        && str_contains($detail, 'tmd_tipo_cotizacion=montacargas')
+        && str_contains($detail, 'tmd_cotizacion=CROWN+RD5200'),
     'La ficha de equipos debe conservar su cotización con datos locales.'
 );
 $_GET['ficha'] = 'battery-public';
 $detail = tmd_inventory_api_grid('bateria', 12);
 tmd_inventory_test_assert(
     str_contains($detail, 'tmd-api-detail')
-        && str_contains($detail, 'equipo_id=battery-public')
-        && str_contains($detail, 'tmd_cotizacion_energia=Bater%C3%ADa+CROWN+BAT-100'),
+        && str_contains($detail, 'tmd_cotizacion_id=battery-public')
+        && str_contains($detail, 'tmd_tipo_cotizacion=bateria')
+        && str_contains($detail, 'tmd_cotizacion=Bater%C3%ADa+CROWN+BAT-100'),
     'La ficha de baterías debe conservar su cotización con datos locales.'
 );
 tmd_inventory_test_assert(0 === $tmd_test_remote_calls, 'Abrir una ficha local no debe llamar Firebase.');
@@ -518,10 +523,10 @@ tmd_inventory_test_assert(
     'El modelo público debe conservar clasificación y exponer capacidad de montacargas.'
 );
 
-$_GET['api_marca'] = 'JUNGHEINRICH';
+$_GET['api_altura_levante'] = '6-8';
 $filtered_grid = tmd_inventory_api_grid('montacargas', 12);
-tmd_inventory_test_assert(4 === substr_count($filtered_grid, '<article class="'), 'Una URL filtrada debe renderizar solo coincidencias iniciales.');
-tmd_inventory_test_assert(4 === substr_count($filtered_grid, 'data-api-brand="JUNGHEINRICH"'), 'Todas las tarjetas iniciales deben respetar el filtro solicitado.');
+tmd_inventory_test_assert(12 === substr_count($filtered_grid, '<article class="'), 'Una URL filtrada debe renderizar solo coincidencias iniciales.');
+tmd_inventory_test_assert(12 === substr_count($filtered_grid, 'data-api-lift-height="7"'), 'Todas las tarjetas iniciales deben respetar el filtro solicitado.');
 
 $_GET = ['ficha' => 'many-1'];
 $detail_without_payload = tmd_inventory_api_grid('montacargas', 12);
@@ -541,7 +546,6 @@ $other_equipment['especificaciones'] = [
     'tipoReach' => 'SIMPLE',
 ];
 $equipment_filter_cases = [
-    ['api_marca' => 'crown'],
     ['api_categoria' => 'Reach'],
     ['api_subcategoria' => 'Pantógrafo doble profundidad'],
     ['api_altura_colapsada' => '2-3'],
@@ -559,6 +563,20 @@ foreach ($equipment_filter_cases as $query) {
         'Cada filtro de equipos debe conservar la coincidencia del servidor: ' . array_key_first($query)
     );
 }
+
+$_GET = ['api_marca' => 'OTRA'];
+$matches = tmd_inventory_api_filter_items([$matching_equipment, $other_equipment], 'montacargas');
+tmd_inventory_test_assert(
+    ['filter-match', 'filter-other'] === array_column($matches, 'id'),
+    'Equipos debe ignorar api_marca heredado para evitar un filtro invisible.'
+);
+
+$_GET = ['api_marca' => 'OTRA', 'api_altura_levante' => '6-8'];
+$matches = tmd_inventory_api_filter_items([$matching_equipment, $other_equipment], 'montacargas');
+tmd_inventory_test_assert(
+    ['filter-match'] === array_column($matches, 'id'),
+    'Equipos debe ignorar Marca y conservar los filtros visibles válidos.'
+);
 
 $matching_battery = tmd_inventory_test_item('battery-filter-match', 'bateria');
 $matching_battery['marca'] = 'JUNGHEINRÍCH';

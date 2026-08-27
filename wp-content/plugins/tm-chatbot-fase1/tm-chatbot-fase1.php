@@ -45,9 +45,16 @@ function tm_chatbot_fase1_activate() {
  * Configuración rápida.
  */
 function tm_chatbot_fase1_config() {
+    $public_contact = function_exists('tmd_conversion_contact_config')
+        ? tmd_conversion_contact_config()
+        : [
+            'brand_name' => 'Tecnimontacargas',
+            'official_whatsapp' => '573015556180',
+        ];
+
     return [
-        'whatsapp_number' => '573015556180', // Número con indicativo de país, sin +
-        'company_name' => 'Tecni Montacargas',
+        'whatsapp_number' => $public_contact['official_whatsapp'],
+        'company_name' => $public_contact['brand_name'],
         'human_schedule' => 'Atención humana: lunes a viernes de 8:00 a.m. a 5:00 p.m.',
     ];
 }
@@ -73,7 +80,7 @@ function tm_chatbot_fase1_render() {
                 <div class="tm-chat-brand">
                     <div class="tm-chat-logo">TM</div>
                     <div>
-                        <strong>Asistente Tecni Montacargas</strong>
+                        <strong>Asistente <?php echo esc_html($config['company_name']); ?></strong>
                         <span>Soporte y orientación rápida</span>
                     </div>
                 </div>
@@ -87,7 +94,7 @@ function tm_chatbot_fase1_render() {
 
                 <div class="tm-chat-messages">
                     <div class="tm-msg tm-msg-bot">
-                        Hola, soy el asistente virtual de Tecni Montacargas. Puedo ayudarte con mantenimiento, repuestos, alquiler, venta, garantías, horarios o contacto.
+                        Hola, soy el asistente virtual de <?php echo esc_html($config['company_name']); ?>. Puedo ayudarte con mantenimiento, repuestos, alquiler, venta, garantías, horarios o contacto.
                     </div>
                 </div>
 
@@ -473,6 +480,7 @@ function tm_chatbot_fase1_render() {
             const ajaxUrl = <?php echo wp_json_encode($ajax_url); ?>;
             const nonce = <?php echo wp_json_encode($nonce); ?>;
             const whatsappNumber = <?php echo wp_json_encode($config['whatsapp_number']); ?>;
+            const companyName = <?php echo wp_json_encode($config['company_name']); ?>;
 
             function openChat() {
                 windowBox.hidden = false;
@@ -537,7 +545,7 @@ function tm_chatbot_fase1_render() {
                     msg.includes('tecnico')
                 ) {
                     leadBox.hidden = false;
-                    return 'Sí, Tecni Montacargas puede orientar solicitudes de mantenimiento preventivo, correctivo y diagnóstico técnico. Para revisar el caso se requiere información del equipo y tus datos de contacto.';
+                    return 'Sí, ' + companyName + ' puede orientar solicitudes de mantenimiento preventivo, correctivo y diagnóstico técnico. Para revisar el caso se requiere información del equipo y tus datos de contacto.';
                 }
 
                 if (
@@ -567,7 +575,7 @@ function tm_chatbot_fase1_render() {
                     msg.includes('equipo')
                 ) {
                     leadBox.hidden = false;
-                    return 'Tecni Montacargas puede orientarte en venta y selección de equipos para movimiento de carga. Para avanzar necesitamos conocer capacidad, tipo de operación, ciudad y datos de contacto.';
+                    return companyName + ' puede orientarte en venta y selección de equipos para movimiento de carga. Para avanzar necesitamos conocer capacidad, tipo de operación, ciudad y datos de contacto.';
                 }
 
                 if (
@@ -677,7 +685,7 @@ function tm_chatbot_fase1_render() {
                     const message = formData.get('message') || '';
 
                     const whatsappText =
-                        'Hola, quiero hablar con un asesor de Tecni Montacargas.' +
+                        'Hola, quiero hablar con un asesor de ' + companyName + '.' +
                         '\n\nNombre: ' + name +
                         '\nTeléfono: ' + phone +
                         '\nSolicitud: ' + message;

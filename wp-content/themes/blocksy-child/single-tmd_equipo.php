@@ -81,12 +81,11 @@ while (have_posts()) :
         $price_label = $precio;
     }
 
-    $whatsapp_text = rawurlencode('Hola, quiero cotizar el equipo ' . $title . '.');
-    $whatsapp_url = 'https://wa.me/573244298326?text=' . $whatsapp_text;
+    $whatsapp_url = tmd_conversion_whatsapp_url('Hola, quiero cotizar el equipo ' . $title . '.');
 
     $contact_page = get_page_by_path('nosotros/contacto', OBJECT, 'page');
-$contact_base_url = $contact_page ? get_permalink($contact_page->ID) : home_url('/nosotros/contacto/');
-$quote_url = add_query_arg('equipo', $title, $contact_base_url);
+    $contact_base_url = $contact_page ? get_permalink($contact_page->ID) : home_url('/nosotros/contacto/');
+    $quote_url = tmd_conversion_quote_url('montacargas', (string) $post_id, $title, $contact_base_url);
 
     $general_rows = [
         'Marca' => $marca,

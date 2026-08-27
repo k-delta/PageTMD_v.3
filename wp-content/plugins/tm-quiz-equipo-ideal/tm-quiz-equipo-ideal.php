@@ -56,10 +56,12 @@ if (! function_exists('tmd_quiz_v3_inventory_items')) {
                 'condition' => tmd_inventory_api_text($spec['condicionEspecial'] ?? ''),
                 'reach' => tmd_inventory_api_text($spec['tipoReach'] ?? ''),
                 'detailUrl' => add_query_arg('ficha', rawurlencode($id), home_url('/equipos/')),
-                'quoteUrl' => add_query_arg([
-                    'equipo_id' => $id,
-                    'equipo' => $title,
-                ], home_url('/nosotros/contacto/')),
+                'quoteUrl' => function_exists('tmd_conversion_quote_url')
+                    ? tmd_conversion_quote_url('montacargas', $id, $title)
+                    : add_query_arg([
+                        'equipo_id' => $id,
+                        'equipo' => $title,
+                    ], home_url('/nosotros/contacto/')),
             ];
         }
 

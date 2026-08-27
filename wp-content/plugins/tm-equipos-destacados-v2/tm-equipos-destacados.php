@@ -525,10 +525,12 @@ if (!class_exists('TM_Equipos_Destacados_V2')) {
                                     $is_available = (int) ($item['estado']['codigo'] ?? -1) === 1;
                                     $detail_url = $is_available
                                         ? add_query_arg('ficha', $id, home_url('/equipos/'))
-                                        : add_query_arg([
-                                            'equipo_id' => $id,
-                                            'equipo' => $title,
-                                        ], home_url('/nosotros/contacto/'));
+                                        : (function_exists('tmd_conversion_quote_url')
+                                            ? tmd_conversion_quote_url('montacargas', $id, $title)
+                                            : add_query_arg([
+                                                'equipo_id' => $id,
+                                                'equipo' => $title,
+                                            ], home_url('/nosotros/contacto/')));
                                     $cta_label = $is_available ? 'Ver ficha →' : 'Consultar equipo →';
                                     ?>
                                     <article class="tm-eqd-card" data-tm-eqd-card data-equipment-id="<?php echo esc_attr($id); ?>">

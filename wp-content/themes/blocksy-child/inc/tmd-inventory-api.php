@@ -423,7 +423,9 @@ function tmd_inventory_api_subcategory_select($options, $selected) {
 }
 
 function tmd_inventory_api_filter_items($items, $type) {
-    $brand = $type === 'montacargas' ? tmd_inventory_api_request_value('api_marca') : '';
+    // Marca dejó de ser un filtro público. Ignoramos el parámetro heredado para
+    // evitar resultados restringidos por un control que el usuario no puede ver.
+    $brand = '';
     $category = tmd_inventory_api_request_value('api_categoria');
     $subcategory = tmd_inventory_api_request_value('api_subcategoria');
     $collapsed_height = tmd_inventory_api_request_value('api_altura_colapsada');
@@ -506,7 +508,6 @@ function tmd_inventory_api_filter_form($type) {
                 echo '<input type="hidden" name="' . esc_attr($preserved_filter) . '" value="' . esc_attr($preserved_value) . '" data-api-preserved-filter>';
             }
         }
-        tmd_inventory_api_select('api_marca', 'Marca', tmd_inventory_api_brand_options($items), tmd_inventory_api_request_value('api_marca'), false);
         tmd_inventory_api_select('api_altura_colapsada', 'Altura colapsada', [
             '0-2' => 'Hasta 2 m',
             '2-3' => '2 a 3 m',
@@ -569,9 +570,11 @@ function tmd_inventory_api_card_data($item, $type) {
     $title = tmd_inventory_api_title($item, $type);
     $state = tmd_inventory_api_text($item['estado']['nombre'] ?? 'Disponible') ?: 'Disponible';
     $detail_url = add_query_arg('ficha', rawurlencode((string) ($item['id'] ?? '')), $type === 'montacargas' ? home_url('/equipos/') : home_url('/energia/'));
-    $contact_args = ['equipo_id' => (string) ($item['id'] ?? '')];
-    $contact_args[$type === 'bateria' ? 'tmd_cotizacion_energia' : 'equipo'] = $title;
-    $contact_url = add_query_arg($contact_args, home_url('/nosotros/contacto/'));
+    $contact_url = tmd_conversion_quote_url(
+        $type,
+        (string) ($item['id'] ?? ''),
+        $title
+    );
     $spec = is_array($item['especificaciones'] ?? null) ? $item['especificaciones'] : [];
     $classification = $type === 'montacargas'
         ? tmd_inventory_api_classification($item)
@@ -667,11 +670,11 @@ function tmd_inventory_api_detail($item, $type) {
     $title = tmd_inventory_api_title($item, $type);
     $image = esc_url($item['media']['imagenPrincipal'] ?? '');
     $back = $type === 'montacargas' ? home_url('/equipos/') : home_url('/energia/');
-    $contact_args = [
-        'equipo_id' => (string) ($item['id'] ?? ''),
-    ];
-    $contact_args[$type === 'bateria' ? 'tmd_cotizacion_energia' : 'equipo'] = $title;
-    $contact = add_query_arg($contact_args, home_url('/nosotros/contacto/'));
+    $contact = tmd_conversion_quote_url(
+        $type,
+        (string) ($item['id'] ?? ''),
+        $title
+    );
     ob_start();
     echo '<article class="tmd-api-detail">';
     echo '<a class="tmd-api-back" href="' . esc_url($back) . '">← Volver al catálogo</a>';

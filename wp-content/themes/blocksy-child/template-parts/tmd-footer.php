@@ -2,6 +2,8 @@
 /**
  * Footer global TM-Dual.
  */
+$contact_config = tmd_conversion_contact_config();
+$whatsapp_url = tmd_conversion_whatsapp_url();
 ?>
 <footer class="tmd-site-footer" role="contentinfo">
 
@@ -11,7 +13,7 @@
 
       <div class="tmd-footer-cta-actions">
         <a class="tmd-footer-btn-primary" href="<?php echo esc_url(home_url('/nosotros/contacto/')); ?>">Cotizar ahora →</a>
-        <a class="tmd-footer-btn-secondary" href="https://wa.me/573244298326">Hablar con un asesor</a>
+        <a class="tmd-footer-btn-secondary" href="<?php echo esc_url($whatsapp_url); ?>">Hablar con un asesor</a>
       </div>
     </div>
   </section>
@@ -62,7 +64,7 @@
             </li>
             <li>
               <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.817 9.817 0 0 0 12.04 2z"/></svg>
-              <a href="https://wa.me/573244298326">324 429 8326 WhatsApp</a>
+              <a href="<?php echo esc_url($whatsapp_url); ?>"><?php echo esc_html($contact_config['official_whatsapp_label']); ?> WhatsApp</a>
             </li>
             <li>
               <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>

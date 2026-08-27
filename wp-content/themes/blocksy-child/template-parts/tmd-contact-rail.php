@@ -37,47 +37,58 @@ if (is_page(57)) {
         return $content;
     }, 20);
 }
+
+$whatsapp_url = tmd_conversion_whatsapp_url();
 ?>
-<nav class="tmd-contact-rail" aria-label="Contacto rápido">
-  <a
-    class="tmd-contact-rail__link"
-    href="https://maps.google.com/?q=Carrera%20108%20No.22F-21%20Bogota%20Colombia"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Ver ubicación en Google Maps"
-  >
-    <i class="ti ti-map-pin" aria-hidden="true"></i>
-    <span class="tmd-contact-rail__label" aria-hidden="true">Ubicación</span>
-  </a>
+<aside class="tmd-contact-rail" aria-label="Contacto rápido">
+  <details class="tmd-contact-rail__details">
+    <summary class="tmd-contact-rail__trigger" aria-label="Mostrar opciones de contacto">
+      <i class="ti ti-message-circle" aria-hidden="true"></i>
+      <span class="tmd-contact-rail__trigger-label">Contacto</span>
+    </summary>
 
-  <a
-    class="tmd-contact-rail__link"
-    href="https://wa.me/573244298326"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Contactar por WhatsApp"
-  >
-    <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>
-    <span class="tmd-contact-rail__label" aria-hidden="true">WhatsApp</span>
-  </a>
+    <nav class="tmd-contact-rail__links" aria-label="Canales de contacto">
+      <a
+        class="tmd-contact-rail__link"
+        href="https://maps.google.com/?q=Carrera%20108%20No.22F-21%20Bogota%20Colombia"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Ver ubicación en Google Maps"
+      >
+        <i class="ti ti-map-pin" aria-hidden="true"></i>
+        <span class="tmd-contact-rail__label" aria-hidden="true">Ubicación</span>
+      </a>
 
-  <a
-    class="tmd-contact-rail__link"
-    href="mailto:info@tmdual.com"
-    aria-label="Enviar correo electrónico"
-  >
-    <i class="ti ti-mail" aria-hidden="true"></i>
-    <span class="tmd-contact-rail__label" aria-hidden="true">Correo</span>
-  </a>
+      <a
+        class="tmd-contact-rail__link"
+        href="<?php echo esc_url($whatsapp_url); ?>"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Contactar por WhatsApp"
+      >
+        <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>
+        <span class="tmd-contact-rail__label" aria-hidden="true">WhatsApp</span>
+      </a>
 
-  <a
-    class="tmd-contact-rail__link"
-    href="https://co.linkedin.com/company/tmdual"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Visitar LinkedIn de Tecnimontacargas"
-  >
-    <i class="ti ti-brand-linkedin" aria-hidden="true"></i>
-    <span class="tmd-contact-rail__label" aria-hidden="true">LinkedIn</span>
-  </a>
-</nav>
+      <a
+        class="tmd-contact-rail__link"
+        href="mailto:info@tmdual.com"
+        aria-label="Enviar correo electrónico"
+      >
+        <i class="ti ti-mail" aria-hidden="true"></i>
+        <span class="tmd-contact-rail__label" aria-hidden="true">Correo</span>
+      </a>
+
+      <a
+        class="tmd-contact-rail__link"
+        href="https://co.linkedin.com/company/tmdual"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Visitar LinkedIn de Tecnimontacargas"
+      >
+        <i class="ti ti-brand-linkedin" aria-hidden="true"></i>
+        <span class="tmd-contact-rail__label" aria-hidden="true">LinkedIn</span>
+      </a>
+    </nav>
+  </details>
+</aside>

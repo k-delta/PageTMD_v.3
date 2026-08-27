@@ -254,7 +254,7 @@ if (! shortcode_exists('tmd_equipment_grid')) {
 
             echo '<div class="tmd-equipment-actions">';
             echo '<a class="tmd-equipment-btn tmd-equipment-btn-primary" href="' . esc_url($permalink) . '">Ver ficha</a>';
-            echo '<a class="tmd-equipment-btn tmd-equipment-btn-secondary" href="' . esc_url(home_url('/nosotros/contacto/?equipo=' . rawurlencode($title))) . '">Cotizar</a>';
+            echo '<a class="tmd-equipment-btn tmd-equipment-btn-secondary" href="' . esc_url(tmd_conversion_quote_url('montacargas', (string) $post_id, $title)) . '">Cotizar</a>';
             echo '</div>';
 
             echo '</div>';
@@ -408,7 +408,7 @@ add_action('init', function () {
 
             echo '<div class="tmd-equipment-actions">';
             echo '<a class="tmd-equipment-btn tmd-equipment-btn-primary" href="' . esc_url($permalink) . '">Ver ficha</a>';
-            echo '<a class="tmd-equipment-btn tmd-equipment-btn-secondary" href="' . esc_url(home_url('/nosotros/contacto/?equipo=' . rawurlencode($title))) . '">Cotizar</a>';
+            echo '<a class="tmd-equipment-btn tmd-equipment-btn-secondary" href="' . esc_url(tmd_conversion_quote_url('montacargas', (string) $post_id, $title)) . '">Cotizar</a>';
             echo '</div>';
 
             echo '</div>';
@@ -628,7 +628,7 @@ add_action('init', function () {
 
             echo '<div class="tmd-equipment-actions">';
             echo '<a class="tmd-equipment-btn tmd-equipment-btn-primary" href="' . esc_url($permalink) . '">Ver ficha</a>';
-            echo '<a class="tmd-equipment-btn tmd-equipment-btn-secondary" href="' . esc_url(home_url('/nosotros/contacto/?equipo=' . rawurlencode($title))) . '">Cotizar</a>';
+            echo '<a class="tmd-equipment-btn tmd-equipment-btn-secondary" href="' . esc_url(tmd_conversion_quote_url('montacargas', (string) $post_id, $title)) . '">Cotizar</a>';
             echo '</div>';
 
             echo '</div>';
@@ -941,7 +941,7 @@ add_action('init', function () {
 
             echo '<div class="tmd-equipment-actions">';
             echo '<a class="tmd-equipment-btn tmd-equipment-btn-primary" href="' . esc_url($permalink) . '">Ver ficha</a>';
-            echo '<a class="tmd-equipment-btn tmd-equipment-btn-secondary" href="' . esc_url(home_url('/nosotros/contacto/?equipo=' . rawurlencode($title))) . '">Cotizar</a>';
+            echo '<a class="tmd-equipment-btn tmd-equipment-btn-secondary" href="' . esc_url(tmd_conversion_quote_url('montacargas', (string) $post_id, $title)) . '">Cotizar</a>';
             echo '</div>';
 
             echo '</div>';
@@ -1425,7 +1425,7 @@ add_action('init', function () {
 
             echo '<div class="tmde-actions">';
             echo '<a class="tmde-btn tmde-btn-primary" href="' . esc_url($permalink) . '">Ver ficha</a>';
-            echo '<a class="tmde-btn tmde-btn-secondary" href="' . esc_url(home_url('/nosotros/contacto/?tmd_cotizacion_energia=' . rawurlencode($title))) . '">Cotizar</a>';
+            echo '<a class="tmde-btn tmde-btn-secondary" href="' . esc_url(tmd_conversion_quote_url('bateria', (string) $post_id, $title)) . '">Cotizar</a>';
             echo '</div>';
 
             echo '</div>';
@@ -1872,71 +1872,15 @@ add_action('init', function () {
 
     $energia = sanitize_text_field(wp_unslash($_GET['energia']));
 
-    $target = add_query_arg(
-        'tmd_cotizacion_energia',
-        $energia,
-        home_url('/nosotros/contacto/')
-    );
+    $energy_id = isset($_GET['equipo_id']) && ! is_array($_GET['equipo_id'])
+        ? sanitize_text_field(wp_unslash($_GET['equipo_id']))
+        : '';
+    $target = tmd_conversion_quote_url('bateria', $energy_id, $energia);
 
     wp_safe_redirect($target, 302);
     exit;
 }, 0);
 /* TMD_CONTACT_ENERGIA_REDIRECT_END */
-
-/* TMD_CONTACT_CF7_PREFILL_START */
-add_filter('wpcf7_form_tag', function ($tag) {
-    if (! is_page(57) || ! $tag instanceof WPCF7_FormTag) {
-        return $tag;
-    }
-
-    $equipment = isset($_GET['equipo'])
-        ? sanitize_text_field(wp_unslash($_GET['equipo']))
-        : '';
-    $energy = isset($_GET['tmd_cotizacion_energia'])
-        ? sanitize_text_field(wp_unslash($_GET['tmd_cotizacion_energia']))
-        : '';
-
-    if ($equipment === '' && $energy === '') {
-        return $tag;
-    }
-
-    $type = $equipment !== '' ? 'Equipo' : 'Energía';
-    $product = $equipment !== '' ? $equipment : $energy;
-    $values = [
-        'tmd_tipo_cotizacion' => $type,
-        'tmd_cotizacion' => $product,
-        'tmd_url_origen' => esc_url_raw(home_url(wp_unslash($_SERVER['REQUEST_URI'] ?? '/nosotros/contacto/'))),
-    ];
-
-    if (isset($values[$tag->name])) {
-        $tag->values = [$values[$tag->name]];
-        $tag->raw_values = [$values[$tag->name]];
-    }
-
-    if ($tag->name === 'service') {
-        $tag->options = array_values(array_filter(
-            $tag->options,
-            static fn($option) => ! str_starts_with($option, 'default:')
-        ));
-        $tag->options[] = $type === 'Energía' ? 'default:5' : 'default:3';
-    }
-
-    if ($tag->name === 'message') {
-        $message = 'Hola, quiero recibir información sobre: ' . $product;
-        $tag->options = array_values(array_filter(
-            $tag->options,
-            static fn($option) => ! in_array($option, ['placeholder', 'watermark'], true)
-        ));
-        $tag->values = [$message];
-        $tag->raw_values = [$message];
-        $tag->content = $message;
-    }
-
-    return $tag;
-}, 20);
-/* TMD_CONTACT_CF7_PREFILL_END */
-
-
 
 /* TMD_CONTACT_PAGE_POLISH_START */
 add_action('wp_enqueue_scripts', function () {
@@ -2294,72 +2238,7 @@ CSS;
     document.addEventListener('DOMContentLoaded', fn);
   }
 
-  function ensureHiddenField(form, name) {
-    var field = form.querySelector('[name="' + name + '"]');
-
-    if (field) {
-      return field;
-    }
-
-    field = document.createElement('input');
-    field.type = 'hidden';
-    field.name = name;
-    form.appendChild(field);
-
-    return field;
-  }
-
   ready(function () {
-    var params = new URLSearchParams(window.location.search);
-    var equipo = params.get('equipo') || '';
-    var energia = params.get('tmd_cotizacion_energia') || params.get('energia') || '';
-
-    var tipo = '';
-    var producto = '';
-
-    if (equipo) {
-      tipo = 'Equipo';
-      producto = equipo;
-    } else if (energia) {
-      tipo = 'Energía';
-      producto = energia;
-    }
-
-    var form = document.querySelector('.tmd-contact-grid .wpcf7-form');
-
-    if (form && producto) {
-      var applyQuotation = function () {
-        ensureHiddenField(form, 'tmd_tipo_cotizacion').value = tipo;
-        ensureHiddenField(form, 'tmd_cotizacion').value = producto;
-        ensureHiddenField(form, 'tmd_url_origen').value = window.location.href;
-
-        var service = form.querySelector('[name="service"]');
-
-        if (service) {
-          service.value = tipo === 'Energía' ? 'Baterías y cargadores' : 'Venta de equipo';
-        }
-
-        var message = form.querySelector('[name="message"]');
-
-        if (message && !message.value) {
-          message.value = 'Hola, quiero recibir información sobre: ' + producto;
-        }
-      };
-
-      applyQuotation();
-      document.addEventListener('wpcf7init', applyQuotation);
-      document.addEventListener('wpcf7reset', applyQuotation);
-      form.addEventListener('reset', function () {
-        window.setTimeout(applyQuotation, 0);
-      });
-      window.addEventListener('load', applyQuotation);
-      window.setTimeout(applyQuotation, 1200);
-
-      form.addEventListener('submit', function () {
-        applyQuotation();
-      });
-    }
-
     var track = document.querySelector('[data-tmd-advisors-track]');
     var prev = document.querySelector('[data-tmd-advisors-prev]');
     var next = document.querySelector('[data-tmd-advisors-next]');
@@ -2418,12 +2297,6 @@ body.page-id-57 .tmd-page-hero h1 {
   margin-bottom: 18px !important;
 }
 
-/* El bloque de producto queda dentro del hero */
-body.page-id-57 .tmd-page-hero .tmd-contact-source-box-server {
-  max-width: 100%;
-  margin: 30px 0 0 !important;
-}
-
 /* Ajuste de separación entre hero y asesores */
 body.page-id-57 .tmd-dark-band {
   margin-top: 0 !important;
@@ -2459,29 +2332,6 @@ CSS;
     wp_enqueue_style('tmd-contact-final-visual-tweaks-style');
     wp_add_inline_style('tmd-contact-final-visual-tweaks-style', $css);
 
-    $js = <<<'JS'
-(function () {
-  function ready(fn) {
-    if (document.readyState !== 'loading') {
-      fn();
-      return;
-    }
-
-    document.addEventListener('DOMContentLoaded', fn);
-  }
-
-  ready(function () {
-    var sourceBox = document.querySelector('.tmd-contact-source-box-server');
-    var heroWrap = document.querySelector('.tmd-page-hero .tmd-wrap');
-
-    if (sourceBox && heroWrap && !heroWrap.contains(sourceBox)) {
-      heroWrap.appendChild(sourceBox);
-    }
-  });
-})();
-JS;
-
-    wp_add_inline_script('jquery', $js);
 }, 120);
 /* TMD_CONTACT_FINAL_VISUAL_TWEAKS_END */
 
@@ -2492,19 +2342,6 @@ add_action('wp_enqueue_scripts', function () {
     }
 
     $css = <<<'CSS'
-/* Ocultar texto "Solicitud desde catálogo", mantener solo Equipo/Energía */
-body.page-id-57 .tmd-contact-source-box-server strong {
-  display: none !important;
-}
-
-body.page-id-57 .tmd-contact-source-box-server {
-  padding: 18px 22px !important;
-}
-
-body.page-id-57 .tmd-contact-source-box-server span {
-  margin: 0 !important;
-}
-
 /* Fotos reales de asesores */
 body.page-id-57 .tmd-avatar.tmd-avatar-photo {
   width: 82px !important;
@@ -2607,6 +2444,10 @@ require_once get_stylesheet_directory() . '/inc/tmd-blog.php';
 /* TMD_BRAND_CAROUSEL_START */
 require_once get_stylesheet_directory() . '/inc/tmd-brand-carousel.php';
 /* TMD_BRAND_CAROUSEL_END */
+
+/* TMD_CONVERSION_START */
+require_once get_stylesheet_directory() . '/inc/tmd-conversion.php';
+/* TMD_CONVERSION_END */
 
 /* TMD_INVENTORY_API_START */
 require_once get_stylesheet_directory() . '/inc/tmd-inventory-api.php';
