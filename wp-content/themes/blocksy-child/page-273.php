@@ -6,44 +6,45 @@
 defined('ABSPATH') || exit;
 
 /**
- * Resuelve la imagen original de Gerencia desde el attachment de WordPress.
- * WordPress puede usar una derivada "-scaled" como archivo adjunto principal;
- * para esta sección preferimos el original editado cuando existe.
+ * Resuelve el archivo original de un attachment de WordPress.
+ * WordPress puede registrar una derivada "-scaled" como archivo principal;
+ * para estas imágenes preferimos el original editado cuando existe.
  */
-function tmd_jobs_management_original_image(): array {
-    static $resolved = false;
-    static $image = [];
+function tmd_jobs_original_media_image(string $needle, string $mime_type): array {
+    static $cache = [];
 
-    if ($resolved) {
-        return $image;
+    $cache_key = $mime_type . '|' . $needle;
+
+    if (array_key_exists($cache_key, $cache)) {
+        return $cache[$cache_key];
     }
 
-    $resolved = true;
+    $cache[$cache_key] = [];
 
     $attachment_ids = get_posts([
         'post_type'      => 'attachment',
         'post_status'    => 'inherit',
-        'post_mime_type' => 'image/webp',
+        'post_mime_type' => $mime_type,
         'posts_per_page' => 1,
         'fields'         => 'ids',
         'orderby'        => 'ID',
         'order'          => 'DESC',
         'meta_query'     => [[
             'key'     => '_wp_attached_file',
-            'value'   => 'gerencia',
+            'value'   => $needle,
             'compare' => 'LIKE',
         ]],
     ]);
 
     if (empty($attachment_ids)) {
-        return $image;
+        return $cache[$cache_key];
     }
 
     $attachment_id = (int) $attachment_ids[0];
     $attached_file = (string) get_post_meta($attachment_id, '_wp_attached_file', true);
 
     if ('' === $attached_file) {
-        return $image;
+        return $cache[$cache_key];
     }
 
     $metadata = wp_get_attachment_metadata($attachment_id);
@@ -65,7 +66,7 @@ function tmd_jobs_management_original_image(): array {
     $uploads = wp_upload_dir();
 
     if (! empty($uploads['error']) || empty($uploads['basedir']) || empty($uploads['baseurl'])) {
-        return $image;
+        return $cache[$cache_key];
     }
 
     foreach (array_unique($candidates) as $relative_path) {
@@ -82,7 +83,7 @@ function tmd_jobs_management_original_image(): array {
             $url = add_query_arg('ver', (string) $mtime, $url);
         }
 
-        $image = [
+        $cache[$cache_key] = [
             'id'            => $attachment_id,
             'relative_path' => $relative_path,
             'url'           => $url,
@@ -90,7 +91,7 @@ function tmd_jobs_management_original_image(): array {
         break;
     }
 
-    return $image;
+    return $cache[$cache_key];
 }
 
 /**
@@ -114,21 +115,16 @@ add_filter('the_content', static function ($content) {
     $updated = preg_replace($pattern, esc_url($asset_url), $content, 1);
     $updated = is_string($updated) ? $updated : $content;
 
-    $testimonial_relative_path = '/wp-content/uploads/2026/08/trabaja-colaborador-20260826.jpeg';
-    $testimonial_absolute_path = ABSPATH . ltrim($testimonial_relative_path, '/');
+    $testimonial_image = tmd_jobs_original_media_image(
+        'trabaja-colaborador-20260826',
+        'image/jpeg'
+    );
 
-    if (is_file($testimonial_absolute_path)) {
-        $testimonial_url = content_url('/uploads/2026/08/trabaja-colaborador-20260826.jpeg');
-        $testimonial_mtime = filemtime($testimonial_absolute_path);
-
-        if ($testimonial_mtime !== false) {
-            $testimonial_url = add_query_arg('ver', (string) $testimonial_mtime, $testimonial_url);
-        }
-
-        $testimonial_pattern = '~(?:https?://[^"\']+)?/wp-content/uploads/2026/08/trabaja-colaborador-20260826\.jpeg(?:\?[^"\']*)?~i';
+    if (! empty($testimonial_image['url'])) {
+        $testimonial_pattern = '~(?:https?://[^"\']+)?/wp-content/uploads/[^"\']*/trabaja-colaborador-20260826[^/"\']*\.(?:jpe?g)(?:\?[^"\']*)?~i';
         $testimonial_updated = preg_replace(
             $testimonial_pattern,
-            esc_url($testimonial_url),
+            esc_url($testimonial_image['url']),
             $updated,
             1
         );
@@ -138,7 +134,7 @@ add_filter('the_content', static function ($content) {
         }
     }
 
-    $management_image = tmd_jobs_management_original_image();
+    $management_image = tmd_jobs_original_media_image('gerencia', 'image/webp');
 
     if (! empty($management_image['url'])) {
         $management_pattern = '~(?:https?://[^"\']+)?/wp-content/uploads/[^"\']*/gerencia[^/"\']*\.webp(?:\?[^"\']*)?~i';
