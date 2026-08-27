@@ -56,8 +56,41 @@ function tmd_home_hero_video_attachment(): array {
 }
 
 /**
- * Sustituye únicamente el primer bloque Kadence con video de fondo de Inicio,
- * que corresponde al hero principal, conservando el resto de sus atributos.
+ * Kadence conserva la URL del video en el JSON serializado del bloque.
+ * Reescribimos ese atributo antes de do_blocks (prioridad 9) para que el
+ * render use realmente el nuevo adjunto de la librería de medios.
+ */
+add_filter('the_content', static function (string $content): string {
+    $hero_video = tmd_home_hero_video_attachment();
+
+    if (empty($hero_video['url']) || empty($hero_video['id'])) {
+        return $content;
+    }
+
+    $old_url = 'https://tecnimontacargas.com/wp-content/uploads/2026/07/WhatsApp-Video-2026-07-08-at-16.24.56.mp4';
+
+    if (! str_contains($content, $old_url)) {
+        return $content;
+    }
+
+    $pattern = '/("local"\s*:\s*")' . preg_quote($old_url, '/') . '("\s*,\s*"localID"\s*:\s*)\d+/';
+    $updated = preg_replace_callback(
+        $pattern,
+        static function (array $matches) use ($hero_video): string {
+            return $matches[1]
+                . esc_url_raw($hero_video['url'])
+                . $matches[2]
+                . (int) $hero_video['id'];
+        },
+        $content,
+        1
+    );
+
+    return is_string($updated) ? $updated : $content;
+}, 8);
+
+/**
+ * Fallback adicional sobre los atributos ya parseados del bloque.
  */
 add_filter('render_block_data', static function (array $parsed_block): array {
     static $hero_replaced = false;
