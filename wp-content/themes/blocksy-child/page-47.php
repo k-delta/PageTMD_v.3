@@ -136,19 +136,67 @@ add_filter('render_block_data', static function (array $parsed_block): array {
 }, 20);
 
 /**
- * El hero ocupa el viewport también en móvil. El video se recorta con cover en
- * lugar de deformarse, manteniendo una única fuente multimedia para escritorio
- * y teléfono.
+ * Renderiza el video móvil desde PHP dentro del hero. Esto evita depender de
+ * JavaScript para crear el elemento, algo que puede fallar cuando LiteSpeed u
+ * otro optimizador retrasa la ejecución de scripts en móvil.
+ */
+add_filter('render_block', static function (string $block_content, array $block): string {
+    static $hero_video_injected = false;
+
+    if ($hero_video_injected || ! is_page(47) || ($block['blockName'] ?? '') !== 'kadence/rowlayout') {
+        return $block_content;
+    }
+
+    $attrs = $block['attrs'] ?? [];
+    $videos = $attrs['backgroundVideo'] ?? [];
+
+    if (($attrs['backgroundSettingTab'] ?? '') !== 'video' || empty($videos) || ! is_array($videos)) {
+        return $block_content;
+    }
+
+    $hero_video = tmd_home_hero_video_attachment();
+
+    if (empty($hero_video['url'])) {
+        return $block_content;
+    }
+
+    $mobile_video = sprintf(
+        '<video class="tmd-mobile-hero-video" autoplay muted loop playsinline webkit-playsinline preload="auto" aria-hidden="true" tabindex="-1"><source src="%s" type="video/mp4"></video>',
+        esc_url($hero_video['url'])
+    );
+
+    $updated = preg_replace(
+        '/^(\s*<div\b[^>]*>)/i',
+        '$1' . $mobile_video,
+        $block_content,
+        1
+    );
+
+    if (is_string($updated) && $updated !== $block_content) {
+        $hero_video_injected = true;
+        return $updated;
+    }
+
+    return $block_content;
+}, 30, 2);
+
+/**
+ * El hero ocupa el viewport. En móvil se muestra el video explícito renderizado
+ * por PHP; en escritorio se mantiene el video de fondo generado por Kadence.
  */
 add_action('wp_head', static function (): void {
     ?>
     <style id="tmd-home-hero-video-responsive">
         body.page-id-47 .kb-row-layout-id47_9c201d-d2 {
+            position: relative !important;
             min-height: 100vh;
             min-height: 100svh;
+            overflow: hidden;
         }
 
         body.page-id-47 .kb-row-layout-id47_9c201d-d2 > .kt-row-column-wrap {
+            position: relative;
+            z-index: 2;
             min-height: inherit;
         }
 
@@ -159,9 +207,14 @@ add_action('wp_head', static function (): void {
             object-position: 50% 50% !important;
         }
 
+        body.page-id-47 .tmd-mobile-hero-video {
+            display: none;
+        }
+
         @media (max-width: 767px) {
             body.page-id-47 .kb-row-layout-id47_9c201d-d2 {
                 min-height: 100svh;
+                background-color: #262e4f;
             }
 
             body.page-id-47 .kb-row-layout-id47_9c201d-d2 > .kt-row-column-wrap {
@@ -169,8 +222,24 @@ add_action('wp_head', static function (): void {
                 align-content: center;
             }
 
-            body.page-id-47 .kb-row-layout-id47_9c201d-d2 video {
+            body.page-id-47 .kb-row-layout-id47_9c201d-d2 > .kt-row-layout-overlay {
+                position: absolute;
+                z-index: 1;
+            }
+
+            body.page-id-47 .kb-row-layout-id47_9c201d-d2 .tmd-mobile-hero-video {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                position: absolute !important;
+                inset: 0 !important;
+                z-index: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                max-width: none !important;
+                object-fit: cover !important;
                 object-position: 50% 50% !important;
+                pointer-events: none;
             }
         }
     </style>
@@ -178,31 +247,38 @@ add_action('wp_head', static function (): void {
 }, 100);
 
 /**
- * Refuerza los atributos requeridos por autoplay en iOS/Android. Kadence ya
- * controla el elemento, pero este ajuste evita diferencias entre navegadores.
+ * Refuerza autoplay en los videos ya presentes en el HTML. La existencia del
+ * video móvil ya no depende de este script.
  */
 add_action('wp_footer', static function (): void {
     ?>
     <script id="tmd-home-hero-video-runtime">
         (() => {
-            const video = document.querySelector('body.page-id-47 .kb-row-layout-id47_9c201d-d2 video');
-            if (!video) return;
+            const hero = document.querySelector('body.page-id-47 .kb-row-layout-id47_9c201d-d2');
+            if (!hero) return;
 
-            video.loop = true;
-            video.muted = true;
-            video.autoplay = true;
-            video.playsInline = true;
-            video.setAttribute('loop', '');
-            video.setAttribute('muted', '');
-            video.setAttribute('autoplay', '');
-            video.setAttribute('playsinline', '');
+            const configureVideo = (video) => {
+                video.loop = true;
+                video.muted = true;
+                video.defaultMuted = true;
+                video.autoplay = true;
+                video.playsInline = true;
+                video.controls = false;
+                video.setAttribute('loop', '');
+                video.setAttribute('muted', '');
+                video.setAttribute('autoplay', '');
+                video.setAttribute('playsinline', '');
+                video.setAttribute('webkit-playsinline', '');
+                video.setAttribute('aria-hidden', 'true');
+                video.load();
 
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
                 const playback = video.play();
                 if (playback && typeof playback.catch === 'function') {
                     playback.catch(() => {});
                 }
-            }
+            };
+
+            hero.querySelectorAll('video').forEach(configureVideo);
         })();
     </script>
     <?php

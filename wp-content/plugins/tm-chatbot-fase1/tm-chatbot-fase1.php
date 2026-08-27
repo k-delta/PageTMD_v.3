@@ -292,7 +292,7 @@ function tm_chatbot_fase1_render() {
             border-radius: 14px;
             font-size: 14px;
             line-height: 1.45;
-            white-space: pre-wrap;
+            white-space: normal;
             word-break: break-word;
         }
 
