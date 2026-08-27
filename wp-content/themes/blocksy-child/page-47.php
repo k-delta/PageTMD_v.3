@@ -56,9 +56,9 @@ function tmd_home_hero_video_attachment(): array {
 }
 
 /**
- * Kadence conserva la URL del video en el JSON serializado del bloque.
- * Reescribimos ese atributo antes de do_blocks (prioridad 9) para que el
- * render use realmente el nuevo adjunto de la librería de medios.
+ * Kadence conserva la URL y opciones del video en el JSON serializado del bloque.
+ * Reescribimos esos atributos antes de do_blocks para que el hero use el adjunto
+ * canónico y se reproduzca en bucle.
  */
 add_filter('the_content', static function (string $content): string {
     $hero_video = tmd_home_hero_video_attachment();
@@ -68,25 +68,30 @@ add_filter('the_content', static function (string $content): string {
     }
 
     $old_url = 'https://tecnimontacargas.com/wp-content/uploads/2026/07/WhatsApp-Video-2026-07-08-at-16.24.56.mp4';
+    $updated = $content;
 
-    if (! str_contains($content, $old_url)) {
-        return $content;
+    if (str_contains($updated, $old_url)) {
+        $pattern = '/("local"\s*:\s*")' . preg_quote($old_url, '/') . '("\s*,\s*"localID"\s*:\s*)\d+/';
+        $replaced = preg_replace_callback(
+            $pattern,
+            static function (array $matches) use ($hero_video): string {
+                return $matches[1]
+                    . esc_url_raw($hero_video['url'])
+                    . $matches[2]
+                    . (int) $hero_video['id'];
+            },
+            $updated,
+            1
+        );
+
+        if (is_string($replaced)) {
+            $updated = $replaced;
+        }
     }
 
-    $pattern = '/("local"\s*:\s*")' . preg_quote($old_url, '/') . '("\s*,\s*"localID"\s*:\s*)\d+/';
-    $updated = preg_replace_callback(
-        $pattern,
-        static function (array $matches) use ($hero_video): string {
-            return $matches[1]
-                . esc_url_raw($hero_video['url'])
-                . $matches[2]
-                . (int) $hero_video['id'];
-        },
-        $content,
-        1
-    );
+    $looped = preg_replace('/"loop"\s*:\s*false/', '"loop":true', $updated, 1);
 
-    return is_string($updated) ? $updated : $content;
+    return is_string($looped) ? $looped : $updated;
 }, 8);
 
 /**
@@ -119,6 +124,8 @@ add_filter('render_block_data', static function (array $parsed_block): array {
 
         $videos[$index]['local'] = esc_url_raw($hero_video['url']);
         $videos[$index]['localID'] = (int) $hero_video['id'];
+        $videos[$index]['loop'] = true;
+        $videos[$index]['mute'] = true;
         $hero_replaced = true;
         break;
     }
@@ -127,5 +134,78 @@ add_filter('render_block_data', static function (array $parsed_block): array {
 
     return $parsed_block;
 }, 20);
+
+/**
+ * El hero ocupa el viewport también en móvil. El video se recorta con cover en
+ * lugar de deformarse, manteniendo una única fuente multimedia para escritorio
+ * y teléfono.
+ */
+add_action('wp_head', static function (): void {
+    ?>
+    <style id="tmd-home-hero-video-responsive">
+        body.page-id-47 .kb-row-layout-id47_9c201d-d2 {
+            min-height: 100vh;
+            min-height: 100svh;
+        }
+
+        body.page-id-47 .kb-row-layout-id47_9c201d-d2 > .kt-row-column-wrap {
+            min-height: inherit;
+        }
+
+        body.page-id-47 .kb-row-layout-id47_9c201d-d2 video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            object-position: 50% 50% !important;
+        }
+
+        @media (max-width: 767px) {
+            body.page-id-47 .kb-row-layout-id47_9c201d-d2 {
+                min-height: 100svh;
+            }
+
+            body.page-id-47 .kb-row-layout-id47_9c201d-d2 > .kt-row-column-wrap {
+                min-height: 100svh;
+                align-content: center;
+            }
+
+            body.page-id-47 .kb-row-layout-id47_9c201d-d2 video {
+                object-position: 50% 50% !important;
+            }
+        }
+    </style>
+    <?php
+}, 100);
+
+/**
+ * Refuerza los atributos requeridos por autoplay en iOS/Android. Kadence ya
+ * controla el elemento, pero este ajuste evita diferencias entre navegadores.
+ */
+add_action('wp_footer', static function (): void {
+    ?>
+    <script id="tmd-home-hero-video-runtime">
+        (() => {
+            const video = document.querySelector('body.page-id-47 .kb-row-layout-id47_9c201d-d2 video');
+            if (!video) return;
+
+            video.loop = true;
+            video.muted = true;
+            video.autoplay = true;
+            video.playsInline = true;
+            video.setAttribute('loop', '');
+            video.setAttribute('muted', '');
+            video.setAttribute('autoplay', '');
+            video.setAttribute('playsinline', '');
+
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                const playback = video.play();
+                if (playback && typeof playback.catch === 'function') {
+                    playback.catch(() => {});
+                }
+            }
+        })();
+    </script>
+    <?php
+}, 100);
 
 require get_template_directory() . '/page.php';
