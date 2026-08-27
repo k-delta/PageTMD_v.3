@@ -1,0 +1,36 @@
+.tmd-business-form-section {
+  width: min(1120px, calc(100% - 32px));
+  margin: 64px auto;
+  padding: clamp(24px, 5vw, 48px);
+  border: 1px solid #dce6f1;
+  border-radius: 24px;
+  color: #262e4f;
+  background: #fff;
+  box-shadow: 0 18px 46px rgb(38 46 79 / 10%);
+}
+
+.tmd-business-form-intro { max-width: 760px; margin-bottom: 28px; }
+.tmd-business-form-intro > span { color: #128ceb; font-size: 12px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+.tmd-business-form-intro h2 { margin: 8px 0 12px; color: #262e4f; font-size: clamp(28px, 4vw, 42px); }
+.tmd-business-form-intro p { margin: 0; color: #5e748b; line-height: 1.65; }
+.tmd-business-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.tmd-business-form label { display: grid; gap: 7px; min-width: 0; font-weight: 750; }
+.tmd-business-form input:not([type='checkbox']), .tmd-business-form textarea {
+  width: 100%; min-height: 50px; padding: 12px 14px; border: 1px solid #cdd9e7; border-radius: 10px; background: #f9fbfd; color: #262e4f; font: inherit;
+}
+.tmd-business-form textarea { min-height: 150px; resize: vertical; }
+.tmd-business-wide { grid-column: 1 / -1; }
+.tmd-business-upload small { color: #5e748b; font-weight: 500; line-height: 1.5; }
+.tmd-business-terms { display: flex !important; grid-template-columns: auto 1fr; align-items: flex-start; font-weight: 500 !important; }
+.tmd-business-terms input { margin-top: 4px; }
+.tmd-business-form button { min-height: 52px; border: 0; border-radius: 999px; color: #fff; background: #128ceb; font-weight: 850; cursor: pointer; }
+.tmd-business-form button:disabled { cursor: wait; opacity: .68; }
+.tmd-business-status { min-height: 24px; color: #5e748b; }
+.tmd-business-status.is-success { color: #238b5e; }
+.tmd-business-status.is-error { color: #b42318; }
+.tmd-business-honeypot { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
+
+@media (max-width: 700px) {
+  .tmd-business-form { grid-template-columns: 1fr; }
+  .tmd-business-wide { grid-column: auto; }
+}
