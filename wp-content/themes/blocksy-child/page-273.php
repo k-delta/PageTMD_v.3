@@ -31,6 +31,11 @@ add_filter('the_content', static function ($content) {
 add_action('wp_head', static function (): void {
     ?>
     <style id="tmd-jobs-testimonial-portrait-zoom">
+        body.page-id-273 .tmd-jobs-testimonial {
+            min-height: 0 !important;
+            padding: 52px 20px !important;
+        }
+
         body.page-id-273 .tmd-jobs-avatar-wrap {
             width: 260px !important;
             height: 260px !important;
@@ -53,6 +58,10 @@ add_action('wp_head', static function (): void {
         }
 
         @media (max-width: 900px) {
+            body.page-id-273 .tmd-jobs-testimonial {
+                padding: 46px 20px !important;
+            }
+
             body.page-id-273 .tmd-jobs-avatar-wrap {
                 width: 240px !important;
                 height: 240px !important;
@@ -60,6 +69,10 @@ add_action('wp_head', static function (): void {
         }
 
         @media (max-width: 640px) {
+            body.page-id-273 .tmd-jobs-testimonial {
+                padding: 38px 16px !important;
+            }
+
             body.page-id-273 .tmd-jobs-avatar-wrap {
                 width: 220px !important;
                 height: 220px !important;
