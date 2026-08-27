@@ -136,8 +136,53 @@ add_filter('render_block_data', static function (array $parsed_block): array {
 }, 20);
 
 /**
- * El hero ocupa el viewport. En móvil usamos un video explícito porque Kadence
- * puede omitir por completo el elemento <video> de fondo en pantallas pequeñas.
+ * Renderiza el video móvil desde PHP dentro del hero. Esto evita depender de
+ * JavaScript para crear el elemento, algo que puede fallar cuando LiteSpeed u
+ * otro optimizador retrasa la ejecución de scripts en móvil.
+ */
+add_filter('render_block', static function (string $block_content, array $block): string {
+    static $hero_video_injected = false;
+
+    if ($hero_video_injected || ! is_page(47) || ($block['blockName'] ?? '') !== 'kadence/rowlayout') {
+        return $block_content;
+    }
+
+    $attrs = $block['attrs'] ?? [];
+    $videos = $attrs['backgroundVideo'] ?? [];
+
+    if (($attrs['backgroundSettingTab'] ?? '') !== 'video' || empty($videos) || ! is_array($videos)) {
+        return $block_content;
+    }
+
+    $hero_video = tmd_home_hero_video_attachment();
+
+    if (empty($hero_video['url'])) {
+        return $block_content;
+    }
+
+    $mobile_video = sprintf(
+        '<video class="tmd-mobile-hero-video" autoplay muted loop playsinline webkit-playsinline preload="auto" aria-hidden="true" tabindex="-1"><source src="%s" type="video/mp4"></video>',
+        esc_url($hero_video['url'])
+    );
+
+    $updated = preg_replace(
+        '/^(\s*<div\b[^>]*>)/i',
+        '$1' . $mobile_video,
+        $block_content,
+        1
+    );
+
+    if (is_string($updated) && $updated !== $block_content) {
+        $hero_video_injected = true;
+        return $updated;
+    }
+
+    return $block_content;
+}, 30, 2);
+
+/**
+ * El hero ocupa el viewport. En móvil se muestra el video explícito renderizado
+ * por PHP; en escritorio se mantiene el video de fondo generado por Kadence.
  */
 add_action('wp_head', static function (): void {
     ?>
@@ -184,6 +229,8 @@ add_action('wp_head', static function (): void {
 
             body.page-id-47 .kb-row-layout-id47_9c201d-d2 .tmd-mobile-hero-video {
                 display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
                 position: absolute !important;
                 inset: 0 !important;
                 z-index: 0 !important;
@@ -200,25 +247,15 @@ add_action('wp_head', static function (): void {
 }, 100);
 
 /**
- * En escritorio reforzamos el video generado por Kadence. En móvil insertamos
- * nuestro propio elemento para no depender de que Kadence renderice videos de
- * fondo en ese breakpoint.
+ * Refuerza autoplay en los videos ya presentes en el HTML. La existencia del
+ * video móvil ya no depende de este script.
  */
 add_action('wp_footer', static function (): void {
-    $hero_video = tmd_home_hero_video_attachment();
-
-    if (empty($hero_video['url'])) {
-        return;
-    }
     ?>
     <script id="tmd-home-hero-video-runtime">
         (() => {
             const hero = document.querySelector('body.page-id-47 .kb-row-layout-id47_9c201d-d2');
             if (!hero) return;
-
-            const source = <?php echo wp_json_encode(esc_url_raw($hero_video['url'])); ?>;
-            const mobileQuery = window.matchMedia('(max-width: 767px)');
-            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
             const configureVideo = (video) => {
                 video.loop = true;
@@ -233,43 +270,15 @@ add_action('wp_footer', static function (): void {
                 video.setAttribute('playsinline', '');
                 video.setAttribute('webkit-playsinline', '');
                 video.setAttribute('aria-hidden', 'true');
+                video.load();
 
-                if (!reducedMotion.matches) {
-                    const playback = video.play();
-                    if (playback && typeof playback.catch === 'function') {
-                        playback.catch(() => {});
-                    }
+                const playback = video.play();
+                if (playback && typeof playback.catch === 'function') {
+                    playback.catch(() => {});
                 }
             };
 
-            const ensureMobileVideo = () => {
-                if (!mobileQuery.matches) return;
-
-                let video = hero.querySelector('.tmd-mobile-hero-video');
-
-                if (!video) {
-                    video = document.createElement('video');
-                    video.className = 'tmd-mobile-hero-video';
-                    video.src = source;
-                    video.preload = 'auto';
-                    hero.prepend(video);
-                }
-
-                configureVideo(video);
-            };
-
-            const kadenceVideo = hero.querySelector('video:not(.tmd-mobile-hero-video)');
-            if (kadenceVideo) {
-                configureVideo(kadenceVideo);
-            }
-
-            ensureMobileVideo();
-
-            if (typeof mobileQuery.addEventListener === 'function') {
-                mobileQuery.addEventListener('change', ensureMobileVideo);
-            } else if (typeof mobileQuery.addListener === 'function') {
-                mobileQuery.addListener(ensureMobileVideo);
-            }
+            hero.querySelectorAll('video').forEach(configureVideo);
         })();
     </script>
     <?php
