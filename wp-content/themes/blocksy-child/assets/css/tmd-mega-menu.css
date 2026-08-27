@@ -340,7 +340,7 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
 }
 
 .tmd-mm-img--compania {
-  background-position: center 20%;
+  background-position: center top !important;
 }
 
 #tmd-mm-panel-nosotros .tmd-mm-img,
