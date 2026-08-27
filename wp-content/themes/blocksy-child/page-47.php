@@ -47,6 +47,16 @@ function tmd_home_hero_video_attachment(): array {
         return $video;
     }
 
+    $attached_file = get_attached_file($attachment_id);
+
+    if (is_string($attached_file) && $attached_file !== '' && is_file($attached_file)) {
+        $mtime = filemtime($attached_file);
+
+        if ($mtime !== false) {
+            $attachment_url = add_query_arg('ver', (string) $mtime, $attachment_url);
+        }
+    }
+
     $video = [
         'id'  => $attachment_id,
         'url' => $attachment_url,
