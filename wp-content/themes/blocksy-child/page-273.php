@@ -5,6 +5,29 @@
 
 defined('ABSPATH') || exit;
 
+/**
+ * Versiona el asset del equipo con su mtime real para evitar que navegador/CDN
+ * conserve una copia anterior cuando se reemplaza el archivo manteniendo el nombre.
+ */
+add_filter('the_content', static function ($content) {
+    if (! is_page(273) || ! is_main_query() || ! in_the_loop()) {
+        return $content;
+    }
+
+    $relative_path = 'assets/img/personal/trabaja-equipo.webp';
+    $absolute_path = get_stylesheet_directory() . '/' . $relative_path;
+    $asset_url = get_stylesheet_directory_uri() . '/' . $relative_path;
+
+    if (is_file($absolute_path)) {
+        $asset_url = add_query_arg('ver', (string) filemtime($absolute_path), $asset_url);
+    }
+
+    $pattern = '~(?:https?://[^"\']+)?/wp-content/themes/blocksy-child/assets/img/personal/trabaja-equipo\.webp(?:\?[^"\']*)?~i';
+    $updated = preg_replace($pattern, esc_url($asset_url), $content, 1);
+
+    return is_string($updated) ? $updated : $content;
+}, 20);
+
 add_action('wp_head', static function (): void {
     ?>
     <style id="tmd-jobs-testimonial-portrait-zoom">
