@@ -1,7 +1,7 @@
 <?php
 /**
  * Reemplaza la imagen externa de la seccion "Nuestro equipo" en Trabaja con nosotros
- * por el attachment de WordPress cuyo archivo es gerencia.webp.
+ * por el attachment de WordPress identificado como gerencia.webp.
  */
 
 defined('ABSPATH') || exit;
@@ -11,56 +11,134 @@ function tmd_jobs_management_old_image_url(): string
     return 'https://lh3.googleusercontent.com/aida-public/AB6AXuDNN1UrDHJ22A-yQhRXAl2KS9ZqI7KmKuUkWTX04b2YCqdTar2XVnF8xG0-VNgeX8ihLGjjbRaNTF5RIqVh_3kHS0bPk669bj3m4uSlcYxSdCZbEoBLNcrKUhxHEHbC48FDa49pea9aI2F5xKjiw1Ly5kCkE3zLifptQsizvzEmlNfSFmM9h6h9bmFH4V2qls5YzL-fJBUjlGIIKnwPvWLg4WiIiyZ_Ivu2UxBOdN2I0zue9eryrF_pLk0qHz2d0GzJyguYIkXfTw';
 }
 
-function tmd_jobs_management_find_attachment(): array
+function tmd_jobs_management_attachment_candidates(): array
 {
     global $wpdb;
 
     $rows = $wpdb->get_results(
         $wpdb->prepare(
-            "SELECT p.ID, pm.meta_value
+            "SELECT p.ID,
+                    p.post_title,
+                    p.post_name,
+                    p.post_mime_type,
+                    pm.meta_value AS attached_file
              FROM {$wpdb->posts} p
              INNER JOIN {$wpdb->postmeta} pm
                 ON pm.post_id = p.ID
                AND pm.meta_key = '_wp_attached_file'
              WHERE p.post_type = 'attachment'
                AND p.post_status = 'inherit'
-               AND pm.meta_value LIKE %s
+               AND (
+                    LOWER(SUBSTRING_INDEX(pm.meta_value, '/', -1)) = %s
+                    OR LOWER(p.post_title) IN (%s, %s)
+                    OR LOWER(p.post_name) IN (%s, %s)
+               )
              ORDER BY p.ID DESC",
-            '%' . $wpdb->esc_like('/gerencia.webp')
+            'gerencia.webp',
+            'gerencia',
+            'gerencia.webp',
+            'gerencia',
+            'gerencia-webp'
         ),
         ARRAY_A
     );
 
-    if (count($rows) !== 1) {
+    $unique = [];
+
+    foreach ($rows as $row) {
+        $id = (int) $row['ID'];
+
+        if (! isset($unique[$id])) {
+            $unique[$id] = $row;
+        }
+    }
+
+    return array_values($unique);
+}
+
+function tmd_jobs_management_describe_candidates(array $rows): string
+{
+    if ($rows === []) {
+        return '(ninguno)';
+    }
+
+    $parts = [];
+
+    foreach ($rows as $row) {
+        $parts[] = sprintf(
+            '#%d title=%s slug=%s mime=%s file=%s',
+            (int) $row['ID'],
+            (string) $row['post_title'],
+            (string) $row['post_name'],
+            (string) $row['post_mime_type'],
+            (string) $row['attached_file']
+        );
+    }
+
+    return implode(' | ', $parts);
+}
+
+function tmd_jobs_management_find_attachment(): array
+{
+    global $wpdb;
+
+    $rows = tmd_jobs_management_attachment_candidates();
+    $webp_rows = array_values(array_filter($rows, static function (array $row): bool {
+        return strtolower((string) $row['post_mime_type']) === 'image/webp';
+    }));
+
+    if (count($webp_rows) !== 1) {
+        $nearby = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT p.ID,
+                        p.post_title,
+                        p.post_name,
+                        p.post_mime_type,
+                        pm.meta_value AS attached_file
+                 FROM {$wpdb->posts} p
+                 INNER JOIN {$wpdb->postmeta} pm
+                    ON pm.post_id = p.ID
+                   AND pm.meta_key = '_wp_attached_file'
+                 WHERE p.post_type = 'attachment'
+                   AND p.post_status = 'inherit'
+                   AND (
+                        LOWER(p.post_title) LIKE %s
+                        OR LOWER(p.post_name) LIKE %s
+                        OR LOWER(pm.meta_value) LIKE %s
+                   )
+                 ORDER BY p.ID DESC
+                 LIMIT 10",
+                '%gerencia%',
+                '%gerencia%',
+                '%gerencia%'
+            ),
+            ARRAY_A
+        );
+
         return [
             'error' => sprintf(
-                'Se esperaba exactamente un attachment gerencia.webp y se encontraron %d.',
-                count($rows)
+                'No se pudo resolver de forma univoca gerencia.webp (candidatos WebP=%d). Coincidencias directas: %s. Coincidencias cercanas: %s.',
+                count($webp_rows),
+                tmd_jobs_management_describe_candidates($rows),
+                tmd_jobs_management_describe_candidates($nearby)
             ),
         ];
     }
 
-    $attachment_id = (int) $rows[0]['ID'];
+    $row = $webp_rows[0];
+    $attachment_id = (int) $row['ID'];
     $url = wp_get_attachment_url($attachment_id);
 
     if (! is_string($url) || $url === '') {
-        return ['error' => 'No fue posible resolver la URL publica de gerencia.webp.'];
-    }
-
-    $mime = (string) get_post_mime_type($attachment_id);
-    if ($mime !== 'image/webp') {
-        return [
-            'error' => sprintf(
-                'El attachment gerencia.webp no es WebP; MIME encontrado: %s.',
-                $mime !== '' ? $mime : '(vacio)'
-            ),
-        ];
+        return ['error' => 'No fue posible resolver la URL publica del attachment de gerencia.'];
     }
 
     return [
         'id' => $attachment_id,
         'url' => $url,
-        'file' => (string) $rows[0]['meta_value'],
+        'file' => (string) $row['attached_file'],
+        'title' => (string) $row['post_title'],
+        'slug' => (string) $row['post_name'],
     ];
 }
 
@@ -141,6 +219,8 @@ if (defined('WP_CLI') && WP_CLI) {
 
     WP_CLI::log('page_id=' . (int) $page->ID);
     WP_CLI::log('attachment_id=' . (int) $attachment['id']);
+    WP_CLI::log('attachment_title=' . $attachment['title']);
+    WP_CLI::log('attachment_slug=' . $attachment['slug']);
     WP_CLI::log('attachment_file=' . $attachment['file']);
     WP_CLI::log('attachment_url=' . $attachment['url']);
 
