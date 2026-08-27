@@ -423,9 +423,7 @@ function tmd_inventory_api_subcategory_select($options, $selected) {
 }
 
 function tmd_inventory_api_filter_items($items, $type) {
-    // Marca dejó de ser un filtro público. Ignoramos el parámetro heredado para
-    // evitar resultados restringidos por un control que el usuario no puede ver.
-    $brand = '';
+    $brand = $type === 'montacargas' ? tmd_inventory_api_request_value('api_marca') : '';
     $category = tmd_inventory_api_request_value('api_categoria');
     $subcategory = tmd_inventory_api_request_value('api_subcategoria');
     $collapsed_height = tmd_inventory_api_request_value('api_altura_colapsada');
@@ -508,6 +506,7 @@ function tmd_inventory_api_filter_form($type) {
                 echo '<input type="hidden" name="' . esc_attr($preserved_filter) . '" value="' . esc_attr($preserved_value) . '" data-api-preserved-filter>';
             }
         }
+        tmd_inventory_api_select('api_marca', 'Marca', tmd_inventory_api_brand_options($items), tmd_inventory_api_request_value('api_marca'), false);
         tmd_inventory_api_select('api_altura_colapsada', 'Altura colapsada', [
             '0-2' => 'Hasta 2 m',
             '2-3' => '2 a 3 m',

@@ -66,10 +66,10 @@ assert.equal(railCss.includes('.tmd-contact-rail__details[open] .tmd-contact-rai
 assert.match(railCss, /@media \(max-width: 767px\)[\s\S]*?\.tmd-contact-rail\s*\{\s*display: none;/);
 
 [
+  "tmd_inventory_api_select('api_marca'",
   "tmd_inventory_api_select('api_altura_colapsada'",
   "tmd_inventory_api_select('api_altura_levante'",
   "tmd_inventory_api_select('api_capacidad'",
 ].forEach((expected) => assert.equal(equipmentFilterForm.includes(expected), true));
-assert.equal(equipmentFilterForm.includes("tmd_inventory_api_select('api_marca'"), false);
 
 process.stdout.write('OK: contexto y estados del formulario de conversión JS.\n');
