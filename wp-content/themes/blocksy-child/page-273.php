@@ -36,17 +36,17 @@ add_action('wp_head', static function (): void {
             padding: 52px 20px !important;
         }
 
-        /* Nuestro equipo: más alto y con un encuadre bastante más abierto. */
+        /* Nuestro equipo: encuadre alto y anclado arriba para priorizar los rostros. */
         body.page-id-273 img[src*="gerencia"] {
             width: 100% !important;
-            height: 380px !important;
+            height: 560px !important;
             max-height: none !important;
             object-fit: cover !important;
-            object-position: 50% 42% !important;
+            object-position: 50% 0% !important;
         }
 
         body.page-id-273 *:has(> img[src*="gerencia"]) {
-            height: 380px !important;
+            height: 560px !important;
             max-height: none !important;
             overflow: hidden !important;
         }
@@ -79,7 +79,7 @@ add_action('wp_head', static function (): void {
 
             body.page-id-273 img[src*="gerencia"],
             body.page-id-273 *:has(> img[src*="gerencia"]) {
-                height: 340px !important;
+                height: 460px !important;
             }
 
             body.page-id-273 .tmd-jobs-avatar-wrap {
@@ -95,7 +95,7 @@ add_action('wp_head', static function (): void {
 
             body.page-id-273 img[src*="gerencia"],
             body.page-id-273 *:has(> img[src*="gerencia"]) {
-                height: 300px !important;
+                height: 360px !important;
             }
 
             body.page-id-273 .tmd-jobs-avatar-wrap {
