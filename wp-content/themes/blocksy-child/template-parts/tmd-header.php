@@ -251,7 +251,11 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
       <div class="tmd-mm-inner tmd-mm-grid-3">
         <?php foreach ($nosotros as $col) : ?>
           <div class="tmd-mm-card">
-            <span class="tmd-mm-img tmd-mm-img--<?php echo esc_attr(sanitize_title($col['title'])); ?>"></span>
+            <?php $tmd_nosotros_image_style = 'Compañía' === $col['title'] ? 'background-image: url(\'' . tmd_menu_asset_url('assets/images/mega-menu/menu-company.webp') . '\');' : ''; ?>
+            <span
+              class="tmd-mm-img tmd-mm-img--<?php echo esc_attr(sanitize_title($col['title'])); ?>"
+              <?php if ('' !== $tmd_nosotros_image_style) : ?>style="<?php echo esc_attr($tmd_nosotros_image_style); ?>"<?php endif; ?>
+            ></span>
             <a class="tmd-mm-title" href="<?php echo esc_url($col['url']); ?>"><?php echo esc_html($col['title']); ?></a>
             <ul class="tmd-mm-items">
               <?php foreach ($col['items'] as $link) : ?>
