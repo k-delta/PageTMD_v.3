@@ -136,19 +136,22 @@ add_filter('render_block_data', static function (array $parsed_block): array {
 }, 20);
 
 /**
- * El hero ocupa el viewport también en móvil. El video se recorta con cover en
- * lugar de deformarse, manteniendo una única fuente multimedia para escritorio
- * y teléfono.
+ * El hero ocupa el viewport. En móvil usamos un video explícito porque Kadence
+ * puede omitir por completo el elemento <video> de fondo en pantallas pequeñas.
  */
 add_action('wp_head', static function (): void {
     ?>
     <style id="tmd-home-hero-video-responsive">
         body.page-id-47 .kb-row-layout-id47_9c201d-d2 {
+            position: relative !important;
             min-height: 100vh;
             min-height: 100svh;
+            overflow: hidden;
         }
 
         body.page-id-47 .kb-row-layout-id47_9c201d-d2 > .kt-row-column-wrap {
+            position: relative;
+            z-index: 2;
             min-height: inherit;
         }
 
@@ -159,9 +162,14 @@ add_action('wp_head', static function (): void {
             object-position: 50% 50% !important;
         }
 
+        body.page-id-47 .tmd-mobile-hero-video {
+            display: none;
+        }
+
         @media (max-width: 767px) {
             body.page-id-47 .kb-row-layout-id47_9c201d-d2 {
                 min-height: 100svh;
+                background-color: #262e4f;
             }
 
             body.page-id-47 .kb-row-layout-id47_9c201d-d2 > .kt-row-column-wrap {
@@ -169,8 +177,22 @@ add_action('wp_head', static function (): void {
                 align-content: center;
             }
 
-            body.page-id-47 .kb-row-layout-id47_9c201d-d2 video {
+            body.page-id-47 .kb-row-layout-id47_9c201d-d2 > .kt-row-layout-overlay {
+                position: absolute;
+                z-index: 1;
+            }
+
+            body.page-id-47 .kb-row-layout-id47_9c201d-d2 .tmd-mobile-hero-video {
+                display: block !important;
+                position: absolute !important;
+                inset: 0 !important;
+                z-index: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                max-width: none !important;
+                object-fit: cover !important;
                 object-position: 50% 50% !important;
+                pointer-events: none;
             }
         }
     </style>
@@ -178,30 +200,75 @@ add_action('wp_head', static function (): void {
 }, 100);
 
 /**
- * Refuerza los atributos requeridos por autoplay en iOS/Android. Kadence ya
- * controla el elemento, pero este ajuste evita diferencias entre navegadores.
+ * En escritorio reforzamos el video generado por Kadence. En móvil insertamos
+ * nuestro propio elemento para no depender de que Kadence renderice videos de
+ * fondo en ese breakpoint.
  */
 add_action('wp_footer', static function (): void {
+    $hero_video = tmd_home_hero_video_attachment();
+
+    if (empty($hero_video['url'])) {
+        return;
+    }
     ?>
     <script id="tmd-home-hero-video-runtime">
         (() => {
-            const video = document.querySelector('body.page-id-47 .kb-row-layout-id47_9c201d-d2 video');
-            if (!video) return;
+            const hero = document.querySelector('body.page-id-47 .kb-row-layout-id47_9c201d-d2');
+            if (!hero) return;
 
-            video.loop = true;
-            video.muted = true;
-            video.autoplay = true;
-            video.playsInline = true;
-            video.setAttribute('loop', '');
-            video.setAttribute('muted', '');
-            video.setAttribute('autoplay', '');
-            video.setAttribute('playsinline', '');
+            const source = <?php echo wp_json_encode(esc_url_raw($hero_video['url'])); ?>;
+            const mobileQuery = window.matchMedia('(max-width: 767px)');
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                const playback = video.play();
-                if (playback && typeof playback.catch === 'function') {
-                    playback.catch(() => {});
+            const configureVideo = (video) => {
+                video.loop = true;
+                video.muted = true;
+                video.defaultMuted = true;
+                video.autoplay = true;
+                video.playsInline = true;
+                video.controls = false;
+                video.setAttribute('loop', '');
+                video.setAttribute('muted', '');
+                video.setAttribute('autoplay', '');
+                video.setAttribute('playsinline', '');
+                video.setAttribute('webkit-playsinline', '');
+                video.setAttribute('aria-hidden', 'true');
+
+                if (!reducedMotion.matches) {
+                    const playback = video.play();
+                    if (playback && typeof playback.catch === 'function') {
+                        playback.catch(() => {});
+                    }
                 }
+            };
+
+            const ensureMobileVideo = () => {
+                if (!mobileQuery.matches) return;
+
+                let video = hero.querySelector('.tmd-mobile-hero-video');
+
+                if (!video) {
+                    video = document.createElement('video');
+                    video.className = 'tmd-mobile-hero-video';
+                    video.src = source;
+                    video.preload = 'auto';
+                    hero.prepend(video);
+                }
+
+                configureVideo(video);
+            };
+
+            const kadenceVideo = hero.querySelector('video:not(.tmd-mobile-hero-video)');
+            if (kadenceVideo) {
+                configureVideo(kadenceVideo);
+            }
+
+            ensureMobileVideo();
+
+            if (typeof mobileQuery.addEventListener === 'function') {
+                mobileQuery.addEventListener('change', ensureMobileVideo);
+            } else if (typeof mobileQuery.addListener === 'function') {
+                mobileQuery.addListener(ensureMobileVideo);
             }
         })();
     </script>
