@@ -6,11 +6,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Resuelve el archivo original de un attachment de WordPress.
- * WordPress puede registrar una derivada "-scaled" como archivo principal;
- * para estas imágenes preferimos el original editado cuando existe.
+ * Resuelve el archivo vigente de un attachment de WordPress.
+ * Se prioriza _wp_attached_file para respetar recortes/ediciones hechas desde
+ * la Biblioteca de medios. El original se usa únicamente como fallback.
  */
-function tmd_jobs_original_media_image(string $needle, string $mime_type): array {
+function tmd_jobs_current_media_image(string $needle, string $mime_type): array {
     static $cache = [];
 
     $cache_key = $mime_type . '|' . $needle;
@@ -50,19 +50,18 @@ function tmd_jobs_original_media_image(string $needle, string $mime_type): array
     $metadata = wp_get_attachment_metadata($attachment_id);
     $directory = dirname($attached_file);
     $directory = '.' === $directory ? '' : trim($directory, '/');
-    $candidates = [];
-
-    if (is_array($metadata) && ! empty($metadata['original_image'])) {
-        $original_name = basename((string) $metadata['original_image']);
-        $candidates[] = ($directory ? $directory . '/' : '') . $original_name;
-    }
+    $candidates = [ltrim($attached_file, '/')];
 
     $unscaled_name = preg_replace('/-scaled(?=\.[^.]+$)/i', '', basename($attached_file));
     if (is_string($unscaled_name) && $unscaled_name !== basename($attached_file)) {
         $candidates[] = ($directory ? $directory . '/' : '') . $unscaled_name;
     }
 
-    $candidates[] = ltrim($attached_file, '/');
+    if (is_array($metadata) && ! empty($metadata['original_image'])) {
+        $original_name = basename((string) $metadata['original_image']);
+        $candidates[] = ($directory ? $directory . '/' : '') . $original_name;
+    }
+
     $uploads = wp_upload_dir();
 
     if (! empty($uploads['error']) || empty($uploads['basedir']) || empty($uploads['baseurl'])) {
@@ -115,7 +114,7 @@ add_filter('the_content', static function ($content) {
     $updated = preg_replace($pattern, esc_url($asset_url), $content, 1);
     $updated = is_string($updated) ? $updated : $content;
 
-    $testimonial_image = tmd_jobs_original_media_image(
+    $testimonial_image = tmd_jobs_current_media_image(
         'trabaja-colaborador-20260826',
         'image/jpeg'
     );
@@ -134,7 +133,7 @@ add_filter('the_content', static function ($content) {
         }
     }
 
-    $management_image = tmd_jobs_original_media_image('gerencia', 'image/webp');
+    $management_image = tmd_jobs_current_media_image('gerencia', 'image/webp');
 
     if (! empty($management_image['url'])) {
         $management_pattern = '~(?:https?://[^"\']+)?/wp-content/uploads/[^"\']*/gerencia[^/"\']*\.webp(?:\?[^"\']*)?~i';
