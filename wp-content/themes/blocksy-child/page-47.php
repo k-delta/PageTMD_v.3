@@ -47,6 +47,16 @@ function tmd_home_hero_video_attachment(): array {
         return $video;
     }
 
+    $attached_file = get_attached_file($attachment_id);
+
+    if (is_string($attached_file) && $attached_file !== '' && is_file($attached_file)) {
+        $mtime = filemtime($attached_file);
+
+        if ($mtime !== false) {
+            $attachment_url = add_query_arg('ver', (string) $mtime, $attachment_url);
+        }
+    }
+
     $video = [
         'id'  => $attachment_id,
         'url' => $attachment_url,
@@ -56,9 +66,74 @@ function tmd_home_hero_video_attachment(): array {
 }
 
 /**
+ * Resuelve la imagen móvil del hero desde Medios sin depender de una ruta fija.
+ */
+function tmd_home_hero_mobile_image_attachment(): array {
+    static $resolved = false;
+    static $image = [];
+
+    if ($resolved) {
+        return $image;
+    }
+
+    $resolved = true;
+
+    $attachment_ids = get_posts([
+        'post_type'      => 'attachment',
+        'post_status'    => 'inherit',
+        'post_mime_type' => 'image/png',
+        'posts_per_page' => 10,
+        'fields'         => 'ids',
+        'orderby'        => 'ID',
+        'order'          => 'DESC',
+        'meta_query'     => [[
+            'key'     => '_wp_attached_file',
+            'value'   => 'celu-hero',
+            'compare' => 'LIKE',
+        ]],
+    ]);
+
+    foreach ($attachment_ids as $attachment_id) {
+        $attachment_id = (int) $attachment_id;
+        $relative_file = (string) get_post_meta($attachment_id, '_wp_attached_file', true);
+        $title = strtolower(trim((string) get_the_title($attachment_id)));
+        $slug = strtolower(trim((string) get_post_field('post_name', $attachment_id)));
+        $basename = strtolower(basename($relative_file));
+
+        if ('celu-hero.png' !== $basename && 'celu-hero' !== $title && 'celu-hero' !== $slug) {
+            continue;
+        }
+
+        $attachment_url = wp_get_attachment_url($attachment_id);
+
+        if (! $attachment_url) {
+            continue;
+        }
+
+        $attached_file = get_attached_file($attachment_id);
+
+        if (is_string($attached_file) && $attached_file !== '' && is_file($attached_file)) {
+            $mtime = filemtime($attached_file);
+
+            if ($mtime !== false) {
+                $attachment_url = add_query_arg('ver', (string) $mtime, $attachment_url);
+            }
+        }
+
+        $image = [
+            'id'  => $attachment_id,
+            'url' => $attachment_url,
+        ];
+        break;
+    }
+
+    return $image;
+}
+
+/**
  * Kadence conserva la URL y opciones del video en el JSON serializado del bloque.
  * Reescribimos esos atributos antes de do_blocks para que el hero use el adjunto
- * canónico y se reproduzca en bucle.
+ * canónico y se reproduzca en bucle en escritorio.
  */
 add_filter('the_content', static function (string $content): string {
     $hero_video = tmd_home_hero_video_attachment();
@@ -136,14 +211,13 @@ add_filter('render_block_data', static function (array $parsed_block): array {
 }, 20);
 
 /**
- * Renderiza el video móvil desde PHP dentro del hero. Esto evita depender de
- * JavaScript para crear el elemento, algo que puede fallar cuando LiteSpeed u
- * otro optimizador retrasa la ejecución de scripts en móvil.
+ * Inserta la imagen específica de móvil dentro del hero. El video de Kadence
+ * permanece disponible para escritorio, pero no se muestra en la vista móvil.
  */
 add_filter('render_block', static function (string $block_content, array $block): string {
-    static $hero_video_injected = false;
+    static $mobile_image_injected = false;
 
-    if ($hero_video_injected || ! is_page(47) || ($block['blockName'] ?? '') !== 'kadence/rowlayout') {
+    if ($mobile_image_injected || ! is_page(47) || ($block['blockName'] ?? '') !== 'kadence/rowlayout') {
         return $block_content;
     }
 
@@ -154,26 +228,26 @@ add_filter('render_block', static function (string $block_content, array $block)
         return $block_content;
     }
 
-    $hero_video = tmd_home_hero_video_attachment();
+    $mobile_image = tmd_home_hero_mobile_image_attachment();
 
-    if (empty($hero_video['url'])) {
+    if (empty($mobile_image['url'])) {
         return $block_content;
     }
 
-    $mobile_video = sprintf(
-        '<video class="tmd-mobile-hero-video" autoplay muted loop playsinline webkit-playsinline preload="auto" aria-hidden="true" tabindex="-1"><source src="%s" type="video/mp4"></video>',
-        esc_url($hero_video['url'])
+    $image_html = sprintf(
+        '<img class="tmd-mobile-hero-image" src="%s" alt="" aria-hidden="true" decoding="async" fetchpriority="high">',
+        esc_url($mobile_image['url'])
     );
 
     $updated = preg_replace(
         '/^(\s*<div\b[^>]*>)/i',
-        '$1' . $mobile_video,
+        '$1' . $image_html,
         $block_content,
         1
     );
 
     if (is_string($updated) && $updated !== $block_content) {
-        $hero_video_injected = true;
+        $mobile_image_injected = true;
         return $updated;
     }
 
@@ -181,10 +255,11 @@ add_filter('render_block', static function (string $block_content, array $block)
 }, 30, 2);
 
 /**
- * El hero ocupa el viewport. En móvil se muestra el video explícito renderizado
- * por PHP; en escritorio se mantiene el video de fondo generado por Kadence.
+ * El hero ocupa el viewport. En móvil se usa celu-hero.png; en escritorio se
+ * mantiene el video de fondo generado por Kadence.
  */
 add_action('wp_head', static function (): void {
+    $mobile_image = tmd_home_hero_mobile_image_attachment();
     ?>
     <style id="tmd-home-hero-video-responsive">
         body.page-id-47 .kb-row-layout-id47_9c201d-d2 {
@@ -207,7 +282,7 @@ add_action('wp_head', static function (): void {
             object-position: 50% 50% !important;
         }
 
-        body.page-id-47 .tmd-mobile-hero-video {
+        body.page-id-47 .tmd-mobile-hero-image {
             display: none;
         }
 
@@ -227,10 +302,15 @@ add_action('wp_head', static function (): void {
                 z-index: 1;
             }
 
-            body.page-id-47 .kb-row-layout-id47_9c201d-d2 .tmd-mobile-hero-video {
+            <?php if (! empty($mobile_image['url'])) : ?>
+            body.page-id-47 .kb-row-layout-id47_9c201d-d2 video {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+            }
+
+            body.page-id-47 .kb-row-layout-id47_9c201d-d2 .tmd-mobile-hero-image {
                 display: block !important;
-                visibility: visible !important;
-                opacity: 1 !important;
                 position: absolute !important;
                 inset: 0 !important;
                 z-index: 0 !important;
@@ -241,14 +321,15 @@ add_action('wp_head', static function (): void {
                 object-position: 50% 50% !important;
                 pointer-events: none;
             }
+            <?php endif; ?>
         }
     </style>
     <?php
 }, 100);
 
 /**
- * Refuerza autoplay en los videos ya presentes en el HTML. La existencia del
- * video móvil ya no depende de este script.
+ * El video se reproduce únicamente en escritorio. En móvil se pausa para que el
+ * hero visual dependa de celu-hero.png.
  */
 add_action('wp_footer', static function (): void {
     ?>
@@ -257,7 +338,17 @@ add_action('wp_footer', static function (): void {
             const hero = document.querySelector('body.page-id-47 .kb-row-layout-id47_9c201d-d2');
             if (!hero) return;
 
+            const mobile = window.matchMedia('(max-width: 767px)').matches;
+
             const configureVideo = (video) => {
+                if (mobile) {
+                    video.pause();
+                    video.autoplay = false;
+                    video.removeAttribute('autoplay');
+                    video.preload = 'none';
+                    return;
+                }
+
                 video.loop = true;
                 video.muted = true;
                 video.defaultMuted = true;
