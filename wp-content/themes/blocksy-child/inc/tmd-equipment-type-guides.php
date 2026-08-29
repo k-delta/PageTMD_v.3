@@ -62,6 +62,7 @@ function tmd_equipment_type_guides(): array
             'family' => 'Traslado y elevación ligera',
             'title' => 'Estibadores manuales',
             'summary' => 'Equipos básicos utilizados para levantar ligeramente una estiba y trasladarla a nivel del suelo.',
+            'hero_image' => 'assets/img/mega-menu/mega-menu-out/estibador-manual.webp',
             'intro' => [
                 'Funcionan mediante un sistema hidráulico accionado manualmente por el operador. No requieren baterías, combustible ni sistemas eléctricos, lo que simplifica su mantenimiento y permite utilizarlos en diferentes áreas de trabajo.',
                 'Son adecuados para recorridos cortos, operaciones de baja o media intensidad y espacios donde el volumen de movimiento de mercancía no justifica el uso de un equipo motorizado.',
@@ -84,6 +85,7 @@ function tmd_equipment_type_guides(): array
             'family' => 'Traslado y elevación ligera',
             'title' => 'Estibadores eléctricos',
             'summary' => 'Cumplen la función de un estibador manual e incorporan tracción eléctrica para facilitar el desplazamiento de la carga.',
+            'hero_image' => 'assets/img/mega-menu/mega-menu-out/portaestiba-electrico.webp',
             'intro' => [
                 'Están diseñados para operaciones con recorridos más largos, mayor frecuencia de movimientos o cargas que resultan difíciles de transportar manualmente.',
                 'Dependiendo de su configuración, el operador puede caminar junto al equipo, utilizar una plataforma abatible o conducir desde una posición integrada.',
@@ -107,6 +109,7 @@ function tmd_equipment_type_guides(): array
             'family' => 'Traslado y elevación ligera',
             'title' => 'Apiladores eléctricos',
             'summary' => 'Combinan el transporte horizontal de mercancía con la capacidad de elevar estibas.',
+            'hero_image' => 'assets/img/mega-menu/mega-menu-out/apiladores-electricos.webp',
             'intro' => [
                 'Se utilizan para organizar productos en estanterías, alimentar líneas de producción, apilar mercancía y realizar almacenamiento a alturas bajas o medianas.',
                 'Por su diseño compacto, pueden trabajar en espacios donde un montacargas convencional tendría dificultades para maniobrar. Son una solución intermedia entre un estibador eléctrico y un montacargas.',
@@ -355,9 +358,13 @@ function tmd_equipment_type_guide_content(string $content): string
                 </div>
                 <div class="tmd-type-guide__visual" aria-hidden="true">
                     <span>Manejo de materiales</span>
-                    <div class="tmd-type-guide__machine">
-                        <i class="mast"></i><i class="cabin"></i><i class="body"></i><i class="forks"></i><i class="wheel wheel--one"></i><i class="wheel wheel--two"></i>
-                    </div>
+                    <?php if (!empty($guide['hero_image'])) : ?>
+                        <img class="tmd-type-guide__image" src="<?php echo esc_url(get_stylesheet_directory_uri() . '/' . $guide['hero_image']); ?>" alt="" loading="eager" decoding="async">
+                    <?php else : ?>
+                        <div class="tmd-type-guide__machine">
+                            <i class="mast"></i><i class="cabin"></i><i class="body"></i><i class="forks"></i><i class="wheel wheel--one"></i><i class="wheel wheel--two"></i>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </section>

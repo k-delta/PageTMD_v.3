@@ -207,6 +207,14 @@ body.page-id-355 .tmd-type-guide__hero h1 {
     top: 1rem;
 }
 
+.tmd-type-guide__image {
+    display: block;
+    height: 82%;
+    max-width: 86%;
+    object-fit: contain;
+    width: 86%;
+}
+
 .tmd-type-guide__machine {
     height: 210px;
     position: relative;

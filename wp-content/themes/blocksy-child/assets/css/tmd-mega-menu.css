@@ -112,8 +112,8 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
 }
 
 .tmd-mm-logo img {
-  max-height: 40px;
-  max-width: 150px;
+  max-height: 44px;
+  max-width: 166px;
   object-fit: contain;
 }
 
@@ -152,7 +152,7 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
 .tmd-mm-home,
 .tmd-mm-nav-link {
   font-family: 'Work Sans', sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: .06em;
   color: #e6e6e6;
