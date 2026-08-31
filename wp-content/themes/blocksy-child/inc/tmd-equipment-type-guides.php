@@ -148,6 +148,7 @@ function tmd_equipment_type_guides(): array
             'family' => 'Pasillo angosto',
             'title' => 'Montacargas retráctiles de mástil móvil',
             'summary' => 'Equipos reach cuyo mecanismo desplaza el mástil o las horquillas hacia adelante para tomar la carga y luego retraerla.',
+            'hero_image' => 'assets/img/mega-menu/mega-menu-out/Montacargas-retráctiles-de-mástil-móvil.webp',
             'intro' => [
                 'El movimiento retráctil ayuda a mantener la carga dentro de una posición más estable durante el desplazamiento.',
                 'Los modelos ETV, ESC y ETVC corresponden a diferentes configuraciones de este tipo de montacargas. La selección no debe realizarse únicamente por el modelo.',
@@ -186,6 +187,7 @@ function tmd_equipment_type_guides(): array
             'family' => 'Pasillo angosto',
             'title' => 'Montacargas con pantógrafo de doble profundidad',
             'summary' => 'Su mecanismo extensible permite alcanzar una segunda posición de almacenamiento ubicada detrás de la primera estiba.',
+            'hero_image' => 'assets/img/mega-menu/mega-menu-out/pantografo-doble-reach.webp',
             'intro' => [
                 'Esta configuración permite introducir o retirar las horquillas dentro de la estantería sin desplazar completamente el equipo.',
                 'Su principal ventaja es el aumento de la densidad de almacenamiento.',
@@ -213,6 +215,7 @@ function tmd_equipment_type_guides(): array
             'family' => 'Preparación de pedidos',
             'title' => 'Tomapedidos de alto nivel',
             'summary' => 'Se utilizan en operaciones de picking donde los productos deben recogerse manualmente desde diferentes niveles de la estantería.',
+            'hero_image' => 'assets/img/mega-menu/mega-menu-out/toma-pedidos.webp',
             'intro' => [
                 'El operador se eleva con la plataforma para acceder directamente a unidades o cajas almacenadas en niveles elevados.',
             ],
@@ -249,6 +252,7 @@ function tmd_equipment_type_guides(): array
             'family' => 'Contrabalanceados',
             'title' => 'Contrabalanceados eléctricos de tres ruedas',
             'summary' => 'Ofrecen un radio de giro reducido y una alta capacidad de maniobra.',
+            'hero_image' => 'assets/img/mega-menu/contrabalanceado-3-llantas.webp',
             'intro' => [
                 'Son apropiados para instalaciones con espacios limitados, pasillos estrechos y operaciones principalmente interiores.',
             ],
@@ -269,6 +273,7 @@ function tmd_equipment_type_guides(): array
             'family' => 'Contrabalanceados',
             'title' => 'Contrabalanceados eléctricos de cuatro ruedas',
             'summary' => 'Ofrecen mayor estabilidad para transportar cargas pesadas y recorrer superficies con pequeñas irregularidades.',
+            'hero_image' => 'assets/img/mega-menu/mega-menu-out/contrabalanceado-4-llantas.webp',
             'intro' => [
                 'Se utilizan en operaciones que requieren desplazamientos frecuentes, trabajos de carga y descarga o movimiento de mercancía entre diferentes áreas.',
                 'En comparación con los modelos de tres ruedas, suelen necesitar un poco más de espacio para girar.',
