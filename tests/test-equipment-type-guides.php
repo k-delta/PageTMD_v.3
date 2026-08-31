@@ -87,6 +87,20 @@ foreach ($expected_images as $slug => $relative_path) {
     );
 }
 
+$mapped_slugs = [];
+foreach ($guides as $slug => $guide) {
+    if (! empty($guide['hero_image'])) {
+        $mapped_slugs[] = $slug;
+    }
+}
+$expected_mapped_slugs = array_keys($expected_images);
+sort($mapped_slugs);
+sort($expected_mapped_slugs);
+tmd_equipment_type_guide_test_assert(
+    $mapped_slugs === $expected_mapped_slugs,
+    'Solo las ocho guías aprobadas deben tener hero_image.'
+);
+
 foreach (['pantografo-sencillo', 'tomapedidos', 'contrabalanceados'] as $slug) {
     tmd_equipment_type_guide_test_assert(
         empty($guides[$slug]['hero_image']),
@@ -98,14 +112,30 @@ foreach ($expected_images as $slug => $relative_path) {
     $tmd_equipment_type_guide_test_slug = $slug;
     $html = tmd_equipment_type_guide_content('contenido original');
     $expected_url = get_stylesheet_directory_uri() . '/' . $relative_path;
+    $guide = $guides[$slug];
+    $expected_image_pattern = '/<img class="tmd-type-guide__image" src="'
+        . preg_quote($expected_url, '/')
+        . '"[^>]*>/';
 
     tmd_equipment_type_guide_test_assert(
-        1 === substr_count($html, 'class="tmd-type-guide__image"'),
-        "{$slug} debe renderizar exactamente una imagen del hero."
+        1 === preg_match($expected_image_pattern, $html),
+        "{$slug} debe renderizar el asset esperado en el mismo elemento del hero."
     );
     tmd_equipment_type_guide_test_assert(
-        false !== strpos($html, 'src="' . $expected_url . '"'),
-        "{$slug} debe renderizar el asset esperado."
+        false !== strpos($html, '<h1>' . $guide['title'] . '</h1>')
+            && false !== strpos($html, '<p>' . $guide['summary'] . '</p>'),
+        "{$slug} debe conservar título y resumen."
+    );
+    tmd_equipment_type_guide_test_assert(
+        false !== strpos($html, 'href="https://example.test/equipos/"')
+            && false !== strpos($html, 'Ver equipos disponibles')
+            && false !== strpos($html, 'Hablar con un asesor'),
+        "{$slug} debe conservar los botones y sus enlaces principales."
+    );
+    tmd_equipment_type_guide_test_assert(
+        false !== strpos($html, 'href="https://example.test/encuentra-tu-equipo/"')
+            && false !== strpos($html, 'href="https://example.test/nosotros/contacto/"'),
+        "{$slug} debe conservar los enlaces del recomendador y contacto."
     );
     tmd_equipment_type_guide_test_assert(
         false === strpos($html, 'tmd-type-guide__machine'),
@@ -122,19 +152,30 @@ foreach (['pantografo-sencillo', 'tomapedidos', 'contrabalanceados'] as $slug) {
         "{$slug} debe conservar la ilustración CSS temporal."
     );
     tmd_equipment_type_guide_test_assert(
-        false === strpos($html, 'tmd-type-guide__image'),
-        "{$slug} no debe renderizar una imagen dedicada."
+        0 === preg_match('/<img\b/', $html),
+        "{$slug} no debe renderizar ninguna imagen dedicada."
     );
 }
 
 $css = file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/css/tmd-equipment-type-guides.css');
 tmd_equipment_type_guide_test_assert(
-    false !== strpos($css, 'object-fit: contain;'),
-    'El hero debe conservar object-fit contain para evitar distorsión o recorte.'
+    1 === preg_match('/\.tmd-type-guide__image\s*\{([^}]*)\}/', $css, $image_rules),
+    'Debe existir un bloque CSS específico para las imágenes del hero.'
 );
 tmd_equipment_type_guide_test_assert(
-    false !== strpos($css, 'overflow: hidden;'),
-    'La guía debe conservar el overflow controlado para evitar desbordamiento horizontal.'
+    false !== strpos($image_rules[1], 'height: 82%;')
+        && false !== strpos($image_rules[1], 'max-width: 86%;')
+        && false !== strpos($image_rules[1], 'object-fit: contain;')
+        && false !== strpos($image_rules[1], 'width: 86%;'),
+    'El bloque de imágenes debe conservar dimensiones y object-fit aprobados.'
+);
+tmd_equipment_type_guide_test_assert(
+    1 === preg_match('/\.tmd-type-guide__visual\s*\{([^}]*)\}/', $css, $visual_rules),
+    'Debe existir un bloque CSS específico para el panel visual.'
+);
+tmd_equipment_type_guide_test_assert(
+    false !== strpos($visual_rules[1], 'overflow: hidden;'),
+    'El panel visual debe conservar el overflow controlado para evitar desbordamiento horizontal.'
 );
 
 fwrite(STDOUT, "OK: ocho mappings, ocho heroes renderizados, fallback de tres guías y reglas visuales.\n");
