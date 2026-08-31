@@ -1,13 +1,23 @@
 <?php
-/** Final privacy policy with the contact data confirmed after the August 31 review. */
+/** Final privacy policy and routing for management/legal communications. */
 defined('ABSPATH') || exit;
+
+if (!function_exists('tmd_management_email')) {
+    function tmd_management_email(): string
+    {
+        return 'gerencia@tmdual.com';
+    }
+}
 
 add_filter('the_content', static function (string $content): string {
     if (!is_page(358)) {
         return $content;
     }
 
-    $article = <<<'HTML'
+    $management_email = esc_html(tmd_management_email());
+    $management_mailto = esc_attr('mailto:' . tmd_management_email());
+
+    $article = <<<HTML
 <article class="tmd-legal-article">
   <div class="tmd-legal-wrap">
     <h2>Protección de la información personal</h2>
@@ -18,7 +28,7 @@ add_filter('the_content', static function (string $content): string {
     <p><strong>TECNIMONTACARGAS DUAL S.A.S.</strong><br>
     <strong>NIT:</strong> 900.197.587-1<br>
     <strong>Dirección:</strong> Carrera 108 # 22F-21, barrio Versalles, Fontibón, Bogotá D. C., Colombia<br>
-    <strong>Correo electrónico:</strong> <a href="mailto:info@tmdual.com">info@tmdual.com</a><br>
+    <strong>Correo electrónico:</strong> <a href="{$management_mailto}">{$management_email}</a><br>
     <strong>Teléfono:</strong> +57 3015556180</p>
 
     <h2>Finalidades del tratamiento</h2>
@@ -54,7 +64,7 @@ add_filter('the_content', static function (string $content): string {
 
     <h2>Consultas y reclamos</h2>
     <p>El área responsable de atender las solicitudes relacionadas con datos personales es: <strong>Gerencia de TECNIMONTACARGAS DUAL S.A.S.</strong>.</p>
-    <p>Las consultas y reclamos podrán enviarse a <a href="mailto:info@tmdual.com">info@tmdual.com</a>, indicando:</p>
+    <p>Las consultas y reclamos podrán enviarse a <a href="{$management_mailto}">{$management_email}</a>, indicando:</p>
     <ul>
       <li>Nombre e identificación del titular.</li>
       <li>Datos de contacto.</li>
@@ -84,3 +94,18 @@ HTML;
 
     return is_string($updated) && $updated !== $content ? $updated : $content;
 }, 120);
+
+/**
+ * The dedicated PQR endpoint already targets management. This also protects the
+ * generic Site Kit PQR route, while informational/contact, quote and quiz forms
+ * keep using the general info mailbox.
+ */
+add_filter('wp_mail', static function (array $mail): array {
+    $subject = isset($mail['subject']) ? (string) $mail['subject'] : '';
+
+    if ('Nueva solicitud TMD: PQR' === $subject) {
+        $mail['to'] = tmd_management_email();
+    }
+
+    return $mail;
+}, 20);
