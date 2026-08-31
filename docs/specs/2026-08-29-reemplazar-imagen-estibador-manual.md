@@ -2,13 +2,13 @@
 
 ## Estado
 
-- Aprobado
+- Borrador
 
 ## Contexto
 
 [Solicitud] Las imágenes temporales de las guías de equipos deben reemplazarse por los archivos WebP disponibles en el repositorio, incluyendo las imágenes nuevas de retráctiles, pantógrafo, contrabalanceados y tomapedidos.
 
-[Evidencia: wp-content/themes/blocksy-child/inc/tmd-equipment-type-guides.php:61-124,147-224,248-287] Las guías `estibadores-manuales`, `estibadores-electricos`, `apiladores-electricos`, `retractiles-de-mastil-movil`, `pantografo-doble-profundidad`, `tomapedidos`, `tomapedidos-de-alto-nivel`, `contrabalanceados`, `electricos-de-3-ruedas` y `electricos-de-4-ruedas` contienen los títulos, resúmenes y contenidos de las secciones objetivo.
+[Evidencia: wp-content/themes/blocksy-child/inc/tmd-equipment-type-guides.php:61-124,147-224,248-287] Las guías `estibadores-manuales`, `estibadores-electricos`, `apiladores-electricos`, `retractiles-de-mastil-movil`, `pantografo-sencillo`, `pantografo-doble-profundidad`, `tomapedidos`, `tomapedidos-de-alto-nivel`, `contrabalanceados`, `electricos-de-3-ruedas` y `electricos-de-4-ruedas` contienen los títulos, resúmenes y contenidos de las secciones objetivo.
 
 [Evidencia: wp-content/themes/blocksy-child/inc/tmd-equipment-type-guides.php:343-360] La visual del hero actualmente imprime una ilustración CSS genérica mediante `.tmd-type-guide__machine`.
 
@@ -21,6 +21,8 @@
 [Evidencia: wp-content/themes/blocksy-child/assets/img/mega-menu/mega-menu-out/Montacargas-retráctiles-de-mástil-móvil.webp] El recurso nuevo existe en el workspace y su nombre identifica el equipo retráctil de mástil móvil.
 
 [Evidencia: wp-content/themes/blocksy-child/assets/img/mega-menu/mega-menu-out/pantografo-doble-reach.webp] El recurso nuevo existe en el workspace y su nombre identifica el pantógrafo de doble profundidad.
+
+[Evidencia: wp-content/themes/blocksy-child/assets/img/equipment-guides/pantografo-sencillo.webp] El recurso existe en el repositorio, es un WebP de 466 × 700 px y su nombre identifica el pantógrafo sencillo.
 
 [Evidencia: wp-content/themes/blocksy-child/assets/img/mega-menu/mega-menu-out/contrabalanceado-4-llantas.webp] El recurso existe en el workspace y muestra un contrabalanceado eléctrico de cuatro ruedas.
 
@@ -36,7 +38,7 @@
 
 ## Objetivo
 
-[Solicitud] Mostrar los ocho recursos locales en los heroes correspondientes, conservando la composición, legibilidad y comportamiento responsive de cada sección.
+[Solicitud] Mostrar los nueve recursos locales en los heroes correspondientes, conservando la composición, legibilidad y comportamiento responsive de cada sección.
 
 ## Fuera del alcance
 
@@ -53,13 +55,14 @@
 3. [Solicitud] La guía `apiladores-electricos` debe mostrar `assets/img/mega-menu/mega-menu-out/apiladores-electricos.webp` en lugar de la ilustración CSS temporal.
 4. [Solicitud] La guía `retractiles-de-mastil-movil` debe mostrar `assets/img/mega-menu/mega-menu-out/Montacargas-retráctiles-de-mástil-móvil.webp` en lugar de la ilustración CSS temporal.
 5. [Solicitud] La guía `pantografo-doble-profundidad` debe mostrar `assets/img/mega-menu/mega-menu-out/pantografo-doble-reach.webp` en lugar de la ilustración CSS temporal.
-6. [Solicitud] La guía `electricos-de-4-ruedas` debe mostrar `assets/img/mega-menu/mega-menu-out/contrabalanceado-4-llantas.webp` en lugar de la ilustración CSS temporal.
-7. [Solicitud] La guía `electricos-de-3-ruedas` debe mostrar `assets/img/mega-menu/contrabalanceado-3-llantas.webp` en lugar de la ilustración CSS temporal.
-8. [Solicitud] La guía `tomapedidos-de-alto-nivel` debe mostrar `assets/img/mega-menu/mega-menu-out/toma-pedidos.webp` en lugar de la ilustración CSS temporal.
-9. [Solicitud] Las demás guías deben conservar su ilustración y comportamiento actuales mientras no exista un asset dedicado confirmado.
-10. [Solicitud] El panel visual debe conservar su proporción, fondo, etiqueta y ubicación dentro del hero.
-11. [Solicitud] Las imágenes deben conservar proporción y mostrarse sin distorsión ni recortes que oculten el equipo principal.
-12. [Regla: docs/domain/NAVIGATION.md] Las páginas no deben introducir overflow horizontal en escritorio ni móvil.
+6. [Solicitud] La guía `pantografo-sencillo` debe mostrar `assets/img/equipment-guides/pantografo-sencillo.webp` en lugar de la ilustración CSS temporal.
+7. [Solicitud] La guía `electricos-de-4-ruedas` debe mostrar `assets/img/mega-menu/mega-menu-out/contrabalanceado-4-llantas.webp` en lugar de la ilustración CSS temporal.
+8. [Solicitud] La guía `electricos-de-3-ruedas` debe mostrar `assets/img/mega-menu/contrabalanceado-3-llantas.webp` en lugar de la ilustración CSS temporal.
+9. [Solicitud] La guía `tomapedidos-de-alto-nivel` debe mostrar `assets/img/mega-menu/mega-menu-out/toma-pedidos.webp` en lugar de la ilustración CSS temporal.
+10. [Solicitud] Las demás guías deben conservar su ilustración y comportamiento actuales mientras no exista un asset dedicado confirmado.
+11. [Solicitud] El panel visual debe conservar su proporción, fondo, etiqueta y ubicación dentro del hero.
+12. [Solicitud] Las imágenes deben conservar proporción y mostrarse sin distorsión ni recortes que oculten el equipo principal.
+13. [Regla: docs/domain/NAVIGATION.md] Las páginas no deben introducir overflow horizontal en escritorio ni móvil.
 
 ## Reglas de negocio
 
@@ -79,6 +82,7 @@
     "apiladores-electricos": "assets/img/mega-menu/mega-menu-out/apiladores-electricos.webp",
     "retractiles-de-mastil-movil": "assets/img/mega-menu/mega-menu-out/Montacargas-retráctiles-de-mástil-móvil.webp",
     "pantografo-doble-profundidad": "assets/img/mega-menu/mega-menu-out/pantografo-doble-reach.webp",
+    "pantografo-sencillo": "assets/img/equipment-guides/pantografo-sencillo.webp",
     "electricos-de-4-ruedas": "assets/img/mega-menu/mega-menu-out/contrabalanceado-4-llantas.webp",
     "electricos-de-3-ruedas": "assets/img/mega-menu/contrabalanceado-3-llantas.webp",
     "tomapedidos-de-alto-nivel": "assets/img/mega-menu/mega-menu-out/toma-pedidos.webp"
@@ -90,7 +94,7 @@
 
 ```json
 {
-  "heroVisuals": "eight local WebP assets mapped to their guides",
+  "heroVisuals": "nine local WebP assets mapped to their guides",
   "otherGuides": "unchanged until dedicated assets are confirmed",
   "contentAndLinks": "unchanged"
 }
@@ -112,6 +116,7 @@
 - `wp-content/themes/blocksy-child/assets/img/mega-menu/mega-menu-out/portaestiba-electrico.webp`
 - `wp-content/themes/blocksy-child/assets/img/mega-menu/mega-menu-out/Montacargas-retráctiles-de-mástil-móvil.webp`
 - `wp-content/themes/blocksy-child/assets/img/mega-menu/mega-menu-out/pantografo-doble-reach.webp`
+- `wp-content/themes/blocksy-child/assets/img/equipment-guides/pantografo-sencillo.webp`
 - `wp-content/themes/blocksy-child/assets/img/mega-menu/mega-menu-out/contrabalanceado-4-llantas.webp`
 - `wp-content/themes/blocksy-child/assets/img/mega-menu/contrabalanceado-3-llantas.webp`
 - `wp-content/themes/blocksy-child/assets/img/mega-menu/mega-menu-out/toma-pedidos.webp`
@@ -125,17 +130,18 @@
 3. [Solicitud] En `apiladores-electricos` se muestra `apiladores-electricos.webp` y deja de renderizarse la ilustración CSS temporal.
 4. [Solicitud] En `retractiles-de-mastil-movil` se muestra `Montacargas-retráctiles-de-mástil-móvil.webp` y deja de renderizarse la ilustración CSS temporal.
 5. [Solicitud] En `pantografo-doble-profundidad` se muestra `pantografo-doble-reach.webp` y deja de renderizarse la ilustración CSS temporal.
-6. [Solicitud] En `electricos-de-4-ruedas` se muestra `contrabalanceado-4-llantas.webp` y deja de renderizarse la ilustración CSS temporal.
-7. [Solicitud] En `electricos-de-3-ruedas` se muestra `contrabalanceado-3-llantas.webp` y deja de renderizarse la ilustración CSS temporal.
-8. [Solicitud] En `tomapedidos-de-alto-nivel` se muestra `toma-pedidos.webp` y deja de renderizarse la ilustración CSS temporal.
-9. [Solicitud] Las demás guías continúan usando su visual actual sin cambios hasta confirmar un asset dedicado.
-10. [Solicitud] Cada imagen se muestra completa, proporcionada y legible dentro de su panel.
-11. [Solicitud] Los títulos, resúmenes, botones y enlaces de las guías conservan sus valores actuales.
-12. [Regla: docs/domain/NAVIGATION.md] No aparece overflow horizontal nuevo en escritorio ni móvil.
+6. [Solicitud] En `pantografo-sencillo` se muestra `pantografo-sencillo.webp` y deja de renderizarse la ilustración CSS temporal.
+7. [Solicitud] En `electricos-de-4-ruedas` se muestra `contrabalanceado-4-llantas.webp` y deja de renderizarse la ilustración CSS temporal.
+8. [Solicitud] En `electricos-de-3-ruedas` se muestra `contrabalanceado-3-llantas.webp` y deja de renderizarse la ilustración CSS temporal.
+9. [Solicitud] En `tomapedidos-de-alto-nivel` se muestra `toma-pedidos.webp` y deja de renderizarse la ilustración CSS temporal.
+10. [Solicitud] Las demás guías continúan usando su visual actual sin cambios hasta confirmar un asset dedicado.
+11. [Solicitud] Cada imagen se muestra completa, proporcionada y legible dentro de su panel.
+12. [Solicitud] Los títulos, resúmenes, botones y enlaces de las guías conservan sus valores actuales.
+13. [Regla: docs/domain/NAVIGATION.md] No aparece overflow horizontal nuevo en escritorio ni móvil.
 
 ## Validación
 
-- Pruebas unitarias: `php tests/test-equipment-type-guides.php` comprueba los ocho mappings, el render del `<img>`, el fallback de las tres guías no mapeadas y las reglas visuales esenciales.
+- Pruebas unitarias: `php tests/test-equipment-type-guides.php` debe comprobar los nueve mappings, el render del `<img>`, el fallback de las dos guías no mapeadas (`tomapedidos` y `contrabalanceados`) y las reglas visuales esenciales.
 - Pruebas de integración: comprobar que la guía seleccionada resuelve el asset local y que las demás guías no reciben el nuevo recurso.
 - Validación manual: revisar encuadre, contraste, nitidez, proporción, escritorio, móvil y ausencia de overflow.
 - Validación productiva: No aplica en esta etapa; cualquier despliegue posterior de código o purga de caché requiere autorización explícita, backup y verificación según los runbooks.
@@ -147,11 +153,13 @@
 
 ## Decisiones pendientes
 
-- [Decisión resuelta, 2026-08-31] Las tres guías sin un asset dedicado identificable (`pantografo-sencillo`, `tomapedidos` y `contrabalanceados`) mantienen la ilustración CSS, conforme al requisito de conservar las demás guías sin cambios.
+- [Decisión resuelta, 2026-08-31] Las dos guías sin un asset dedicado confirmado (`tomapedidos` y `contrabalanceados`) mantienen la ilustración CSS, conforme al requisito de conservar las demás guías sin cambios.
+- [Decisión resuelta, 2026-08-31] `assets/img/equipment-guides/pantografo-sencillo.webp` se asigna a `pantografo-sencillo` porque existe como recurso dedicado identificado para esa guía.
 - [DEC-02] `portaestiba-electrico.webp` se asigna a `estibadores-electricos` porque no existe una guía separada con slug portaestiba.
-- [Regla: AGENTS.md] La aprobación registrada el 2026-08-29 cubría solo tres guías; la ampliación a ocho mappings requiere aprobación explícita de este borrador.
+- [Regla: AGENTS.md] La aprobación registrada el 2026-08-29 cubría solo tres guías y la del 2026-08-31 cubría ocho mappings; esta ampliación a nueve mappings requiere aprobación explícita de este borrador.
 
 ## Registro de aprobación
 
 - [Aprobación histórica, 2026-08-29] El usuario aprobó reemplazar las ilustraciones temporales de las tres guías por los assets locales identificados. Esta aprobación no cubre la ampliación del alcance a ocho guías.
 - [Aprobación, 2026-08-31] El usuario aprobó la ampliación a ocho mappings, incluyendo `contrabalanceado-3-llantas.webp` para `electricos-de-3-ruedas` y `toma-pedidos.webp` para `tomapedidos-de-alto-nivel`.
+- [Solicitud recibida, 2026-08-31] El usuario solicitó conservar `electricos-de-4-ruedas` e incorporar `pantografo-sencillo` con su asset dedicado; la versión de nueve mappings queda pendiente de aprobación explícita antes de implementar o desplegar.
