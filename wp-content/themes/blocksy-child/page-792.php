@@ -119,9 +119,43 @@ add_action('wp_head', static function (): void {
             letter-spacing: .06em;
         }
 
+        html body.page-id-792 .tmd-bms-media-section {
+            padding: clamp(32px, 5vw, 58px) 0 0;
+        }
+
+        html body.page-id-792 .tmd-bms-media {
+            display: flex;
+            min-height: 220px;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+            border: 1px solid rgba(18, 140, 235, .22);
+            border-radius: 22px;
+            background: linear-gradient(145deg, #eef6fd 0%, #fff 58%, #fff8e7 100%);
+            box-shadow: 0 18px 45px rgba(38, 46, 79, .10);
+        }
+
+        html body.page-id-792 .tmd-bms-media img {
+            display: block;
+            width: 100%;
+            max-height: 650px;
+            object-fit: contain;
+            object-position: center;
+        }
+
         @media (max-width: 720px) {
             html body.page-id-792 .tmd-bms-metric {
                 min-height: 0 !important;
+            }
+
+            html body.page-id-792 .tmd-bms-media-section {
+                padding-top: 28px;
+            }
+
+            html body.page-id-792 .tmd-bms-media {
+                min-height: 0;
+                border-radius: 16px;
             }
         }
     </style>
