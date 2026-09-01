@@ -1,10 +1,20 @@
 <?php
 /**
  * Reemplaza la imagen externa de la seccion "Nuestro equipo" en Trabaja con nosotros
- * por el attachment de WordPress identificado como gerencia.webp.
+ * por el attachment de WordPress identificado como gerencia-scaled-e1787869020907.webp.
  */
 
 defined('ABSPATH') || exit;
+
+function tmd_jobs_management_target_filename(): string
+{
+    return 'gerencia-scaled-e1787869020907.webp';
+}
+
+function tmd_jobs_management_attached_file_matches(string $attached_file): bool
+{
+    return strtolower(basename(rawurldecode($attached_file))) === strtolower(tmd_jobs_management_target_filename());
+}
 
 function tmd_jobs_management_old_image_url(): string
 {
@@ -28,20 +38,16 @@ function tmd_jobs_management_attachment_candidates(): array
                AND pm.meta_key = '_wp_attached_file'
              WHERE p.post_type = 'attachment'
                AND p.post_status = 'inherit'
-               AND (
-                    LOWER(SUBSTRING_INDEX(pm.meta_value, '/', -1)) = %s
-                    OR LOWER(p.post_title) IN (%s, %s)
-                    OR LOWER(p.post_name) IN (%s, %s)
-               )
+               AND LOWER(SUBSTRING_INDEX(pm.meta_value, '/', -1)) = %s
              ORDER BY p.ID DESC",
-            'gerencia.webp',
-            'gerencia',
-            'gerencia.webp',
-            'gerencia',
-            'gerencia-webp'
+            strtolower(tmd_jobs_management_target_filename())
         ),
         ARRAY_A
     );
+
+    $rows = array_values(array_filter($rows, static function (array $row): bool {
+        return tmd_jobs_management_attached_file_matches((string) $row['attached_file']);
+    }));
 
     $unique = [];
 
@@ -108,16 +114,17 @@ function tmd_jobs_management_find_attachment(): array
                    )
                  ORDER BY p.ID DESC
                  LIMIT 10",
-                '%gerencia%',
-                '%gerencia%',
-                '%gerencia%'
+                '%' . strtolower(tmd_jobs_management_target_filename()) . '%',
+                '%' . strtolower(tmd_jobs_management_target_filename()) . '%',
+                '%' . strtolower(tmd_jobs_management_target_filename()) . '%'
             ),
             ARRAY_A
         );
 
         return [
             'error' => sprintf(
-                'No se pudo resolver de forma univoca gerencia.webp (candidatos WebP=%d). Coincidencias directas: %s. Coincidencias cercanas: %s.',
+                'No se pudo resolver de forma univoca %s (candidatos WebP=%d). Coincidencias directas: %s. Coincidencias cercanas: %s.',
+                tmd_jobs_management_target_filename(),
                 count($webp_rows),
                 tmd_jobs_management_describe_candidates($rows),
                 tmd_jobs_management_describe_candidates($nearby)
@@ -130,7 +137,7 @@ function tmd_jobs_management_find_attachment(): array
     $url = wp_get_attachment_url($attachment_id);
 
     if (! is_string($url) || $url === '') {
-        return ['error' => 'No fue posible resolver la URL publica del attachment de gerencia.'];
+        return ['error' => 'No fue posible resolver la URL publica del attachment objetivo.'];
     }
 
     return [
@@ -163,7 +170,7 @@ function tmd_jobs_management_transform(string $content, string $new_url): array
             'content' => $content,
             'changes' => [],
             'errors' => [sprintf(
-                'La imagen de la maleta no coincide de forma univoca (anterior=%d, nueva=%d).',
+                'La imagen anterior no coincide de forma univoca (anterior=%d, nueva=%d).',
                 $old_count,
                 $new_count
             )],

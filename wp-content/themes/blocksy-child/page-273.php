@@ -10,10 +10,10 @@ defined('ABSPATH') || exit;
  * Se prioriza _wp_attached_file para respetar recortes/ediciones hechas desde
  * la Biblioteca de medios. El original se usa únicamente como fallback.
  */
-function tmd_jobs_current_media_image(string $needle, string $mime_type): array {
+function tmd_jobs_current_media_image(string $needle, string $mime_type, bool $exact_filename = false): array {
     static $cache = [];
 
-    $cache_key = $mime_type . '|' . $needle;
+    $cache_key = $mime_type . '|' . $needle . '|' . ($exact_filename ? 'exact' : 'contains');
 
     if (array_key_exists($cache_key, $cache)) {
         return $cache[$cache_key];
@@ -25,7 +25,7 @@ function tmd_jobs_current_media_image(string $needle, string $mime_type): array 
         'post_type'      => 'attachment',
         'post_status'    => 'inherit',
         'post_mime_type' => $mime_type,
-        'posts_per_page' => 1,
+        'posts_per_page' => $exact_filename ? -1 : 1,
         'fields'         => 'ids',
         'orderby'        => 'ID',
         'order'          => 'DESC',
@@ -38,6 +38,18 @@ function tmd_jobs_current_media_image(string $needle, string $mime_type): array 
 
     if (empty($attachment_ids)) {
         return $cache[$cache_key];
+    }
+
+    if ($exact_filename) {
+        $attachment_ids = array_values(array_filter($attachment_ids, static function ($attachment_id) use ($needle): bool {
+            $attached_file = (string) get_post_meta((int) $attachment_id, '_wp_attached_file', true);
+
+            return strtolower(basename(rawurldecode($attached_file))) === strtolower($needle);
+        }));
+
+        if (1 !== count($attachment_ids)) {
+            return $cache[$cache_key];
+        }
     }
 
     $attachment_id = (int) $attachment_ids[0];
@@ -133,10 +145,11 @@ add_filter('the_content', static function ($content) {
         }
     }
 
-    $management_image = tmd_jobs_current_media_image('gerencia', 'image/webp');
+    $management_filename = 'gerencia-scaled-e1787869020907.webp';
+    $management_image = tmd_jobs_current_media_image($management_filename, 'image/webp', true);
 
     if (! empty($management_image['url'])) {
-        $management_pattern = '~(?:https?://[^"\']+)?/wp-content/uploads/[^"\']*/gerencia[^/"\']*\.webp(?:\?[^"\']*)?~i';
+        $management_pattern = '~(?:https?://[^"\']+)?/wp-content/uploads/[^"\']*/gerencia-scaled-e1787869020907\.webp(?:\?[^"\']*)?~i';
         $management_updated = preg_replace(
             $management_pattern,
             esc_url($management_image['url']),
@@ -161,7 +174,7 @@ add_action('wp_head', static function (): void {
         }
 
         /* Nuestro equipo: encuadre alto y anclado arriba para priorizar los rostros. */
-        body.page-id-273 img[src*="gerencia"] {
+        body.page-id-273 img[src*="gerencia-scaled-e1787869020907"] {
             width: 100% !important;
             height: 560px !important;
             max-height: none !important;
@@ -169,7 +182,7 @@ add_action('wp_head', static function (): void {
             object-position: 50% 0% !important;
         }
 
-        body.page-id-273 *:has(> img[src*="gerencia"]) {
+        body.page-id-273 *:has(> img[src*="gerencia-scaled-e1787869020907"]) {
             height: 560px !important;
             max-height: none !important;
             overflow: hidden !important;
@@ -202,8 +215,8 @@ add_action('wp_head', static function (): void {
                 padding: 46px 20px !important;
             }
 
-            body.page-id-273 img[src*="gerencia"],
-            body.page-id-273 *:has(> img[src*="gerencia"]) {
+            body.page-id-273 img[src*="gerencia-scaled-e1787869020907"],
+            body.page-id-273 *:has(> img[src*="gerencia-scaled-e1787869020907"]) {
                 height: 460px !important;
             }
 
@@ -218,8 +231,8 @@ add_action('wp_head', static function (): void {
                 padding: 38px 16px !important;
             }
 
-            body.page-id-273 img[src*="gerencia"],
-            body.page-id-273 *:has(> img[src*="gerencia"]) {
+            body.page-id-273 img[src*="gerencia-scaled-e1787869020907"],
+            body.page-id-273 *:has(> img[src*="gerencia-scaled-e1787869020907"]) {
                 height: 360px !important;
             }
 
