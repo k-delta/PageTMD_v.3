@@ -6,11 +6,11 @@
 
 ## Contexto
 
-[Solicitud: capturas aportadas el 2026-09-01] Se solicita reemplazar la imagen de la sección “Nuestro equipo” de la página “Trabaja con nosotros” por el archivo de Medios `gerencia-scaled-e1787869020907.webp`.
+[Solicitud: capturas y URL pública aportadas el 2026-09-01] Se solicita reemplazar la imagen de la sección “Nuestro equipo” de la página “Trabaja con nosotros” por el archivo de Medios `gerencia.webp`, publicado en `https://tecnimontacargas.com/wp-content/uploads/2026/09/gerencia.webp`.
 
-[Evidencia: wp-content/themes/blocksy-child/page-273.php:3,100-153] La página “Trabaja con nosotros” es la página WordPress `ID 273`; su filtro de contenido resuelve actualmente un adjunto WebP mediante el término genérico `gerencia` y reemplaza referencias que contengan ese término.
+[Evidencia histórica: wp-content/themes/blocksy-child/page-273.php:3,100-153] La página “Trabaja con nosotros” es la página WordPress `ID 273`; antes de este cambio su filtro de contenido resolvía un adjunto WebP mediante el término genérico `gerencia` y reemplazaba referencias que contuvieran ese término.
 
-[Evidencia: scripts/update-jobs-management-image.php:3-4,14-57,81-143] El repositorio dispone de un procedimiento específico para reemplazar la imagen de “Nuestro equipo”, pero actualmente busca de forma ambigua el recurso identificado como `gerencia.webp`.
+[Evidencia histórica: scripts/update-jobs-management-image.php:3-4,14-57,81-143] El repositorio disponía de un procedimiento específico para reemplazar la imagen de “Nuestro equipo”, pero antes de este cambio buscaba de forma ambigua el recurso identificado como `gerencia.webp`.
 
 [Evidencia: scripts/update-jobs-management-image.php:145-250] El procedimiento existente valida el bloque, ofrece `TMD_DRY_RUN=1` y actualiza únicamente el contenido de la página cuando se ejecuta sin dry-run.
 
@@ -20,7 +20,7 @@
 
 ## Objetivo
 
-[Solicitud] Mostrar en producción la imagen exacta `gerencia-scaled-e1787869020907.webp` en la sección “Nuestro equipo” de “Trabaja con nosotros”, conservando el resto del contenido, el encuadre y las demás imágenes de la página.
+[Solicitud] Mostrar en producción la imagen exacta `gerencia.webp` en la sección “Nuestro equipo” de “Trabaja con nosotros”, conservando el resto del contenido, el encuadre y las demás imágenes de la página.
 
 ## Fuera del alcance
 
@@ -32,7 +32,7 @@
 
 ## Requisitos funcionales
 
-1. [Solicitud] La sección “Nuestro equipo” de la página WordPress `ID 273` debe usar el attachment cuyo nombre de archivo exacto sea `gerencia-scaled-e1787869020907.webp`.
+1. [Solicitud] La sección “Nuestro equipo” de la página WordPress `ID 273` debe usar el attachment cuyo nombre de archivo exacto sea `gerencia.webp`.
 2. [Solicitud] La resolución del attachment debe distinguir el nombre exacto del archivo y detenerse si no existe exactamente un attachment WebP coincidente o si existen varios.
 3. [Solicitud] El contenido de la sección debe conservar todos sus textos, atributos no relacionados, clases, orden y estructura.
 4. [Solicitud] El hero, el testimonio, el avatar y las demás imágenes de “Trabaja con nosotros” deben conservarse sin cambios.
@@ -56,7 +56,7 @@
   "pageId": 273,
   "pagePath": "/nosotros/trabaja-con-nosotros/",
   "section": "Nuestro equipo",
-  "attachmentFilename": "gerencia-scaled-e1787869020907.webp"
+  "attachmentFilename": "gerencia.webp"
 }
 ```
 
@@ -65,7 +65,7 @@
 ```json
 {
   "pageId": 273,
-  "sectionImage": "gerencia-scaled-e1787869020907.webp",
+  "sectionImage": "gerencia.webp",
   "otherPageContent": "unchanged",
   "otherMedia": "unchanged",
   "duplicateApplication": "no additional replacement"
@@ -86,11 +86,11 @@
 - `scripts/update-jobs-management-image.php`
 - Prueba focalizada de resolución exacta y transformación de la imagen de “Nuestro equipo”.
 - Página WordPress `ID 273`, `/nosotros/trabaja-con-nosotros/`.
-- Attachment de Medios `gerencia-scaled-e1787869020907.webp`.
+- Attachment de Medios `gerencia.webp`.
 
 ## Criterios de aceptación
 
-1. [Solicitud] El HTML de la sección “Nuestro equipo” en la página `ID 273` referencia el attachment exacto `gerencia-scaled-e1787869020907.webp`.
+1. [Solicitud] El HTML de la sección “Nuestro equipo” en la página `ID 273` referencia el attachment exacto `gerencia.webp`.
 2. [Solicitud] El resto del contenido de la página permanece sin cambios funcionales ni textuales.
 3. [Solicitud] El hero, avatar, testimonio y demás recursos visuales permanecen iguales.
 4. [Solicitud] La imagen conserva el encuadre, proporción y comportamiento responsive actuales en escritorio y móvil.
@@ -108,13 +108,13 @@
 ## Riesgos
 
 - [Inferencia técnica] Un selector o búsqueda genérica por “gerencia” podría seleccionar una imagen distinta a la solicitada.
-- [Inferencia técnica] La versión `-scaled` puede tener un archivo original asociado; la implementación debe respetar el attachment exacto solicitado y no sustituirlo silenciosamente.
+- [Evidencia, URL pública aportada el 2026-09-01] WordPress publica el attachment objetivo como `gerencia.webp` bajo `/wp-content/uploads/2026/09/`.
 - [Inferencia técnica] La caché de página o navegador puede ocultar el cambio después de la escritura productiva.
 - [Inferencia técnica] Una edición concurrente del contenido de la página puede invalidar la precondición antes de escribir.
 
 ## Decisiones pendientes
 
-- No aplica. El archivo exacto, la página objetivo y el alcance fueron definidos en la solicitud aprobada.
+- El archivo exacto queda confirmado por la URL pública aportada por el usuario: `gerencia.webp`.
 
 ## Registro de aprobación
 

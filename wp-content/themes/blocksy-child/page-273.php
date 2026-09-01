@@ -145,11 +145,11 @@ add_filter('the_content', static function ($content) {
         }
     }
 
-    $management_filename = 'gerencia-scaled-e1787869020907.webp';
+    $management_filename = 'gerencia.webp';
     $management_image = tmd_jobs_current_media_image($management_filename, 'image/webp', true);
 
     if (! empty($management_image['url'])) {
-        $management_pattern = '~(?:https?://[^"\']+)?/wp-content/uploads/[^"\']*/gerencia-scaled-e1787869020907\.webp(?:\?[^"\']*)?~i';
+        $management_pattern = '~(?:https?://[^"\']+)?/wp-content/uploads/[^"\']*/gerencia\.webp(?:\?[^"\']*)?~i';
         $management_updated = preg_replace(
             $management_pattern,
             esc_url($management_image['url']),
@@ -174,7 +174,7 @@ add_action('wp_head', static function (): void {
         }
 
         /* Nuestro equipo: encuadre alto y anclado arriba para priorizar los rostros. */
-        body.page-id-273 img[src*="gerencia-scaled-e1787869020907"] {
+        body.page-id-273 img[src*="gerencia.webp"] {
             width: 100% !important;
             height: 560px !important;
             max-height: none !important;
@@ -182,7 +182,7 @@ add_action('wp_head', static function (): void {
             object-position: 50% 0% !important;
         }
 
-        body.page-id-273 *:has(> img[src*="gerencia-scaled-e1787869020907"]) {
+        body.page-id-273 *:has(> img[src*="gerencia.webp"]) {
             height: 560px !important;
             max-height: none !important;
             overflow: hidden !important;
@@ -215,8 +215,8 @@ add_action('wp_head', static function (): void {
                 padding: 46px 20px !important;
             }
 
-            body.page-id-273 img[src*="gerencia-scaled-e1787869020907"],
-            body.page-id-273 *:has(> img[src*="gerencia-scaled-e1787869020907"]) {
+            body.page-id-273 img[src*="gerencia.webp"],
+            body.page-id-273 *:has(> img[src*="gerencia.webp"]) {
                 height: 460px !important;
             }
 
@@ -231,8 +231,8 @@ add_action('wp_head', static function (): void {
                 padding: 38px 16px !important;
             }
 
-            body.page-id-273 img[src*="gerencia-scaled-e1787869020907"],
-            body.page-id-273 *:has(> img[src*="gerencia-scaled-e1787869020907"]) {
+            body.page-id-273 img[src*="gerencia.webp"],
+            body.page-id-273 *:has(> img[src*="gerencia.webp"]) {
                 height: 360px !important;
             }
 

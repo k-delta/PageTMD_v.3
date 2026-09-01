@@ -1,14 +1,14 @@
 <?php
 /**
  * Reemplaza la imagen externa de la seccion "Nuestro equipo" en Trabaja con nosotros
- * por el attachment de WordPress identificado como gerencia-scaled-e1787869020907.webp.
+ * por el attachment de WordPress identificado como gerencia.webp.
  */
 
 defined('ABSPATH') || exit;
 
 function tmd_jobs_management_target_filename(): string
 {
-    return 'gerencia-scaled-e1787869020907.webp';
+    return 'gerencia.webp';
 }
 
 function tmd_jobs_management_attached_file_matches(string $attached_file): bool
