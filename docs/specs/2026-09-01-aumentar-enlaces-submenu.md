@@ -2,7 +2,7 @@
 
 ## Estado
 
-- Borrador
+- Aprobado
 
 ## Contexto
 
@@ -116,5 +116,9 @@
 
 ## Decisiones pendientes
 
-- [Decisión propuesta, pendiente de aprobación] Se interpreta que `SERVICIOS` se refiere a la etiqueta superior y debe permanecer igual, mientras `Preventivo` y `Correctivo`, como enlaces secundarios, sí deben aumentar.
-- [Decisión propuesta, pendiente de aprobación] Se propone aumentar los enlaces secundarios de todos los paneles a `14px`, sin cambiar los títulos de columna ni los indicadores.
+- [Decisión resuelta, 2026-09-01] `SERVICIOS` se refiere a la etiqueta superior y permanece igual; `Preventivo` y `Correctivo`, como enlaces secundarios, sí aumentan.
+- [Decisión resuelta, 2026-09-01] Los enlaces secundarios de todos los paneles aumentan a `14px`, sin cambiar los títulos de columna ni los indicadores.
+
+## Registro de aprobación
+
+- [Aprobación, 2026-09-01] El usuario aprobó la implementación local de este SPEC.
