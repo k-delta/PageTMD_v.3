@@ -319,11 +319,11 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
 }
 
 .tmd-mm-img--socios-atencion {
-  background-image: url('../images/mega-menu/menu-partners-support.webp?v=20260831-130000');
+  background-image: url('../images/mega-menu/menu-partners-support.webp?v=20260901-partners');
 }
 
 .tmd-mm-img--legal {
-  background-image: url('../images/mega-menu/menu-legal.webp?v=20260831-legal');
+  background-image: url('../images/mega-menu/menu-legal.webp?v=20260901-legal');
 }
 
 .tmd-mm-img--maintenance {
@@ -341,6 +341,15 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
 
 .tmd-mm-img--compania {
   background-position: center top !important;
+}
+
+/* Mostrar más contenido de las imágenes corporativas sin distorsionarlas. */
+.tmd-mm-img--compania,
+.tmd-mm-img--socios-atencion,
+.tmd-mm-img--legal {
+  background-position: center;
+  background-size: contain;
+  background-color: #f0f4fa;
 }
 
 #tmd-mm-panel-nosotros .tmd-mm-img,
