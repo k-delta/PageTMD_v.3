@@ -231,18 +231,17 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
 
     <div class="tmd-mm-panel" id="tmd-mm-panel-mant">
       <div class="tmd-mm-inner tmd-mm-grid-3">
-        <div class="tmd-mm-card">
+        <div class="tmd-mm-card tmd-mm-card--maintenance">
           <a
             class="tmd-mm-img tmd-mm-img--maintenance"
             href="<?php echo esc_url(home_url('/mantenimiento/')); ?>"
             aria-label="Mantenimientos"
             style="<?php echo esc_attr('background-image: url(\'' . tmd_menu_asset_url('assets/images/mega-menu/menu-maintenance.webp') . '\');'); ?>"
           ></a>
-          <a class="tmd-mm-title" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>">Mantenimientos</a>
-          <ul class="tmd-mm-items">
-            <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-preventivo/')); ?>">Preventivo</a></li>
-            <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-correctivo/')); ?>">Correctivo</a></li>
-          </ul>
+          <div class="tmd-mm-maintenance-options">
+            <a class="tmd-mm-title" href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-preventivo/')); ?>">Mantenimientos preventivos</a>
+            <a class="tmd-mm-title" href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-correctivo/')); ?>">Mantenimientos correctivos</a>
+          </div>
         </div>
       </div>
     </div>
@@ -370,11 +369,10 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
           </div>
           <div class="tmd-mm-mobile-submenu" id="tmd-mm-mobile-panel-mant" hidden>
             <div class="tmd-mm-mobile-group">
-              <a class="tmd-mm-mobile-group-title" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>">Mantenimientos</a>
-              <ul>
-                <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-preventivo/')); ?>">Preventivo</a></li>
-                <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-correctivo/')); ?>">Correctivo</a></li>
-              </ul>
+              <a class="tmd-mm-mobile-group-title" href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-preventivo/')); ?>">Mantenimientos preventivos</a>
+            </div>
+            <div class="tmd-mm-mobile-group">
+              <a class="tmd-mm-mobile-group-title" href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-correctivo/')); ?>">Mantenimientos correctivos</a>
             </div>
           </div>
         </section>

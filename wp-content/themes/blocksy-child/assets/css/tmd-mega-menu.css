@@ -357,6 +357,12 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
   height: 150px;
 }
 
+#tmd-mm-panel-mant .tmd-mm-maintenance-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
 .tmd-mm-title {
   display: block;
   font-size: 13px;
@@ -567,6 +573,10 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
   #tmd-mm-panel-nosotros .tmd-mm-img,
   #tmd-mm-panel-mant .tmd-mm-img {
     height: 110px;
+  }
+
+  #tmd-mm-panel-mant .tmd-mm-maintenance-options {
+    grid-template-columns: 1fr;
   }
 }
 
