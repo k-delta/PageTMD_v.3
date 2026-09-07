@@ -333,7 +333,8 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
 .tmd-mm-img--compania,
 .tmd-mm-img--socios-atencion,
 .tmd-mm-img--legal,
-.tmd-mm-img--maintenance {
+.tmd-mm-img--maintenance,
+.tmd-mm-img--maintenance-corrective {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

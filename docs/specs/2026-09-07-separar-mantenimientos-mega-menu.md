@@ -26,9 +26,9 @@ La navegación móvil conserva la misma agrupación en un único grupo de
 
 ## Objetivo
 
-[Solicitud] Mostrar “Mantenimientos preventivos” y “Mantenimientos correctivos”
-como dos opciones claramente separadas dentro del área Servicios, conservando
-la navegación existente.
+[Solicitud] Mostrar dos áreas claramente separadas dentro de Servicios. Cada
+área debe tener el título “Mantenimiento” y debajo su opción correspondiente:
+“Preventivo” o “Correctivos”, conservando la navegación existente.
 
 ## Fuera del alcance
 
@@ -47,11 +47,14 @@ la navegación existente.
 ## Requisitos funcionales
 
 1. [Solicitud] El panel de escritorio de Servicios debe conservar la imagen
-   actual de mantenimiento una sola vez y presentar dos áreas diferenciadas:
-   “Mantenimientos preventivos” y “Mantenimientos correctivos”.
-2. [Solicitud] “Mantenimientos preventivos” debe conservar como destino
+   actual de mantenimiento encima de “Preventivo” y presentar dos áreas
+   diferenciadas. Cada área debe tener el título “Mantenimiento” y debajo su
+   opción correspondiente: “Preventivo” o “Correctivos”. Encima de
+   “Correctivos” debe mostrarse la imagen de Medios
+   `https://tecnimontacargas.com/wp-content/uploads/2026/09/Screenshot-2026-09-07-at-10.44.12-AM.png`.
+2. [Solicitud] “Preventivo” debe conservar como destino
    `/mantenimiento/mantenimiento-preventivo/`.
-3. [Solicitud] “Mantenimientos correctivos” debe conservar como destino
+3. [Solicitud] “Correctivos” debe conservar como destino
    `/mantenimiento/mantenimiento-correctivo/`.
 4. [Solicitud] La opción de acceso general a `/mantenimiento/` debe conservarse
    desde el área Servicios.
@@ -87,13 +90,14 @@ la navegación existente.
 ```json
 {
   "desktop": [
-    "Mantenimientos preventivos",
-    "Mantenimientos correctivos"
+    {"title": "Mantenimiento", "link": "Preventivo"},
+    {"title": "Mantenimiento", "link": "Correctivos"}
   ],
   "mobile": [
-    "Mantenimientos preventivos",
-    "Mantenimientos correctivos"
+    {"title": "Mantenimiento", "link": "Preventivo"},
+    {"title": "Mantenimiento", "link": "Correctivos"}
   ],
+  "correctiveImage": "https://tecnimontacargas.com/wp-content/uploads/2026/09/Screenshot-2026-09-07-at-10.44.12-AM.png",
   "existingRoutes": "unchanged"
 }
 ```
@@ -102,8 +106,8 @@ la navegación existente.
 
 - [Inferencia técnica] En móvil, los dos grupos deben apilarse sin forzar una
   fila horizontal ni desbordar el viewport.
-- [Inferencia técnica] La imagen compartida no debe duplicarse ni deformarse
-  como consecuencia de separar los enlaces.
+- [Inferencia técnica] Cada imagen debe permanecer dentro de los límites
+  visuales actuales y no producir overflow ni deformación.
 - [Inferencia técnica] Si los controles del panel dependen de IDs o clases
   actuales, deben conservarse.
 
@@ -117,16 +121,19 @@ la navegación existente.
 
 ## Criterios de aceptación
 
-1. [Solicitud] En escritorio se visualizan por separado “Mantenimientos
-   preventivos” y “Mantenimientos correctivos”.
-2. [Solicitud] Cada título conserva el enlace correcto a su página actual.
-3. [Solicitud] La imagen actual de mantenimiento aparece una sola vez y las
-   demás secciones del mega menú permanecen sin cambios.
-4. [Solicitud] En móvil se visualizan los dos grupos separados y sus enlaces
+1. [Solicitud] En escritorio se visualizan dos áreas; cada una muestra el
+   título “Mantenimiento” y debajo “Preventivo” o “Correctivos”.
+2. [Solicitud] Cada opción inferior conserva el enlace correcto a su página
+   actual.
+3. [Solicitud] La imagen actual de mantenimiento aparece encima de
+   “Preventivo” y la imagen de Medios indicada aparece encima de
+   “Correctivos”.
+4. [Solicitud] Las demás secciones del mega menú permanecen sin cambios.
+5. [Solicitud] En móvil se visualizan los dos grupos separados y sus enlaces
    funcionan sin overflow horizontal.
-5. [Regla: docs/domain/NAVIGATION.md] El panel conserva apertura, cierre,
+6. [Regla: docs/domain/NAVIGATION.md] El panel conserva apertura, cierre,
    navegación por teclado y comportamiento responsive.
-6. [Regla: AGENTS.md] La producción solo se modifica después de backup
+7. [Regla: AGENTS.md] La producción solo se modifica después de backup
    verificable, control de deriva y autorización operativa.
 
 ## Validación
@@ -150,8 +157,9 @@ la navegación existente.
 
 ## Decisiones pendientes
 
-- [Decisión resuelta, 2026-09-07] Se conserva una sola imagen de mantenimiento
-  arriba y se divide debajo el contenido en dos áreas tituladas
-  “Mantenimientos preventivos” y “Mantenimientos correctivos”.
+- [Decisión resuelta, 2026-09-07] Se divide el contenido en dos áreas; cada una
+  muestra el título “Mantenimiento” y debajo “Preventivo” o “Correctivos”. La
+  imagen actual queda encima de “Preventivo” y la imagen de Medios indicada por
+  el usuario queda encima de “Correctivos”.
 - [Decisión resuelta, 2026-09-07] El usuario aprobó este SPEC para implementar el
   cambio.
