@@ -230,34 +230,24 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
     </div>
 
     <div class="tmd-mm-panel" id="tmd-mm-panel-mant">
-      <div class="tmd-mm-inner tmd-mm-grid-3">
-        <div class="tmd-mm-card tmd-mm-card--maintenance">
-          <div class="tmd-mm-maintenance-options">
-            <div class="tmd-mm-maintenance-option">
-              <a
-                class="tmd-mm-img tmd-mm-img--maintenance"
-                href="<?php echo esc_url(home_url('/mantenimiento/')); ?>"
-                aria-label="Mantenimiento preventivo"
-                style="<?php echo esc_attr('background-image: url(\'' . tmd_menu_asset_url('assets/images/mega-menu/menu-maintenance.webp') . '\');'); ?>"
-              ></a>
-              <a class="tmd-mm-title" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>">Mantenimiento</a>
-              <ul class="tmd-mm-items">
-                <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-preventivo/')); ?>">Preventivo</a></li>
-              </ul>
-            </div>
-            <div class="tmd-mm-maintenance-option">
-              <a
-                class="tmd-mm-img tmd-mm-img--maintenance-corrective"
-                href="<?php echo esc_url(home_url('/mantenimiento/')); ?>"
-                aria-label="Mantenimiento correctivo"
-                style="<?php echo esc_attr('background-image: url(\'https://tecnimontacargas.com/wp-content/uploads/2026/09/Screenshot-2026-09-07-at-10.44.12-AM.png\');'); ?>"
-              ></a>
-              <a class="tmd-mm-title" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>">Mantenimiento</a>
-              <ul class="tmd-mm-items">
-                <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-correctivo/')); ?>">Correctivos</a></li>
-              </ul>
-            </div>
-          </div>
+      <div class="tmd-mm-inner tmd-mm-grid-4">
+        <div class="tmd-mm-card">
+          <a class="tmd-mm-img" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>" aria-label="Mantenimiento preventivo">
+            <img src="<?php echo esc_url(tmd_menu_asset_url('assets/images/mega-menu/menu-maintenance.webp')); ?>" alt="" decoding="async">
+          </a>
+          <a class="tmd-mm-title" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>">Mantenimiento</a>
+          <ul class="tmd-mm-items">
+            <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-preventivo/')); ?>">Preventivo</a></li>
+          </ul>
+        </div>
+        <div class="tmd-mm-card">
+          <a class="tmd-mm-img" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>" aria-label="Mantenimiento correctivo">
+            <img src="https://tecnimontacargas.com/wp-content/uploads/2026/09/Screenshot-2026-09-07-at-10.44.12-AM.png" alt="" decoding="async">
+          </a>
+          <a class="tmd-mm-title" href="<?php echo esc_url(home_url('/mantenimiento/')); ?>">Mantenimiento</a>
+          <ul class="tmd-mm-items">
+            <li><a href="<?php echo esc_url(home_url('/mantenimiento/mantenimiento-correctivo/')); ?>">Correctivos</a></li>
+          </ul>
         </div>
       </div>
     </div>

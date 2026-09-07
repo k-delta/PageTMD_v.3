@@ -326,15 +326,9 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
   background-image: url('../images/mega-menu/menu-legal.webp?v=20260901-legal-smile');
 }
 
-.tmd-mm-img--maintenance {
-  background-image: url('../images/mega-menu/menu-maintenance.webp?v=20260816-190000');
-}
-
 .tmd-mm-img--compania,
 .tmd-mm-img--socios-atencion,
-.tmd-mm-img--legal,
-.tmd-mm-img--maintenance,
-.tmd-mm-img--maintenance-corrective {
+.tmd-mm-img--legal {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -353,15 +347,8 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
   background-color: #f0f4fa;
 }
 
-#tmd-mm-panel-nosotros .tmd-mm-img,
-#tmd-mm-panel-mant .tmd-mm-img {
+#tmd-mm-panel-nosotros .tmd-mm-img {
   height: 150px;
-}
-
-#tmd-mm-panel-mant .tmd-mm-maintenance-options {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
 }
 
 .tmd-mm-title {
@@ -571,13 +558,8 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
     height: 72px;
   }
 
-  #tmd-mm-panel-nosotros .tmd-mm-img,
-  #tmd-mm-panel-mant .tmd-mm-img {
+  #tmd-mm-panel-nosotros .tmd-mm-img {
     height: 110px;
-  }
-
-  #tmd-mm-panel-mant .tmd-mm-maintenance-options {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -619,7 +601,8 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
   object-position: center;
 }
 
-#tmd-mm-panel-energia .tmd-mm-img {
+#tmd-mm-panel-energia .tmd-mm-img,
+#tmd-mm-panel-mant .tmd-mm-img {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -632,7 +615,8 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
   overflow: visible;
 }
 
-#tmd-mm-panel-energia .tmd-mm-img img {
+#tmd-mm-panel-energia .tmd-mm-img img,
+#tmd-mm-panel-mant .tmd-mm-img img {
   display: block;
   width: 100%;
   height: 100%;
@@ -650,7 +634,9 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
   }
 
   #tmd-mm-panel-energia .tmd-mm-img,
-  #tmd-mm-panel-energia .tmd-mm-img img {
+  #tmd-mm-panel-energia .tmd-mm-img img,
+  #tmd-mm-panel-mant .tmd-mm-img,
+  #tmd-mm-panel-mant .tmd-mm-img img {
     height: 108px;
     max-height: 108px;
   }
@@ -664,7 +650,9 @@ body.home .tmd-mm-header.tmd-mm-header--hero-overlap .tmd-mm-navbar {
   }
 
   #tmd-mm-panel-energia .tmd-mm-img,
-  #tmd-mm-panel-energia .tmd-mm-img img {
+  #tmd-mm-panel-energia .tmd-mm-img img,
+  #tmd-mm-panel-mant .tmd-mm-img,
+  #tmd-mm-panel-mant .tmd-mm-img img {
     height: 92px;
     max-height: 92px;
   }

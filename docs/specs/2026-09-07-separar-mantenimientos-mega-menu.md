@@ -24,6 +24,10 @@ La navegación móvil conserva la misma agrupación en un único grupo de
 [Solicitud] Los servicios preventivo y correctivo aparecen agrupados bajo un
 único bloque y no se distinguen como dos áreas independientes.
 
+[Solicitud 2026-09-07] La presentación resultante no conserva el estándar
+visual del panel Energía: las imágenes de Servicios quedan dentro de una
+tarjeta anidada, con anchos menores y recortes distintos.
+
 ## Objetivo
 
 [Solicitud] Mostrar dos áreas claramente separadas dentro de Servicios. Cada
@@ -135,6 +139,10 @@ La navegación móvil conserva la misma agrupación en un único grupo de
    navegación por teclado y comportamiento responsive.
 7. [Regla: AGENTS.md] La producción solo se modifica después de backup
    verificable, control de deriva y autorización operativa.
+8. [Solicitud 2026-09-07] Las dos áreas de escritorio deben usar tarjetas
+   hermanas del mismo grid y el mismo patrón de imagen del panel Energía:
+   imagen contenida, sin deformación ni recorte `cover`, con dimensiones
+   equivalentes y comportamiento responsive.
 
 ## Validación
 
