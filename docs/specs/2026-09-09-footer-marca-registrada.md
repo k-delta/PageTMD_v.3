@@ -2,7 +2,7 @@
 
 ## Estado
 
-- Aprobado
+- Terminado
 
 ## Contexto
 
@@ -128,6 +128,29 @@ alterar el resto del footer.
   despliegue del alcance exacto, purga de caché aplicable y verificación HTTP y
   visual en `https://tecnimontacargas.com`.
 
+## Evidencia de cierre
+
+- [Evidencia: producción, 2026-09-09] El workflow `Deploy production` terminó
+  correctamente para `ebe73fdaee842165983f326017ffcd44a8fcb52a` en la ejecución
+  `34396361681`.
+- [Evidencia: producción, 2026-09-09] El backup puntual del footer quedó
+  verificado en `/opt/tecnimontacargas/backups/20260909-footer-marca-registrada/tmd-footer.php`,
+  con hash `095feb255eaccfa6d5c9a4222593f4fc7bcd4d7139fff4dc3f95519f2b859087`
+  y permisos `600`.
+- [Evidencia: producción, 2026-09-09] El checkout productivo quedó limpio en
+  `ebe73fdaee842165983f326017ffcd44a8fcb52a`; el template pasó `php -l` y el
+  host y el contenedor coincidieron con el hash desplegado
+  `93a4dd0b1d931127433ec9e29e80199bd77d63f7c7ed9dff696e79552d876b49`.
+- [Evidencia: producción, 2026-09-09] LiteSpeed confirmó la purga, el sitio
+  respondió HTTP `200`, el aviso `Marca Registrada ®` apareció una vez y
+  `Copyright ©` no apareció en el HTML público comprobado.
+- [Evidencia: sincronización, 2026-09-09] El control posterior no reportó
+  diferencia del footer; el resultado global conserva únicamente diferencias
+  ajenas del snapshot y `.DS_Store` locales, que no fueron sobrescritas.
+- [Límite, 2026-09-09] No se dispuso de navegador conectado para una captura
+  visual automatizada; no se modificaron CSS ni estructura, y se verificaron
+  HTML, HTTP, sintaxis, hashes y estado del contenedor.
+
 ## Riesgos
 
 - [Inferencia técnica] Una caché de página o de objeto podría mantener el
@@ -138,6 +161,6 @@ alterar el resto del footer.
 
 ## Decisiones pendientes
 
-- [Decisión resuelta, 2026-09-09] El usuario aprobó este SPEC y el literal
+- Ninguna. El usuario aprobó este SPEC y el literal
   `Marca Registrada ® 2026 Tecnimontacargas. Todos los derechos reservados.`;
-  el año seguirá siendo dinámico en la implementación.
+  el año sigue siendo dinámico en la implementación.
