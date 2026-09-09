@@ -129,7 +129,7 @@
   <section class="tmd-footer-legal" data-purpose="legal-footer">
     <div class="tmd-footer-container tmd-footer-legal-inner">
       <div class="tmd-footer-copyright">
-        Copyright © <?php echo esc_html(date('Y')); ?> Tecnimontacargas. Todos los derechos reservados.
+        Marca Registrada ® <?php echo esc_html(date('Y')); ?> Tecnimontacargas. Todos los derechos reservados.
       </div>
 
       <nav class="tmd-footer-legal-nav" aria-label="Enlaces legales">
