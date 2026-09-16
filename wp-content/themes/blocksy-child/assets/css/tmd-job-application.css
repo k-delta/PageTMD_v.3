@@ -79,3 +79,105 @@ body.page-id-273 .tmd-jobs-form button[disabled] {
   opacity: .7;
 }
 
+/* Carrusel focalizado de Vacantes disponibles. La regla important vence el
+   estilo inline histórico de tmd-jobs-grid sin afectar otras páginas. */
+body.page-id-273 .tmd-jobs-vacancies .tmd-jobs-grid {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  grid-template-columns: none !important;
+  gap: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body.page-id-273 .tmd-jobs-vacancies .tmd-jobs-grid::-webkit-scrollbar {
+  display: none;
+}
+
+body.page-id-273 .tmd-jobs-vacancies .tmd-jobs-grid > .tmd-job-card {
+  flex: 0 0 100% !important;
+  min-width: 100% !important;
+  width: 100% !important;
+  scroll-snap-align: start;
+}
+
+body.page-id-273 .tmd-jobs-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
+body.page-id-273 .tmd-jobs-carousel-control,
+body.page-id-273 .tmd-jobs-carousel-indicator {
+  min-height: 42px;
+  border: 2px solid #128ceb;
+  border-radius: 8px;
+  background: #fff;
+  color: #128ceb;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+body.page-id-273 .tmd-jobs-carousel-control {
+  padding: 0 16px;
+}
+
+body.page-id-273 .tmd-jobs-carousel-indicators {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+body.page-id-273 .tmd-jobs-carousel-indicator {
+  width: 42px;
+  padding: 0;
+}
+
+body.page-id-273 .tmd-jobs-carousel-control:hover,
+body.page-id-273 .tmd-jobs-carousel-indicator:hover,
+body.page-id-273 .tmd-jobs-carousel-indicator[aria-current="true"] {
+  background: #128ceb;
+  color: #fff;
+}
+
+body.page-id-273 .tmd-jobs-carousel-control:focus-visible,
+body.page-id-273 .tmd-jobs-carousel-indicator:focus-visible,
+body.page-id-273 .tmd-jobs-vacancies .tmd-jobs-grid:focus-visible {
+  outline: 3px solid rgba(255, 195, 60, .9);
+  outline-offset: 3px;
+}
+
+body.page-id-273 .tmd-jobs-carousel-control:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
+body.page-id-273 .tmd-jobs-carousel-status {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.page-id-273 .tmd-jobs-vacancies .tmd-jobs-grid {
+    scroll-behavior: auto;
+  }
+}
