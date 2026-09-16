@@ -318,6 +318,9 @@ if (! defined('WP_CLI') || ! WP_CLI) {
 }
 
 $command_args = isset($args) && is_array($args) ? array_values($args) : [];
+$command_args = array_values(array_filter($command_args, static function ($argument): bool {
+    return '--' !== (string) $argument;
+}));
 if (! in_array($command_args, [[], ['dry-run'], ['execute']], true)) {
     WP_CLI::error('Uso: wp eval-file scripts/update-jobs-vacancies.php -- [dry-run|execute]');
 }

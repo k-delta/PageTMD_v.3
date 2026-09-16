@@ -69,7 +69,7 @@ function clean_post_cache($id): void
 {
 }
 
-$args = ['dry-run'];
+$args = ['--', 'dry-run'];
 require dirname(__DIR__) . '/scripts/update-jobs-vacancies.php';
 
 $messages = implode("\n", TmdJobsVacanciesCliState::$messages);
