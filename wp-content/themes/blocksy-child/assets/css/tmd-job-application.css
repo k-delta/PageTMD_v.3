@@ -82,10 +82,12 @@ body.page-id-273 .tmd-jobs-form button[disabled] {
 /* Carrusel focalizado de Vacantes disponibles. La regla important vence el
    estilo inline histórico de tmd-jobs-grid sin afectar otras páginas. */
 body.page-id-273 .tmd-jobs-vacancies .tmd-jobs-grid {
+  --tmd-jobs-visible: 3;
+  --tmd-jobs-card-width: calc((100% - 40px) / 3);
   display: flex !important;
   flex-wrap: nowrap !important;
   grid-template-columns: none !important;
-  gap: 0 !important;
+  gap: 20px !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
   touch-action: pan-x;
@@ -101,10 +103,11 @@ body.page-id-273 .tmd-jobs-vacancies .tmd-jobs-grid::-webkit-scrollbar {
 }
 
 body.page-id-273 .tmd-jobs-vacancies .tmd-jobs-grid > .tmd-job-card {
-  flex: 0 0 100% !important;
-  min-width: 100% !important;
-  width: 100% !important;
+  flex: 0 0 var(--tmd-jobs-card-width) !important;
+  min-width: var(--tmd-jobs-card-width) !important;
+  width: var(--tmd-jobs-card-width) !important;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 body.page-id-273 .tmd-jobs-carousel-controls {
@@ -179,5 +182,19 @@ body.page-id-273 .tmd-jobs-carousel-status {
 @media (prefers-reduced-motion: reduce) {
   body.page-id-273 .tmd-jobs-vacancies .tmd-jobs-grid {
     scroll-behavior: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  body.page-id-273 .tmd-jobs-vacancies .tmd-jobs-grid {
+    --tmd-jobs-visible: 2;
+    --tmd-jobs-card-width: calc((100% - 20px) / 2);
+  }
+}
+
+@media (max-width: 640px) {
+  body.page-id-273 .tmd-jobs-vacancies .tmd-jobs-grid {
+    --tmd-jobs-visible: 1;
+    --tmd-jobs-card-width: 100%;
   }
 }

@@ -146,13 +146,14 @@ add_filter('the_content', static function ($content) {
     }
 
     $management_filename = 'gerencia.webp';
+    $management_url = 'https://tecnimontacargas.com/wp-content/uploads/2026/09/gerencia.webp';
     $management_image = tmd_jobs_current_media_image($management_filename, 'image/webp', true);
 
     if (! empty($management_image['url'])) {
         $management_pattern = '~(?:https?://[^"\']+)?/wp-content/uploads/[^"\']*/gerencia\.webp(?:\?[^"\']*)?~i';
         $management_updated = preg_replace(
             $management_pattern,
-            esc_url($management_image['url']),
+            esc_url($management_url),
             $updated,
             1
         );

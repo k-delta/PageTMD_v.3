@@ -30,7 +30,7 @@
       }
     }
 
-    if (cards.length < 2 || typeof document.createElement !== 'function') {
+    if (cards.length === 0 || typeof document.createElement !== 'function') {
       return;
     }
 
@@ -76,6 +76,33 @@
     var indicatorButtons = [];
     var currentIndex = 0;
 
+    function visibleCardCount() {
+      var computedStyle = typeof window.getComputedStyle === 'function'
+        ? window.getComputedStyle(grid)
+        : null;
+      var configured = computedStyle && typeof computedStyle.getPropertyValue === 'function'
+        ? parseInt(computedStyle.getPropertyValue('--tmd-jobs-visible'), 10)
+        : 0;
+
+      if (configured > 0) {
+        return Math.min(configured, cards.length);
+      }
+
+      var viewportWidth = Number(window.innerWidth) || Number(grid.clientWidth) || 0;
+      if (viewportWidth <= 640) {
+        return 1;
+      }
+      if (viewportWidth <= 900) {
+        return Math.min(2, cards.length);
+      }
+
+      return Math.min(3, cards.length);
+    }
+
+    function maxStartIndex() {
+      return Math.max(0, cards.length - visibleCardCount());
+    }
+
     function cardLeft(card, index) {
       if (typeof card.offsetLeft === 'number' && ! isNaN(card.offsetLeft)) {
         return card.offsetLeft;
@@ -88,8 +115,9 @@
       var currentLeft = Number(grid.scrollLeft) || 0;
       var closest = 0;
       var closestDistance = Infinity;
+      var lastStartIndex = maxStartIndex();
 
-      cards.forEach(function (card, index) {
+      cards.slice(0, lastStartIndex + 1).forEach(function (card, index) {
         var distance = Math.abs(cardLeft(card, index) - currentLeft);
         if (distance < closestDistance) {
           closest = index;
@@ -101,10 +129,11 @@
     }
 
     function syncControls(index) {
-      currentIndex = Math.max(0, Math.min(index, cards.length - 1));
+      var lastStartIndex = maxStartIndex();
+      currentIndex = Math.max(0, Math.min(index, lastStartIndex));
       previous.disabled = 0 === currentIndex;
-      next.disabled = cards.length - 1 === currentIndex;
-      status.textContent = 'Vacante ' + (currentIndex + 1) + ' de ' + cards.length;
+      next.disabled = lastStartIndex === currentIndex;
+      status.textContent = 'Vista ' + (currentIndex + 1) + ' de ' + (lastStartIndex + 1);
 
       indicatorButtons.forEach(function (indicator, indicatorIndex) {
         if (indicatorIndex === currentIndex) {
@@ -116,7 +145,7 @@
     }
 
     function goTo(index) {
-      var targetIndex = Math.max(0, Math.min(index, cards.length - 1));
+      var targetIndex = Math.max(0, Math.min(index, maxStartIndex()));
       var targetLeft = cardLeft(cards[targetIndex], targetIndex);
       var reduceMotion = window.matchMedia
         && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -137,18 +166,30 @@
       syncControls(targetIndex);
     }
 
-    cards.forEach(function (card, index) {
-      var indicator = document.createElement('button');
-      indicator.type = 'button';
-      indicator.className = 'tmd-jobs-carousel-indicator';
-      indicator.setAttribute('aria-label', 'Mostrar vacante ' + (index + 1));
-      indicator.textContent = String(index + 1);
-      indicator.addEventListener('click', function () {
-        goTo(index);
-      });
-      indicatorButtons.push(indicator);
-      indicators.appendChild(indicator);
-    });
+    function renderIndicators() {
+      while (indicators.children.length > 0) {
+        indicators.removeChild(indicators.children[0]);
+      }
+
+      indicatorButtons = [];
+
+      for (var viewIndex = 0; viewIndex <= maxStartIndex(); viewIndex += 1) {
+        var indicator = document.createElement('button');
+        indicator.type = 'button';
+        indicator.className = 'tmd-jobs-carousel-indicator';
+        indicator.setAttribute('aria-label', 'Mostrar vista de vacantes ' + (viewIndex + 1));
+        indicator.textContent = String(viewIndex + 1);
+        (function (selectedIndex) {
+          indicator.addEventListener('click', function () {
+            goTo(selectedIndex);
+          });
+        }(viewIndex));
+        indicatorButtons.push(indicator);
+        indicators.appendChild(indicator);
+      }
+
+      syncControls(currentIndex);
+    }
 
     previous.addEventListener('click', function () {
       goTo(currentIndex - 1);
@@ -171,11 +212,19 @@
       }
     });
 
+    if (typeof window.addEventListener === 'function') {
+      window.addEventListener('resize', function () {
+        renderIndicators();
+        goTo(Math.min(currentIndex, maxStartIndex()));
+      });
+    }
+
     controls.appendChild(previous);
     controls.appendChild(indicators);
     controls.appendChild(next);
     controls.appendChild(status);
     grid.parentNode.insertBefore(controls, grid.nextSibling || null);
+    renderIndicators();
     syncControls(0);
   }
 
