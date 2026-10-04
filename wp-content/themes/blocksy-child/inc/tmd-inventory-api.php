@@ -758,7 +758,7 @@ add_action('init', function () {
 }, 2000);
 
 add_action('wp_enqueue_scripts', function () {
-    if (! (is_page(49) || is_page(63))) {
+    if (! is_page([49, 63, 'alquiler-montacargas-electricos'])) {
         return;
     }
     $css = get_stylesheet_directory() . '/assets/css/tmd-inventory-api.css';

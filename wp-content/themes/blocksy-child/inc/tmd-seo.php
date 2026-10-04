@@ -152,6 +152,11 @@ add_filter('rank_math/json_ld', static function (array $data): array {
     }
 
     $services = [
+        'alquiler-montacargas-electricos' => [
+            'name' => 'Alquiler de montacargas eléctricos en Colombia',
+            'description' => 'Alquiler nacional de montacargas eléctricos sin operador, por un periodo mínimo de un mes y de acuerdo con la operación del cliente.',
+            'serviceType' => 'Alquiler de montacargas eléctricos',
+        ],
         49 => [
             'name' => 'Alquiler mensual de montacargas en Colombia',
             'description' => 'Alquiler de montacargas sin operador por meses y mediante contratos de largo plazo para empresas en Colombia.',
@@ -175,11 +180,13 @@ add_filter('rank_math/json_ld', static function (array $data): array {
     ];
 
     $page_id = get_queried_object_id();
-    if (!isset($services[$page_id])) {
+    $page = get_post($page_id);
+    $page_slug = $page instanceof WP_Post ? $page->post_name : '';
+    $service = $services[$page_id] ?? $services[$page_slug] ?? null;
+    if (! is_array($service)) {
         return $data;
     }
 
-    $service = $services[$page_id];
     $data['tmd-service'] = [
         '@type' => 'Service',
         '@id' => trailingslashit(get_permalink($page_id)) . '#service',

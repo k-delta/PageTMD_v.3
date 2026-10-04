@@ -195,6 +195,67 @@ sha256sum \
 
 La cabecera debe corresponder a un dump MariaDB y `database.sql` no debe estar vacío. No compartir contenido SQL, contraseñas ni el contenido de `.env.prod` durante la validación.
 
+### Manifiesto para preparar las páginas comerciales
+
+El script `scripts/create-commercial-landing-pages.php` exige un recibo verificable en `BACKUP_MANIFEST.json` para habilitar `execute`. Después de validar el dump, crea el manifiesto con estos campos y valores derivados del respaldo real:
+
+```json
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-04T12:00:00Z",
+  "environment": "production",
+  "backup_type": "full",
+  "verified": true,
+  "database_file": "database.sql",
+  "database_size_bytes": 123456,
+  "database_sha256": "<sha256 real de database.sql>",
+  "sql_format": "mariadb-dump",
+  "sql_header_verified": true,
+  "dump_completion_marker_verified": true,
+  "restore_path": "/opt/tecnimontacargas/backups/pre-git-deploy-.../database.sql",
+  "restore_method": "Restaurar el dump en tmd_db siguiendo este runbook."
+}
+```
+
+El script de preparación vuelve a comprobar el tamaño mínimo de 64 KiB, el hash SHA-256, una cabecera de dump MySQL/MariaDB con `CREATE TABLE`, el marcador `-- Dump completed on`, los permisos privados (`0700` para el directorio y sin permisos para grupo/otros en los archivos), que la ruta esté fuera de `ABSPATH` y que el manifiesto tenga máximo dos horas. El recibo no reemplaza las comprobaciones de `sha256sum -c` ni la ruta de restauración documentada.
+
+Para generarlo inmediatamente después de esas comprobaciones:
+
+```bash
+DB_FILE="$BACKUP/database.sql"
+DB_SIZE="$(stat -c '%s' "$DB_FILE")"
+DB_SHA256="$(sha256sum "$DB_FILE" | awk '{print $1}')"
+CREATED_AT_UTC="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
+test "$DB_SIZE" -ge 65536
+head -c 65536 "$DB_FILE" | grep -Eiq '(MariaDB|MySQL) dump'
+head -c 65536 "$DB_FILE" | grep -Eiq 'CREATE TABLE'
+tail -c 16384 "$DB_FILE" | grep -q -- '-- Dump completed on '
+
+cat > "$BACKUP/BACKUP_MANIFEST.json" <<EOF
+{
+  "schema_version": 1,
+  "created_at_utc": "$CREATED_AT_UTC",
+  "environment": "production",
+  "backup_type": "full",
+  "verified": true,
+  "database_file": "database.sql",
+  "database_size_bytes": $DB_SIZE,
+  "database_sha256": "$DB_SHA256",
+  "sql_format": "mariadb-dump",
+  "sql_header_verified": true,
+  "dump_completion_marker_verified": true,
+  "restore_path": "$DB_FILE",
+  "restore_method": "Importar database.sql con el cliente mariadb dentro de tmd_db siguiendo este runbook."
+}
+EOF
+
+chmod 600 "$BACKUP/BACKUP_MANIFEST.json"
+chmod -R go-rwx "$BACKUP"
+```
+
+Después, repetir `sha256sum` y tamaño del dump y confirmar que `BACKUP_MANIFEST.json` es legible para el usuario que ejecutará WP-CLI dentro del contenedor. No regenerar el recibo si la copia tiene más de dos horas: crear un backup nuevo justo antes de `execute`.
+
 ## Restauración
 
 Antes de restaurar:

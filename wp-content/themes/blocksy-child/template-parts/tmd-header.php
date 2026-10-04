@@ -17,6 +17,13 @@ if (! function_exists('tmd_menu_asset_url')) {
     }
 }
 
+$tmd_commercial_rental_url = function_exists('tmd_commercial_landing_nav_url')
+    ? tmd_commercial_landing_nav_url('alquiler-montacargas-electricos')
+    : '';
+$tmd_commercial_battery_url = function_exists('tmd_commercial_landing_nav_url')
+    ? tmd_commercial_landing_nav_url('baterias-para-montacargas')
+    : '';
+
 $equipos = [
     [
         'title' => 'Estibadores y Apiladores',
@@ -201,6 +208,10 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
         <a class="tmd-mm-footer-link" href="<?php echo esc_url(home_url('/equipos/')); ?>"><i class="ti ti-list-details"></i> Ver catálogo de equipos</a>
         <span class="tmd-mm-footer-sep">|</span>
         <a class="tmd-mm-footer-link" href="<?php echo esc_url(home_url('/encuentra-tu-equipo/')); ?>"><i class="ti ti-adjustments-horizontal"></i> Encuentra tu equipo</a>
+        <?php if ($tmd_commercial_rental_url) : ?>
+          <span class="tmd-mm-footer-sep">|</span>
+          <a class="tmd-mm-footer-link" href="<?php echo esc_url($tmd_commercial_rental_url); ?>">Alquiler de montacargas</a>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -226,6 +237,10 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
 
       <div class="tmd-mm-panel-footer">
         <a class="tmd-mm-footer-link" href="<?php echo esc_url(home_url('/energia/')); ?>"><i class="ti ti-list-details"></i> Ver catálogo de energía</a>
+        <?php if ($tmd_commercial_battery_url) : ?>
+          <span class="tmd-mm-footer-sep">|</span>
+          <a class="tmd-mm-footer-link" href="<?php echo esc_url($tmd_commercial_battery_url); ?>">Baterías para montacargas</a>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -322,6 +337,9 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
             <div class="tmd-mm-mobile-submenu-actions">
               <a href="<?php echo esc_url(home_url('/equipos/')); ?>">Ver catálogo de equipos</a>
               <a href="<?php echo esc_url(home_url('/encuentra-tu-equipo/')); ?>">Encuentra tu equipo</a>
+              <?php if ($tmd_commercial_rental_url) : ?>
+                <a href="<?php echo esc_url($tmd_commercial_rental_url); ?>">Alquiler de montacargas</a>
+              <?php endif; ?>
             </div>
           </div>
         </section>
@@ -354,6 +372,9 @@ $tmd_account_label     = $tmd_account_logged_in ? 'Mi cuenta' : 'Ingresar o regi
             <?php endforeach; ?>
             <div class="tmd-mm-mobile-submenu-actions">
               <a href="<?php echo esc_url(home_url('/energia/')); ?>">Ver catálogo de energía</a>
+              <?php if ($tmd_commercial_battery_url) : ?>
+                <a href="<?php echo esc_url($tmd_commercial_battery_url); ?>">Baterías para montacargas</a>
+              <?php endif; ?>
             </div>
           </div>
         </section>

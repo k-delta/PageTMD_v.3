@@ -2700,6 +2700,9 @@ require_once get_stylesheet_directory() . '/inc/tmd-partnerships.php';
 /* TMD_SEO_INCLUDE */
 require_once get_stylesheet_directory() . '/inc/tmd-seo.php';
 
+/* TMD_COMMERCIAL_LANDING_PAGES_INCLUDE */
+require_once get_stylesheet_directory() . '/inc/tmd-commercial-landing-pages.php';
+
 /* TMD_FORM_ANTISPAM_INCLUDE */
 require_once get_stylesheet_directory() . '/inc/tmd-form-antispam.php';
 
