@@ -249,14 +249,14 @@ function tmd_commercial_landing_form($attributes): string
 
     $setting = $settings[$type];
     $battery_maqueta_class = 'battery-maqueta' === $type ? ' tmd-commercial-landing__form-layout--battery-maqueta' : '';
-    $battery_image = get_stylesheet_directory_uri() . '/assets/img/commercial-landings/baterias-maqueta/formulario-etv214.webp';
+    $battery_image = get_stylesheet_directory_uri() . '/assets/img/commercial-landings/baterias-referencias/formulario-bateria-barbillon.webp';
     ob_start();
     ?>
     <section id="<?php echo esc_attr($setting['id']); ?>" class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--soft tmd-commercial-landing__form-section" aria-labelledby="<?php echo esc_attr($setting['id']); ?>-heading">
       <div class="tmd-commercial-landing__container tmd-commercial-landing__form-layout<?php echo esc_attr($battery_maqueta_class); ?>">
         <?php if ('battery-maqueta' === $type) : ?>
           <figure class="tmd-commercial-landing__form-image">
-            <img src="<?php echo esc_url($battery_image); ?>" alt="Montacargas eléctrico en una bodega" loading="lazy" decoding="async">
+            <img src="<?php echo esc_url($battery_image); ?>" alt="Batería industrial Barbillon para montacargas" loading="lazy" decoding="async">
           </figure>
           <div class="tmd-commercial-landing__form-copy">
             <h2 id="<?php echo esc_attr($setting['id']); ?>-heading"><?php echo esc_html($setting['title']); ?></h2>

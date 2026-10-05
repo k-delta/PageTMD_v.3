@@ -5,6 +5,7 @@
 - Versión base aprobada — 2026-10-04. La instrucción del usuario «implementa el spec» aprueba las rutas y la dirección visual de la primera versión, con posibilidad de ajustar después textos e imágenes.
 - Enmienda DEC-10 aprobada — 2026-10-04. El usuario aprobó la versión escrita del SPEC para los iconos de los tres textos existentes del hero de baterías.
 - Enmienda DEC-11 terminada — 2026-10-05. La solicitud «implementa esta maqueta» y la aclaración «los cambios de este markdown son superiores a los anteriores hechos» autorizaron que `/Users/lauracatalinapreciadoballen/Downloads/02-baterias-maqueta-9-secciones-tecnimontacargas.md` reemplazara la dirección de contenido y diseño anterior de `/baterias-para-montacargas/`. Sustituye para baterías el hero, sus tres apoyos DEC-10, todos los bloques y preguntas frecuentes anteriores, y los requisitos 15–19, 25, 26 y 28 que entren en conflicto. La página de alquiler, la navegación global, los destinos existentes de energía y la capa global del sitio quedaron fuera de esta sustitución.
+- Enmienda DEC-12 aprobada — 2026-10-05. La solicitud del usuario de actualizar las imágenes de `/baterias-para-montacargas/` con `BATERIAS SEGÚN REFERENCIAS/` reemplaza las fotos de montacargas que se asignaron a los bloques de batería en DEC-11. Solo modifica esas referencias visuales y sus textos alternativos; mantiene la estructura, los textos, las imágenes específicas de batería/cargador/BMS y las miniaturas originales de los artículos relacionados.
 
 ### DEC-11 — Maqueta de nueve secciones para baterías
 
@@ -28,6 +29,28 @@
 - Los hashes persistidos verificados son `9659b90817435d63573562befc15d340cd3f91133d85410b5d3e34bae26b9475` para la página y `acc47f51da1372fbb1a00a00ae824960b161c1076e6701c6f4ccdc41ea29477a` para el formulario. CF7 normaliza las propiedades de correo antes de comparar el destino; el guardado por WP-CLI conserva la integración Sendinblue existente sin añadirle propiedades predeterminadas. El callback vuelve a quedar registrado al terminar.
 - La URL canónica respondió HTTP 200 y aparece en `page-sitemap.xml`. El title, la descripción y el canonical de Rank Math se verificaron en el HTML público. Playwright confirmó nueve secciones, seis preguntas cerradas por defecto, los seis campos comerciales, consentimiento y honeypot, dos artículos publicados, CTA de envío `#262E4F` con texto blanco, carga de imágenes, ausencia de overflow horizontal y cero errores de consola en escritorio (1440 px) y móvil (390 px). No se envió el formulario.
 - Se purgó la caché de la página 1559; la primera respuesta fue `MISS` y la siguiente `HIT`. El runtime del tema y sus assets se desplegó en el commit `3921c7d17192bff29b9a81552f3492043326b3ab` (run `37362919071`, éxito). El ejecutor WP-CLI del commit `8fefbb53c6a9d66f51a0327ce2eca7c8fcad9a9a` se transmitió desde el checkout de trabajo mediante `wp eval-file -`; no se copió al directorio público de WordPress. Aunque el run de Actions de ese commit quedó cancelado mientras estaba en cola, el push posterior sincronizó el checkout productivo limpio con `fcde7ff1dad8b5a21139c9c78b0ff0a9f55c9837` (run `37370063056`, éxito). Los commits posteriores al runtime incluyen solo la herramienta, sus pruebas y esta evidencia documental.
+
+### DEC-12 — Fotos de referencia de baterías
+
+[Solicitud del usuario: 2026-10-05] El usuario indica que las imágenes actuales de la página muestran montacargas y solicita actualizarlas usando `BATERIAS SEGÚN REFERENCIAS/`. Copiar cada fuente seleccionada a `wp-content/themes/blocksy-child/assets/img/commercial-landings/baterias-referencias/` como WebP optimizada; conservar intactas las fuentes del catálogo.
+
+[Alcance visual] Reemplazar las siete imágenes de montacargas asignadas a banner, diferencial, ventajas, proceso, dos posiciones de la galería y formulario. Mantener las imágenes de batería, cargador y BMS de las tarjetas de soluciones porque corresponden a cada producto. Mantener las miniaturas originales de artículos relacionados porque pertenecen a esos artículos. No cambiar los textos ni la oferta comercial; ajustar únicamente los textos alternativos de imágenes cuyo contenido cambie.
+
+| Fuente del catálogo | Uso en la página |
+|---|---|
+| `24V-375/7.png` | Banner |
+| `48V-770/5.png` | Diferencial de inventario |
+| `36V-930/6.png` | Ventajas de la batería |
+| `48V-620/4.png` | Proceso de cambio |
+| `48V-920/6.png` | Galería: celdas |
+| `80V-620/5.png` | Galería: batería de tracción |
+| `80V-620/6.png` | Imagen junto al formulario |
+
+[Restricción de contenido] Los voltajes y capacidades legibles en las etiquetas de las fotos no se convierten en afirmaciones de disponibilidad, compatibilidad o inventario en el texto de la página.
+
+### Ejecución y verificación de DEC-12 — 2026-10-05
+
+- Pendiente de actualizar tras el despliegue y la escritura focal de contenido con backup, dry-run, hashes y snapshot verificados.
 
 ## Contexto
 

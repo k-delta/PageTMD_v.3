@@ -34,7 +34,7 @@ if (! defined('ABSPATH') || ! defined('WP_CLI') || ! WP_CLI) {
 }
 
 $mode = trim((string) getenv('TMD_COMMERCIAL_LANDINGS_MODE'));
-if ('update-battery-maqueta' !== $mode) {
+if (! in_array($mode, ['update-battery-maqueta', 'update-battery-reference-images'], true)) {
     require_once __DIR__ . '/commercial-landing-rental-v2.php';
     require_once __DIR__ . '/update-rental-landing-v2.php';
 }
@@ -343,7 +343,7 @@ function tmd_commercial_landing_script_battery_content(string $asset_root, int $
 
     $blocks[] = tmd_commercial_landing_script_block(str_replace('TMD_ASSETS', $asset_root, <<<'HTML'
 <section class="tmd-commercial-landing tmd-commercial-landing__hero tmd-commercial-landing__hero--battery tmd-commercial-landing__hero--battery-maqueta" aria-labelledby="tmd-battery-heading">
-  <div class="tmd-commercial-landing__hero-media"><img src="TMD_ASSETS/commercial-landings/baterias-maqueta/banner-crown-rd-3000.webp" alt="" fetchpriority="high" decoding="async"></div>
+  <div class="tmd-commercial-landing__hero-media"><img src="TMD_ASSETS/commercial-landings/baterias-referencias/banner-bateria-barbillon.webp" alt="" fetchpriority="high" decoding="async"></div>
   <div class="tmd-commercial-landing__hero-content">
     <div class="tmd-commercial-landing__hero-copy">
       <h1 id="tmd-battery-heading">Baterías para montacargas <em>eléctricos</em></h1>
@@ -393,7 +393,7 @@ HTML));
 
     $blocks[] = tmd_commercial_landing_script_block(str_replace('TMD_ASSETS', $asset_root, <<<'HTML'
 <section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--battery-differential" aria-labelledby="tmd-battery-differential-heading">
-  <div class="tmd-commercial-landing__battery-differential-media" aria-hidden="true"><img src="TMD_ASSETS/commercial-landings/baterias-maqueta/diferencial-hyster-e50z-33.webp" alt="" loading="lazy" decoding="async"></div>
+  <div class="tmd-commercial-landing__battery-differential-media" aria-hidden="true"><img src="TMD_ASSETS/commercial-landings/baterias-referencias/diferencial-celdas-barbillon.webp" alt="" loading="lazy" decoding="async"></div>
   <div class="tmd-commercial-landing__container tmd-commercial-landing__battery-differential-copy">
     <h2 id="tmd-battery-differential-heading">Referencias en <em>inventario</em></h2>
     <h3>Referencias en bodega para reemplazar la batería sin esperar un pedido de importación</h3>
@@ -410,7 +410,7 @@ HTML));
         <h2 id="tmd-battery-benefits-heading">Rendimiento de la batería de tracción por turno</h2>
         <h3>Descargas profundas y cargas incompletas acortan la vida de las celdas</h3>
       </div>
-      <img src="TMD_ASSETS/commercial-landings/baterias-maqueta/ventajas-etv214.webp" alt="Montacargas eléctrico trabajando en una bodega" loading="lazy" decoding="async">
+      <img src="TMD_ASSETS/commercial-landings/baterias-referencias/ventajas-bateria-barbillon.webp" alt="Batería industrial de tracción Barbillon" loading="lazy" decoding="async">
     </div>
     <div class="tmd-commercial-landing__battery-benefit-grid">
       <article class="tmd-commercial-landing__battery-benefit">
@@ -432,7 +432,7 @@ HTML));
 
     $blocks[] = tmd_commercial_landing_script_block(str_replace('TMD_ASSETS', $asset_root, <<<'HTML'
 <section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--dark tmd-commercial-landing__section--battery-process" aria-labelledby="tmd-battery-process-heading">
-  <div class="tmd-commercial-landing__battery-process-media" aria-hidden="true"><img src="TMD_ASSETS/commercial-landings/baterias-maqueta/proceso-efg425.webp" alt="" loading="lazy" decoding="async"></div>
+  <div class="tmd-commercial-landing__battery-process-media" aria-hidden="true"><img src="TMD_ASSETS/commercial-landings/baterias-referencias/proceso-cambio-bateria-barbillon.webp" alt="" loading="lazy" decoding="async"></div>
   <div class="tmd-commercial-landing__container">
     <div class="tmd-commercial-landing__section-heading tmd-commercial-landing__section-heading--split">
       <h2 id="tmd-battery-process-heading">Cambio de acumulador paso a paso</h2>
@@ -467,11 +467,11 @@ HTML));
       <h3>Soluciones de energía y montacargas en entornos de trabajo</h3>
     </div>
     <div class="tmd-commercial-landing__battery-gallery">
-      <figure><img src="TMD_ASSETS/commercial-landings/baterias-maqueta/galeria-crown-rd-5200.webp" alt="Montacargas eléctrico de pasillo angosto en bodega" loading="lazy" decoding="async"></figure>
+      <figure><img src="TMD_ASSETS/commercial-landings/baterias-referencias/galeria-bateria-celdas-barbillon.webp" alt="Batería de tracción Barbillon vista desde sus celdas" loading="lazy" decoding="async"></figure>
       <figure><img src="TMD_ASSETS/commercial-landings/baterias-hero.jpeg" alt="Vista de celdas y terminales de una batería de tracción" loading="lazy" decoding="async"></figure>
       <figure><img src="TMD_ASSETS/mega-menu/energy-baterias-plomo.webp" alt="Batería industrial de plomo-ácido con conector" loading="lazy" decoding="async"></figure>
       <figure><img src="TMD_ASSETS/mega-menu/energy-bms.webp" alt="Batería de tracción con monitoreo junto a equipos en bodega" loading="lazy" decoding="async"></figure>
-      <figure><img src="TMD_ASSETS/commercial-landings/baterias-maqueta/galeria-etv325.webp" alt="Montacargas eléctrico para trabajo en pasillo" loading="lazy" decoding="async"></figure>
+      <figure><img src="TMD_ASSETS/commercial-landings/baterias-referencias/galeria-bateria-traccion-barbillon.webp" alt="Batería industrial Barbillon para montacargas" loading="lazy" decoding="async"></figure>
     </div>
   </div>
 </section>
@@ -1153,6 +1153,257 @@ function tmd_commercial_landing_script_run_battery_maqueta_update(bool $execute)
     }
 }
 
+function tmd_commercial_landing_script_battery_reference_image_replacements(): array
+{
+    return [
+        'commercial-landings/baterias-maqueta/banner-crown-rd-3000.webp' => 'commercial-landings/baterias-referencias/banner-bateria-barbillon.webp',
+        'commercial-landings/baterias-maqueta/diferencial-hyster-e50z-33.webp' => 'commercial-landings/baterias-referencias/diferencial-celdas-barbillon.webp',
+        'commercial-landings/baterias-maqueta/ventajas-etv214.webp' => 'commercial-landings/baterias-referencias/ventajas-bateria-barbillon.webp',
+        'alt="Montacargas eléctrico trabajando en una bodega"' => 'alt="Batería industrial de tracción Barbillon"',
+        'commercial-landings/baterias-maqueta/proceso-efg425.webp' => 'commercial-landings/baterias-referencias/proceso-cambio-bateria-barbillon.webp',
+        'commercial-landings/baterias-maqueta/galeria-crown-rd-5200.webp' => 'commercial-landings/baterias-referencias/galeria-bateria-celdas-barbillon.webp',
+        'alt="Montacargas eléctrico de pasillo angosto en bodega"' => 'alt="Batería de tracción Barbillon vista desde sus celdas"',
+        'commercial-landings/baterias-maqueta/galeria-etv325.webp' => 'commercial-landings/baterias-referencias/galeria-bateria-traccion-barbillon.webp',
+        'alt="Montacargas eléctrico para trabajo en pasillo"' => 'alt="Batería industrial Barbillon para montacargas"',
+    ];
+}
+
+function tmd_commercial_landing_script_battery_reference_image_content(string $source, array &$replacement_counts): string
+{
+    $target = $source;
+    $replacement_counts = [];
+    foreach (tmd_commercial_landing_script_battery_reference_image_replacements() as $old => $new) {
+        $count = substr_count($target, $old);
+        if (1 !== $count) {
+            throw new RuntimeException('El destino de imágenes requiere una única coincidencia por referencia; no se actualizó la página.');
+        }
+        $target = str_replace($old, $new, $target);
+        $replacement_counts[$old] = $count;
+    }
+
+    return $target;
+}
+
+function tmd_commercial_landing_script_save_battery_reference_image_snapshot(
+    WP_Post $page,
+    string $page_sha256,
+    string $target_sha256
+): string {
+    $backup_path = realpath((string) getenv('TMD_VERIFIED_BACKUP_PATH'));
+    if (! is_string($backup_path) || ! is_dir($backup_path) || ! is_writable($backup_path)) {
+        throw new RuntimeException('No se pudo guardar el snapshot previo privado de la página 1559.');
+    }
+    $artifact_path = $backup_path . DIRECTORY_SEPARATOR . 'battery-page-1559-before-reference-images.json';
+    $payload = [
+        'page_id' => 1559,
+        'page_slug' => $page->post_name,
+        'page_status' => $page->post_status,
+        'page_sha256' => $page_sha256,
+        'target_sha256' => $target_sha256,
+        'post_content' => $page->post_content,
+    ];
+    $encoded = wp_json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    if (! is_string($encoded)) {
+        throw new RuntimeException('No se pudo serializar el snapshot previo de la página 1559.');
+    }
+
+    $handle = @fopen($artifact_path, 'x');
+    if (! is_resource($handle)) {
+        throw new RuntimeException('El snapshot ya existe o no pudo crearse; no se modificó producción.');
+    }
+    @chmod($artifact_path, 0600);
+    try {
+        $written = fwrite($handle, $encoded);
+        $flushed = fflush($handle);
+        fclose($handle);
+        $handle = null;
+        @chmod($artifact_path, 0600);
+    } catch (Throwable $exception) {
+        is_resource($handle) && fclose($handle);
+        @unlink($artifact_path);
+        throw $exception;
+    }
+
+    $permissions = fileperms($artifact_path);
+    $saved = json_decode((string) file_get_contents($artifact_path), true);
+    if (false === $written
+        || strlen($encoded) !== $written
+        || ! $flushed
+        || false === $permissions
+        || 0600 !== ($permissions & 0777)
+        || ! is_array($saved)
+        || 1559 !== ($saved['page_id'] ?? null)
+        || ! is_string($saved['target_sha256'] ?? null)
+        || ! hash_equals($target_sha256, $saved['target_sha256'])
+        || ! is_string($saved['post_content'] ?? null)
+        || ! hash_equals($page_sha256, hash('sha256', $saved['post_content']))) {
+        @unlink($artifact_path);
+        throw new RuntimeException('El snapshot previo de la página 1559 no pasó su verificación.');
+    }
+
+    return $artifact_path;
+}
+
+function tmd_commercial_landing_script_run_battery_reference_image_update(bool $execute): void
+{
+    $expected_page_sha256 = trim((string) getenv('TMD_BATTERY_REFERENCE_PAGE_EXPECTED_SHA256'));
+    $target_page_sha256 = trim((string) getenv('TMD_BATTERY_REFERENCE_PAGE_TARGET_SHA256'));
+    foreach ([$expected_page_sha256, $target_page_sha256] as $sha256) {
+        if ('' !== $sha256 && ! preg_match('/\A[a-f0-9]{64}\z/', $sha256)) {
+            throw new RuntimeException('La actualización exige hashes SHA-256 válidos para la página 1559.');
+        }
+    }
+    if ($execute && ('' === $expected_page_sha256 || '' === $target_page_sha256)) {
+        throw new RuntimeException('La ejecución exige hashes de origen y destino para la página 1559.');
+    }
+
+    $lock_path = trailingslashit(get_temp_dir()) . 'tmd-commercial-landings-seed.lock';
+    $lock = @fopen($lock_path, 'c');
+    if (! is_resource($lock) || ! flock($lock, LOCK_EX | LOCK_NB)) {
+        is_resource($lock) && fclose($lock);
+        throw new RuntimeException('No se pudo adquirir el bloqueo exclusivo de páginas comerciales.');
+    }
+    @chmod($lock_path, 0600);
+
+    try {
+        clean_post_cache(1559);
+        $page = get_post(1559);
+        if (! $page instanceof WP_Post
+            || 'page' !== $page->post_type
+            || 'baterias-para-montacargas' !== $page->post_name
+            || 'publish' !== $page->post_status) {
+            throw new RuntimeException('La página publicada 1559 no coincide con el slug y estado esperados.');
+        }
+
+        $source_content = (string) $page->post_content;
+        $source_sha256 = hash('sha256', $source_content);
+        $replacement_counts = [];
+        $target_content = tmd_commercial_landing_script_battery_reference_image_content($source_content, $replacement_counts);
+        $computed_target_sha256 = hash('sha256', $target_content);
+        if ('' !== $expected_page_sha256 && ! hash_equals($expected_page_sha256, $source_sha256)) {
+            throw new RuntimeException('El hash actual de la página 1559 no coincide con el origen esperado.');
+        }
+        if ('' !== $target_page_sha256 && ! hash_equals($target_page_sha256, $computed_target_sha256)) {
+            throw new RuntimeException('El hash destino calculado no coincide con el hash aprobado para la página 1559.');
+        }
+
+        WP_CLI::line('Página 1559 /baterias-para-montacargas/: ' . $source_sha256 . ' → ' . $computed_target_sha256 . '.');
+        WP_CLI::line('Reemplazos focales de imágenes y textos alternativos: ' . count($replacement_counts) . '.');
+        if (! $execute) {
+            WP_CLI::success('Dry-run de referencias de batería sin escrituras.');
+            return;
+        }
+        if (! tmd_commercial_landing_script_backup_is_valid()) {
+            throw new RuntimeException('Ejecución detenida: se requiere un backup de producción reciente y verificado.');
+        }
+
+        global $wpdb;
+        $table_engine = $wpdb->get_var($wpdb->prepare(
+            'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s',
+            $wpdb->posts
+        ));
+        if ('INNODB' !== strtoupper((string) $table_engine)) {
+            throw new RuntimeException('La tabla de contenido debe usar InnoDB para proteger el cambio con transacción.');
+        }
+        if (false === $wpdb->query('START TRANSACTION')) {
+            throw new RuntimeException('No se pudo iniciar la transacción para la página 1559.');
+        }
+
+        $transaction_open = true;
+        $committed = false;
+        try {
+            if (true !== tmd_commercial_landing_script_transaction_is_active()) {
+                throw new RuntimeException('La transacción no quedó activa; no se modificó producción.');
+            }
+            $locked_row = $wpdb->get_row($wpdb->prepare(
+                "SELECT ID, post_type, post_name, post_status, post_content FROM {$wpdb->posts} WHERE ID = %d FOR UPDATE",
+                1559
+            ), ARRAY_A);
+            if (! is_array($locked_row)
+                || 'page' !== $locked_row['post_type']
+                || 'baterias-para-montacargas' !== $locked_row['post_name']
+                || 'publish' !== $locked_row['post_status']) {
+                throw new RuntimeException('La página cambió antes del bloqueo; no se modificó producción.');
+            }
+
+            $locked_content = (string) $locked_row['post_content'];
+            $locked_sha256 = hash('sha256', $locked_content);
+            if (! hash_equals($expected_page_sha256, $locked_sha256)) {
+                throw new RuntimeException('La página cambió antes del bloqueo; no se modificó producción.');
+            }
+            $locked_replacement_counts = [];
+            $locked_target_content = tmd_commercial_landing_script_battery_reference_image_content($locked_content, $locked_replacement_counts);
+            $locked_target_sha256 = hash('sha256', $locked_target_content);
+            if (! hash_equals($target_page_sha256, $locked_target_sha256)) {
+                throw new RuntimeException('El destino cambió bajo el bloqueo; no se modificó producción.');
+            }
+
+            clean_post_cache(1559);
+            $locked_page = get_post(1559);
+            if (! $locked_page instanceof WP_Post
+                || ! hash_equals($expected_page_sha256, hash('sha256', (string) $locked_page->post_content))) {
+                throw new RuntimeException('La caché de la página no coincide con la fila bloqueada.');
+            }
+            $snapshot_path = tmd_commercial_landing_script_save_battery_reference_image_snapshot(
+                $locked_page,
+                $locked_sha256,
+                $locked_target_sha256
+            );
+
+            $updated_page_id = wp_update_post([
+                'ID' => 1559,
+                'post_content' => wp_slash($locked_target_content),
+            ], true);
+            clean_post_cache(1559);
+            $updated_page = get_post(1559);
+            if (is_wp_error($updated_page_id)
+                || 1559 !== (int) $updated_page_id
+                || ! $updated_page instanceof WP_Post
+                || ! hash_equals($target_page_sha256, hash('sha256', (string) $updated_page->post_content))) {
+                throw new RuntimeException('No se verificó el guardado de las imágenes en la página 1559.');
+            }
+            if (true !== tmd_commercial_landing_script_transaction_is_active()) {
+                throw new RuntimeException('La transacción terminó antes de confirmar la página 1559.');
+            }
+            if (false === $wpdb->query('COMMIT')) {
+                throw new RuntimeException('No se confirmó la transacción de la página 1559.');
+            }
+            $transaction_open = false;
+            $committed = true;
+            clean_post_cache(1559);
+            $committed_page = get_post(1559);
+            if (! $committed_page instanceof WP_Post
+                || ! hash_equals($target_page_sha256, hash('sha256', (string) $committed_page->post_content))) {
+                throw new RuntimeException('El contenido posterior al COMMIT no coincide con el destino; compara el snapshot antes de reintentar.');
+            }
+
+            WP_CLI::line('Snapshot previo privado: ' . $snapshot_path . '.');
+            WP_CLI::success('Las referencias de batería se actualizaron solo en la página 1559; hash destino verificado.');
+        } catch (Throwable $exception) {
+            if ($transaction_open) {
+                $rollback_result = $wpdb->query('ROLLBACK');
+                $transaction_open = false;
+                clean_post_cache(1559);
+                $rolled_back_page = get_post(1559);
+                if (false !== tmd_commercial_landing_script_transaction_is_active()
+                    || false === $rollback_result
+                    || ! $rolled_back_page instanceof WP_Post
+                    || ! hash_equals($expected_page_sha256, hash('sha256', (string) $rolled_back_page->post_content))) {
+                    WP_CLI::line('ESTADO NO CONFIRMADO: compara la página 1559 con el snapshot privado y el backup verificado antes de reintentar.');
+                } else {
+                    WP_CLI::line('Rollback verificado: la página 1559 conserva el hash de origen.');
+                }
+            } elseif ($committed) {
+                WP_CLI::line('ESTADO INCIERTO: COMMIT realizado; compara la página 1559 con el snapshot privado y el backup verificado.');
+            }
+            throw $exception;
+        }
+    } finally {
+        flock($lock, LOCK_UN);
+        fclose($lock);
+    }
+}
+
 
 function tmd_commercial_landing_script_remove_created(array $page_ids, array $form_ids): array
 {
@@ -1185,6 +1436,14 @@ if ('update-rental-page' === $mode) {
 if ('update-battery-maqueta' === $mode) {
     try {
         tmd_commercial_landing_script_run_battery_maqueta_update('1' === getenv('TMD_COMMERCIAL_LANDINGS_EXECUTE'));
+    } catch (Throwable $exception) {
+        WP_CLI::error($exception->getMessage());
+    }
+    return;
+}
+if ('update-battery-reference-images' === $mode) {
+    try {
+        tmd_commercial_landing_script_run_battery_reference_image_update('1' === getenv('TMD_COMMERCIAL_LANDINGS_EXECUTE'));
     } catch (Throwable $exception) {
         WP_CLI::error($exception->getMessage());
     }
