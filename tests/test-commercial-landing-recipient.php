@@ -217,6 +217,14 @@ function esc_url_raw($value) {
     return $value;
 }
 
+function esc_html($value) {
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
+
+function absint($value) {
+    return abs((int) $value);
+}
+
 function wpcf7_save_contact_form($data, $context = 'save') {
     ++WP_CLI::$save_calls;
     return false;
@@ -349,11 +357,14 @@ tmd_commercial_landing_recipient_assert(
 );
 
 $rental_content = tmd_commercial_landing_script_page_content('rental', 1556);
-$hero_heading_position = strpos($rental_content, '<h1 id="tmd-rental-heading">');
+$hero_heading_position = strpos($rental_content, '<h1 id="tmd-rental-v2-heading">');
 $hero_start = false === $hero_heading_position
     ? false
-    : strrpos(substr($rental_content, 0, $hero_heading_position), '<section class="tmd-commercial-landing tmd-commercial-landing__hero tmd-commercial-landing__hero--rental');
+    : strrpos(substr($rental_content, 0, $hero_heading_position), '<section class="tmd-rental-v2-section tmd-rental-v2__hero"');
 $hero_end = false === $hero_heading_position ? false : strpos($rental_content, '</section>', $hero_heading_position);
+$rental_hero = false === $hero_start || false === $hero_end
+    ? ''
+    : substr($rental_content, $hero_start, $hero_end - $hero_start);
 $hero_block_start = false === $hero_heading_position
     ? false
     : strrpos(substr($rental_content, 0, $hero_heading_position), '<!-- wp:html -->');
@@ -361,8 +372,8 @@ $hero_block_end = false === $hero_heading_position
     ? false
     : strpos($rental_content, '<!-- /wp:html -->', $hero_heading_position);
 tmd_commercial_landing_recipient_assert(
-    false !== strpos($rental_content, 'Alquiler de <em>montacargas eléctricos</em>'),
-    'El hero de alquiler debe mantener el título de la referencia como HTML editable.'
+    false !== strpos($rental_content, 'Venta o alquiler de montacargas <span>eléctricos</span>'),
+    'El hero debe mantener el H1 exacto de la maqueta vigente como HTML editable.'
 );
 tmd_commercial_landing_recipient_assert(
     false !== $hero_start
@@ -386,262 +397,110 @@ tmd_commercial_landing_recipient_assert(
     'El hero debe incluir el texto de apoyo aprobado en la referencia.'
 );
 tmd_commercial_landing_recipient_assert(
-    false !== strpos($rental_content, 'href="#formulario-montacargas">Solicitar cotización</a>'),
-    'El CTA de cotización debe conservar su destino al formulario.'
+    '' !== $rental_hero
+        && false === strpos($rental_hero, 'Solicitar cotización')
+        && false === strpos($rental_hero, 'href='),
+    'El hero vigente no debe tener CTA ni enlaces.'
 );
 tmd_commercial_landing_recipient_assert(
-    false !== strpos($rental_content, 'Alquiler mínimo de 1 mes')
-        && false !== strpos($rental_content, 'Cobertura en Colombia')
-        && false !== strpos($rental_content, 'Alquiler sin operador'),
-    'El rediseño debe conservar las condiciones comerciales prioritarias del alquiler.'
+    false !== strpos($rental_content, '120 equipos en flota propia')
+        && false !== strpos($rental_content, 'Desde el año 2000 en servicio técnico')
+        && false !== strpos($rental_content, '15 días de alquiler mínimo')
+        && false !== strpos($rental_content, 'Yale, Crown, Clark, Jungheinrich y Hyster en la flota disponible')
+        && false === strpos($rental_content, 'Alquiler mínimo de 1 mes'),
+    'El contenido de flota y alquiler debe seguir la maqueta vigente.'
 );
 tmd_commercial_landing_recipient_assert(
     false === strpos($rental_content, 'tmd-commercial-landing__stats')
         && false === strpos($rental_content, 'tmd-commercial-landing__brand-note')
-        && false === strpos($rental_content, '<strong>120</strong>')
-        && false === strpos($rental_content, 'Desde 2000')
-        && false === strpos($rental_content, 'Experiencia con equipos Yale, Crown, Clark, Jungheinrich y Hyster.'),
-    'La página no debe incluir la franja de cifras ni la nota de marcas que el usuario pidió retirar.'
+        && false === strpos($rental_content, 'tmd-commercial-landing__brand-note'),
+    'La página no debe incluir módulos heredados de la landing anterior.'
 );
 tmd_commercial_landing_recipient_assert(
-    false === strpos($rental_content, 'Alquiler y venta de <em>montacargas eléctricos</em>'),
+    false === strpos($rental_content, '<h1 id="tmd-rental-heading">'),
     'El seed no debe conservar el titular anterior del hero de alquiler.'
 );
 
-$old_eyebrow = '<span class="tmd-commercial-landing__eyebrow">Soluciones para Colombia</span>';
-$old_heading = '<h1 id="tmd-rental-heading">Alquiler y venta de <em>montacargas eléctricos</em></h1>';
-$old_lead = '<p class="tmd-commercial-landing__hero-lead">Equipos para centros de distribución, bodegas y plantas. Cuéntanos sobre tu operación y recibe asesoría para elegir una alternativa adecuada.</p>';
-$outside_copy = '<p>Referencia previa conservada: ' . $old_heading . '</p>';
-$legacy_hero = '<!-- wp:html --><section class="tmd-commercial-landing tmd-commercial-landing__hero tmd-commercial-landing__hero--rental">'
-    . $old_eyebrow . $old_heading . $old_lead
-    . '<a href="#formulario-montacargas">Solicitar cotización</a>'
-    . '<span>Alquiler mínimo de 1 mes</span><span>Cobertura en Colombia</span><span>Alquiler sin operador</span>'
-    . '</section>' . $outside_copy . '<!-- /wp:html -->';
-$hero_update = tmd_commercial_landing_script_rental_hero_update_plan($legacy_hero);
-tmd_commercial_landing_recipient_assert(
-    hash('sha256', $legacy_hero) === $hero_update['before_sha256']
-        && hash('sha256', $hero_update['content']) === $hero_update['target_sha256']
-        && false !== strpos($hero_update['content'], $outside_copy),
-    'El actualizador debe calcular hashes consistentes y preservar el resto del contenido.'
-);
-tmd_commercial_landing_recipient_assert(
-    false === strpos($hero_update['content'], $old_eyebrow)
-        && false !== strpos($hero_update['content'], 'Alquiler de <em>montacargas eléctricos</em>')
-        && false !== strpos($hero_update['content'], 'Equipos propios con mantenimiento en nuestro taller técnico')
-        && 1 === substr_count($hero_update['content'], $old_heading),
-    'El plan debe aplicar solo la composición nueva del hero.'
-);
-
-$duplicate_hero_rejected = false;
-try {
-    tmd_commercial_landing_script_rental_hero_update_plan($legacy_hero . $legacy_hero);
-} catch (RuntimeException $exception) {
-    $duplicate_hero_rejected = true;
+$block_markers = [
+    'tmd-rental-v2__hero',
+    'tmd-rental-v2__description',
+    'tmd-rental-v2__needs',
+    'tmd-rental-v2__buy',
+    'type="equipment" variant="rental-v2"',
+    'tmd-rental-v2__process',
+    'tmd-rental-v2__sectors',
+    'tmd-rental-v2__uses',
+    'tmd-rental-v2__support',
+    'tmd-rental-v2__quote',
+    'tmd-rental-v2__faq',
+    'tmd_commercial_landing_related_section topic="montacargas" variant="rental-v2"',
+];
+$previous_position = -1;
+foreach ($block_markers as $marker) {
+    $position = strpos($rental_content, $marker);
+    tmd_commercial_landing_recipient_assert(
+        false !== $position && $position > $previous_position,
+        'Los doce bloques visuales de alquiler deben aparecer una sola vez y en el orden de la maqueta.'
+    );
+    $previous_position = $position;
 }
 tmd_commercial_landing_recipient_assert(
-    $duplicate_hero_rejected,
-    'El actualizador debe detenerse si el contenido no contiene un único hero esperado.'
+    1 === preg_match_all('/<h1\\b/i', $rental_content)
+        && 6 === preg_match_all('/<details\\b/i', $rental_content),
+    'La landing debe contener un H1 y las seis preguntas frecuentes aprobadas.'
 );
-
-$heading_in_hero_position = strpos($legacy_hero, $old_heading);
-$old_heading_only_outside_hero = substr_replace(
-    $legacy_hero,
-    '<h1 id="unexpected-heading">Texto distinto</h1>',
-    $heading_in_hero_position,
-    strlen($old_heading)
-);
-$old_heading_outside_rejected = false;
-try {
-    tmd_commercial_landing_script_rental_hero_update_plan($old_heading_only_outside_hero);
-} catch (RuntimeException $exception) {
-    $old_heading_outside_rejected = true;
-}
 tmd_commercial_landing_recipient_assert(
-    $old_heading_outside_rejected,
-    'Un texto anterior fuera del hero no debe servir para completar un hero incompleto.'
+    1 === substr_count($rental_content, '[contact-form-7 id="1556"]')
+        && 1 === substr_count($rental_content, '[tmd_commercial_landing_related_section'),
+    'Formulario y blog deben permanecer como shortcodes dinámicos del sistema.'
 );
 
-$GLOBALS['tmd_test_wp_page'] = new WP_Post(
-    1558,
-    'Alquiler de montacargas eléctricos',
-    'page',
-    'alquiler-montacargas-electricos',
-    $legacy_hero
+$form_markup = tmd_commercial_landing_rental_v2_form_markup();
+tmd_commercial_landing_recipient_assert(
+    5 === preg_match_all('/\\[(?:text\\*?|textarea\\*?)\\s+(?:nombre_cargo|empresa_ciudad|contacto|necesidad|requerimientos)\\b[^\\]]*\\]/', $form_markup)
+        && 4 === preg_match_all('/\\[(?:text\\*)\\s+[a-z_]+/', $form_markup)
+        && false !== strpos($form_markup, '[textarea requerimientos]')
+        && false !== strpos($form_markup, 'tmd_website tabindex:-1 autocomplete:off')
+        && false !== strpos($form_markup, 'politica-de-privacidad')
+        && false === strpos($form_markup, '[acceptance'),
+    'El formulario debe mantener cinco controles, obligatoriedad existente, honeypot, privacidad y sin checkbox de aceptación.'
 );
-$before_update_calls = $GLOBALS['tmd_test_wp_update_calls'];
-putenv('TMD_VERIFIED_BACKUP_PATH=' . $temp_dir);
-$rollback_artifact_path = tmd_commercial_landing_script_save_rental_hero_rollback_artifact(
-    [
-        'ID' => 1558,
-        'post_type' => 'page',
-        'post_name' => 'alquiler-montacargas-electricos',
-        'post_status' => 'publish',
-        'post_content' => $legacy_hero,
+$current_form_properties = [
+    'form' => '[text tmd_website tabindex:-1 autocomplete:off]',
+    'mail' => [
+        'recipient' => 'cotizaciones@example.test',
+        'subject' => 'Asunto que debe conservarse',
+        'additional_headers' => 'Reply-To: contacto@example.test',
+        'body' => 'Cuerpo anterior',
     ],
-    hash('sha256', $legacy_hero)
-);
-$rollback_artifact = json_decode((string) file_get_contents($rollback_artifact_path), true);
-$rollback_artifact_permissions = fileperms($rollback_artifact_path);
-tmd_commercial_landing_recipient_assert(
-    is_array($rollback_artifact)
-        && 1558 === ($rollback_artifact['post_id'] ?? null)
-        && hash('sha256', $legacy_hero) === ($rollback_artifact['content_sha256'] ?? '')
-        && $legacy_hero === ($rollback_artifact['post_content'] ?? null)
-        && false !== $rollback_artifact_permissions
-        && 0600 === ($rollback_artifact_permissions & 0777),
-    'El artefacto de restauración debe guardar y verificar el contenido con permisos privados.'
-);
-putenv('TMD_COMMERCIAL_LANDINGS_EXECUTE=1');
-putenv('TMD_COMMERCIAL_LANDING_HERO_EXPECTED_SHA256=' . str_repeat('0', 64));
-putenv('TMD_COMMERCIAL_LANDING_HERO_TARGET_SHA256=' . $hero_update['target_sha256']);
-$stale_content_rejected = false;
-$stale_content_message = '';
-try {
-    tmd_commercial_landing_script_run_rental_hero_update(true);
-} catch (RuntimeException $exception) {
-    $stale_content_rejected = true;
-    $stale_content_message = $exception->getMessage();
-}
-tmd_commercial_landing_recipient_assert(
-    $stale_content_rejected
-        && false !== strpos($stale_content_message, 'cambió desde la revisión')
-        && $before_update_calls === $GLOBALS['tmd_test_wp_update_calls'],
-    'Un hash actual desactualizado debe detener la actualización antes de wp_update_post().'
-);
-
-putenv('TMD_COMMERCIAL_LANDING_HERO_EXPECTED_SHA256=' . $hero_update['before_sha256']);
-putenv('TMD_COMMERCIAL_LANDING_HERO_TARGET_SHA256=' . str_repeat('0', 64));
-$wrong_target_rejected = false;
-$wrong_target_message = '';
-try {
-    tmd_commercial_landing_script_run_rental_hero_update(true);
-} catch (RuntimeException $exception) {
-    $wrong_target_rejected = true;
-    $wrong_target_message = $exception->getMessage();
-}
-tmd_commercial_landing_recipient_assert(
-    $wrong_target_rejected
-        && false !== strpos($wrong_target_message, 'no coincide con el hash aprobado')
-        && $before_update_calls === $GLOBALS['tmd_test_wp_update_calls'],
-    'Un hash objetivo incorrecto debe detener la actualización antes de wp_update_post().'
-);
-
-$backup_dir = $temp_dir . '/verified-backup';
-mkdir($backup_dir, 0700);
-$database_path = $backup_dir . '/database.sql';
-$database_dump = "-- MariaDB dump\nCREATE TABLE wp_posts (ID BIGINT);\n"
-    . str_repeat("-- fixture row\n", 5000)
-    . '-- Dump completed on ' . gmdate('D M j H:i:s Y') . "\n";
-file_put_contents($database_path, $database_dump);
-chmod($database_path, 0600);
-$backup_manifest = [
-    'schema_version' => 1,
-    'environment' => 'production',
-    'backup_type' => 'full',
-    'verified' => true,
-    'database_file' => 'database.sql',
-    'sql_format' => 'mariadb-dump',
-    'sql_header_verified' => true,
-    'dump_completion_marker_verified' => true,
-    'created_at_utc' => gmdate('c'),
-    'restore_path' => $backup_dir . '/database.sql',
-    'restore_method' => 'fixture-only MariaDB restore procedure',
-    'database_size_bytes' => filesize($database_path),
-    'database_sha256' => hash_file('sha256', $database_path),
+    'mail_2' => ['active' => true, 'recipient' => 'copia@example.test'],
+    'messages' => ['mail_sent_ok' => 'Recibimos tu solicitud.'],
+    'additional_settings' => 'demo_setting: yes',
 ];
-$manifest_path = $backup_dir . '/BACKUP_MANIFEST.json';
-file_put_contents($manifest_path, json_encode($backup_manifest, JSON_UNESCAPED_SLASHES));
-chmod($manifest_path, 0600);
-putenv('TMD_VERIFIED_BACKUP_PATH=' . $backup_dir);
+$target_form_properties = tmd_commercial_landing_rental_v2_target_form_properties($current_form_properties);
 tmd_commercial_landing_recipient_assert(
-    tmd_commercial_landing_script_backup_is_valid(),
-    'El fixture debe cumplir los mismos controles de integridad del backup que exige el actualizador.'
+    $form_markup === $target_form_properties['form']
+        && 'cotizaciones@example.test' === $target_form_properties['mail']['recipient']
+        && 'Asunto que debe conservarse' === $target_form_properties['mail']['subject']
+        && 'Reply-To: contacto@example.test' === $target_form_properties['mail']['additional_headers']
+        && $current_form_properties['mail_2'] === $target_form_properties['mail_2']
+        && $current_form_properties['messages'] === $target_form_properties['messages']
+        && $current_form_properties['additional_settings'] === $target_form_properties['additional_settings']
+        && false !== strpos($target_form_properties['mail']['body'], '[nombre_cargo]')
+        && false !== strpos($target_form_properties['mail']['body'], '[requerimientos]'),
+    'El mapeo del correo debe cambiar solo el cuerpo y conservar destinatario, cabeceras y opciones del formulario.'
 );
 
-$initial_page_row = [
-    'ID' => 1558,
-    'post_title' => 'Título actualizado durante una edición concurrente',
-    'post_type' => 'page',
-    'post_name' => 'alquiler-montacargas-electricos',
-    'post_status' => 'publish',
-    'post_content' => $legacy_hero,
-];
-$GLOBALS['wpdb'] = new TMD_Test_WPDB();
-$GLOBALS['wpdb']->row = $initial_page_row;
-$GLOBALS['tmd_test_wpdb_locked_row_override'] = $initial_page_row;
-$GLOBALS['tmd_test_wpdb_locked_row_override']['post_content'] .= '<p>Edición concurrente</p>';
-putenv('TMD_COMMERCIAL_LANDING_HERO_EXPECTED_SHA256=' . $hero_update['before_sha256']);
-putenv('TMD_COMMERCIAL_LANDING_HERO_TARGET_SHA256=' . $hero_update['target_sha256']);
-$concurrent_change_rejected = false;
-$concurrent_change_message = '';
-try {
-    tmd_commercial_landing_script_run_rental_hero_update(true);
-} catch (RuntimeException $exception) {
-    $concurrent_change_rejected = true;
-    $concurrent_change_message = $exception->getMessage();
-}
+$rental_css = file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/css/tmd-commercial-landing-rental-v2.css');
 tmd_commercial_landing_recipient_assert(
-    $concurrent_change_rejected
-        && false !== strpos($concurrent_change_message, 'cambió antes de obtener el bloqueo')
-        && $before_update_calls === $GLOBALS['tmd_test_wp_update_calls']
-        && false === $GLOBALS['wpdb']->in_transaction,
-    'Una diferencia encontrada en la fila bloqueada debe revertir la transacción sin guardar.'
+    is_string($rental_css)
+        && (bool) preg_match(
+            '/tmd-rental-v2__inventory-link a\\s*\\{[^}]*background:\\s*#0d70bd;[^}]*color:\\s*#fff;/is',
+            $rental_css
+        ),
+    'El botón de inventario debe conservar la variante azul con contraste AA aprobada para la maqueta.'
 );
-
-unset($GLOBALS['tmd_test_wpdb_locked_row_override']);
-$GLOBALS['wpdb']->row = $initial_page_row;
-$GLOBALS['tmd_test_wp_update_content_override'] = '<p>Resultado inesperado</p>';
-$before_failed_update_calls = $GLOBALS['tmd_test_wp_update_calls'];
-$failed_update_rejected = false;
-$failed_update_message = '';
-try {
-    tmd_commercial_landing_script_run_rental_hero_update(true);
-} catch (RuntimeException $exception) {
-    $failed_update_rejected = true;
-    $failed_update_message = $exception->getMessage();
-}
-$last_wpdb_query = end($GLOBALS['wpdb']->queries);
-tmd_commercial_landing_recipient_assert(
-    $failed_update_rejected
-        && false !== strpos($failed_update_message, 'transacción se revirtió')
-        && $before_failed_update_calls + 1 === $GLOBALS['tmd_test_wp_update_calls']
-        && 'ROLLBACK' === $last_wpdb_query
-        && false === $GLOBALS['wpdb']->in_transaction
-        && $legacy_hero === $GLOBALS['wpdb']->row['post_content']
-        && $legacy_hero === $GLOBALS['tmd_test_wp_page']->post_content,
-    'Si la escritura produce contenido inesperado, debe revertir la transacción y verificar el original.'
-);
-unset($GLOBALS['tmd_test_wp_update_content_override']);
-unlink($backup_dir . '/page-1558-content-before-hero-update.json');
-
-$GLOBALS['tmd_test_wp_page'] = new WP_Post(
-    1558,
-    'Título de caché desactualizado',
-    'page',
-    'alquiler-montacargas-electricos',
-    $legacy_hero
-);
-$GLOBALS['wpdb']->row = $initial_page_row;
-$clean_cache_calls_before_success = $GLOBALS['tmd_test_clean_post_cache_calls'];
-$before_successful_update_calls = $GLOBALS['tmd_test_wp_update_calls'];
-tmd_commercial_landing_script_run_rental_hero_update(true);
-$last_wpdb_query = end($GLOBALS['wpdb']->queries);
-tmd_commercial_landing_recipient_assert(
-    $before_successful_update_calls + 1 === $GLOBALS['tmd_test_wp_update_calls']
-        && false === $GLOBALS['wpdb']->in_transaction
-        && 'COMMIT' === $last_wpdb_query
-        && $initial_page_row['post_title'] === $GLOBALS['tmd_test_wp_page']->post_title
-        && $clean_cache_calls_before_success < $GLOBALS['tmd_test_clean_post_cache_calls']
-        && hash('sha256', $hero_update['content']) === hash('sha256', $GLOBALS['tmd_test_wp_page']->post_content)
-        && hash('sha256', $hero_update['content']) === hash('sha256', $GLOBALS['wpdb']->row['post_content']),
-    'La ejecución autorizada debe actualizar la fila bloqueada, confirmar la transacción y verificar el contenido.'
-);
-
-putenv('TMD_VERIFIED_BACKUP_PATH');
-putenv('TMD_COMMERCIAL_LANDING_HERO_EXPECTED_SHA256');
-putenv('TMD_COMMERCIAL_LANDING_HERO_TARGET_SHA256');
-putenv('TMD_COMMERCIAL_LANDINGS_EXECUTE');
 
 putenv('TMD_COMMERCIAL_LANDINGS_RECIPIENT');
 
-echo "OK: destinatario, hero editable y plan de actualización acotado.\n";
+echo "OK: destinatario, doce bloques, formulario CF7 y contraste del CTA.\n";

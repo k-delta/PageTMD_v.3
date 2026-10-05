@@ -11,17 +11,21 @@
  *   TMD_VERIFIED_BACKUP_PATH=/ruta/backup-validado \
  *   wp eval-file scripts/create-commercial-landing-pages.php
  *
- * Actualización acotada del hero publicado (dry-run por defecto):
- *   TMD_COMMERCIAL_LANDINGS_MODE=update-rental-hero \
- *   TMD_COMMERCIAL_LANDING_HERO_EXPECTED_SHA256=<hash-actual> \
- *   TMD_COMMERCIAL_LANDING_HERO_TARGET_SHA256=<hash-objetivo> \
+ * Actualización acotada de la landing publicada (dry-run por defecto):
+ *   TMD_COMMERCIAL_LANDINGS_MODE=update-rental-page \
+ *   TMD_RENTAL_V2_EXPECTED_PAGE_SHA256=<hash-actual> \
+ *   TMD_RENTAL_V2_TARGET_PAGE_SHA256=<hash-objetivo> \
  *   wp eval-file scripts/create-commercial-landing-pages.php
+ * Pasar también los hashes CF7/meta exigidos por update-rental-landing-v2.php.
  * Para escribir, añadir TMD_COMMERCIAL_LANDINGS_EXECUTE=1 y un backup verificado.
  */
 
 if (! defined('ABSPATH') || ! defined('WP_CLI') || ! WP_CLI) {
     return;
 }
+
+require_once __DIR__ . '/commercial-landing-rental-v2.php';
+require_once __DIR__ . '/update-rental-landing-v2.php';
 
 function tmd_commercial_landing_script_block(string $markup): string
 {
@@ -35,6 +39,10 @@ function tmd_commercial_landing_script_shortcode(string $shortcode): string
 
 function tmd_commercial_landing_script_form_markup(string $type): string
 {
+    if ('rental' === $type) {
+        return tmd_commercial_landing_rental_v2_form_markup();
+    }
+
     $privacy_url = esc_url(home_url('/nosotros/legal/politica-de-privacidad/'));
     $honeypot = '<div class="tmd-landing-form__honeypot" aria-hidden="true">'
         . '<label>Dejar este campo vacío [text tmd_website tabindex:-1 autocomplete:off]</label>'
@@ -103,8 +111,7 @@ function tmd_commercial_landing_script_form_specs(string $recipient, string $loc
                 'body' => "Solicitud de cotización de montacargas\n\n"
                     . "Nombre: [nombre]\nCargo: [cargo]\nEmpresa: [empresa]\nCiudad: [ciudad]\n"
                     . "Correo o celular: [contacto]\nNecesidad: [necesidad]\n"
-                    . "Peso de carga: [peso_carga]\nAltura de levante: [altura_levante]\n"
-                    . "Ancho de pasillo: [ancho_pasillo]\n",
+                    . "Requerimientos de carga, altura y pasillo: [requerimientos]\n",
             ]),
             'mail_2' => $secondary_mail,
         ],
@@ -150,157 +157,7 @@ function tmd_commercial_landing_script_page_content(string $type, int $form_id):
     $blocks = [];
 
     if ('rental' === $type) {
-        $blocks[] = tmd_commercial_landing_script_block(str_replace('TMD_ASSETS', $asset_root, <<<'HTML'
-<section class="tmd-commercial-landing tmd-commercial-landing__hero tmd-commercial-landing__hero--rental" aria-labelledby="tmd-rental-heading">
-  <div class="tmd-commercial-landing__hero-media"><img src="TMD_ASSETS/commercial-landings/alquiler-hero.jpeg" alt="" fetchpriority="high" decoding="async"></div>
-  <div class="tmd-commercial-landing__hero-content">
-    <div class="tmd-commercial-landing__hero-copy">
-      <h1 id="tmd-rental-heading">Alquiler de <em>montacargas eléctricos</em></h1>
-      <p class="tmd-commercial-landing__hero-subhead">Equipos propios con mantenimiento en nuestro taller técnico</p>
-      <p class="tmd-commercial-landing__hero-lead">Contrabalanceados, reach, pantógrafos y apiladores para bodegas, centros de distribución y plantas que necesitan más equipos en operación sin comprarlos.</p>
-      <a class="tmd-commercial-landing__button" href="#formulario-montacargas">Solicitar cotización</a>
-      <div class="tmd-commercial-landing__hero-meta">
-        <span>Alquiler mínimo de 1 mes</span>
-        <span>Cobertura en Colombia</span>
-        <span>Alquiler sin operador</span>
-      </div>
-    </div>
-  </div>
-</section>
-HTML));
-
-        $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
-<section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--soft" aria-labelledby="tmd-rental-needs-heading">
-  <div class="tmd-commercial-landing__container">
-    <div class="tmd-commercial-landing__section-heading">
-      <span class="tmd-commercial-landing__eyebrow">Según tu operación</span>
-      <h2 id="tmd-rental-needs-heading">Un equipo para cada reto de bodega</h2>
-      <p>La elección depende de la carga, la altura de trabajo y el espacio disponible.</p>
-    </div>
-    <div class="tmd-commercial-landing__card-grid tmd-commercial-landing__card-grid--four">
-      <article class="tmd-commercial-landing__card"><span class="tmd-commercial-landing__number">01</span><h3>Muelle de carga</h3><p>Montacargas contrabalanceados eléctricos para mover carga entre el muelle y la zona de almacenamiento.</p></article>
-      <article class="tmd-commercial-landing__card"><span class="tmd-commercial-landing__number">02</span><h3>Pasillos angostos</h3><p>Equipos retráctiles para operaciones que requieren aprovechar el espacio vertical de la bodega.</p></article>
-      <article class="tmd-commercial-landing__card"><span class="tmd-commercial-landing__number">03</span><h3>Almacenamiento a doble profundidad</h3><p>Soluciones con pantógrafo sencillo o de doble profundidad, según el sistema de almacenamiento.</p></article>
-      <article class="tmd-commercial-landing__card"><span class="tmd-commercial-landing__number">04</span><h3>Traslado a nivel de piso</h3><p>Estibadores y apiladores eléctricos para el movimiento y posicionamiento de mercancía.</p></article>
-    </div>
-  </div>
-</section>
-HTML);
-
-        $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
-<section class="tmd-commercial-landing tmd-commercial-landing__section" aria-labelledby="tmd-rental-buy-heading">
-  <div class="tmd-commercial-landing__container tmd-commercial-landing__split">
-    <div>
-      <span class="tmd-commercial-landing__eyebrow">Una decisión para tu operación</span>
-      <h2 id="tmd-rental-buy-heading">¿Alquilar o comprar?</h2>
-      <p>Revisamos el uso esperado, la duración y las condiciones de la bodega para orientar una cotización. El alquiler comienza en un periodo mínimo de un mes.</p>
-    </div>
-    <ul class="tmd-commercial-landing__benefit-list">
-      <li><strong>Alquila</strong> cuando necesitas capacidad adicional por un periodo definido o mientras reorganizas tu operación.</li>
-      <li><strong>Compra</strong> un equipo usado cuando buscas incorporarlo a tu operación y su disponibilidad esté confirmada.</li>
-      <li><strong>Compara con asesoría</strong> el tipo de equipo, la carga, la altura y el ancho de pasillo antes de decidir.</li>
-    </ul>
-  </div>
-</section>
-HTML);
-
-        $blocks[] = tmd_commercial_landing_script_shortcode('[tmd_commercial_landing_inventory type="equipment"]');
-
-        $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
-<section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--soft" aria-labelledby="tmd-rental-process-heading">
-  <div class="tmd-commercial-landing__container">
-    <div class="tmd-commercial-landing__section-heading">
-      <span class="tmd-commercial-landing__eyebrow">Así lo hacemos</span>
-      <h2 id="tmd-rental-process-heading">De la necesidad a la cotización</h2>
-    </div>
-    <div class="tmd-commercial-landing__steps">
-      <article class="tmd-commercial-landing__step"><h3>Conocemos tu operación</h3><p>Conversamos sobre la bodega, los turnos y el movimiento de carga.</p></article>
-      <article class="tmd-commercial-landing__step"><h3>Validamos el equipo</h3><p>Revisamos capacidad, altura de levante, pasillos y tipo de operación.</p></article>
-      <article class="tmd-commercial-landing__step"><h3>Preparamos la propuesta</h3><p>Consideramos modalidad y periodo. El alquiler es por mínimo un mes.</p></article>
-      <article class="tmd-commercial-landing__step"><h3>Coordinamos el servicio</h3><p>Definimos contigo la atención y el soporte técnico para la operación en Colombia.</p></article>
-    </div>
-  </div>
-</section>
-HTML);
-
-        $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
-<section class="tmd-commercial-landing tmd-commercial-landing__section" aria-labelledby="tmd-rental-sectors-heading">
-  <div class="tmd-commercial-landing__container">
-    <div class="tmd-commercial-landing__section-heading">
-      <span class="tmd-commercial-landing__eyebrow">Sectores</span>
-      <h2 id="tmd-rental-sectors-heading">Acompañamos distintos entornos de trabajo</h2>
-    </div>
-    <div class="tmd-commercial-landing__sector-grid">
-      <article class="tmd-commercial-landing__sector"><h3>Logística</h3><p>Movimiento y almacenamiento de mercancía.</p></article>
-      <article class="tmd-commercial-landing__sector"><h3>Retail</h3><p>Abastecimiento de centros y puntos de distribución.</p></article>
-      <article class="tmd-commercial-landing__sector"><h3>Manufactura</h3><p>Traslado de materiales dentro de la planta.</p></article>
-      <article class="tmd-commercial-landing__sector"><h3>Distribución</h3><p>Recepción, preparación y despacho de pedidos.</p></article>
-    </div>
-  </div>
-</section>
-HTML);
-
-        $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
-<section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--soft" aria-labelledby="tmd-rental-situations-heading">
-  <div class="tmd-commercial-landing__container">
-    <div class="tmd-commercial-landing__section-heading">
-      <span class="tmd-commercial-landing__eyebrow">Alquiler mensual</span>
-      <h2 id="tmd-rental-situations-heading">Capacidad para momentos clave</h2>
-      <p>Los proyectos temporales también se cotizan con un periodo mínimo de un mes.</p>
-    </div>
-    <div class="tmd-commercial-landing__card-grid tmd-commercial-landing__card-grid--four">
-      <article class="tmd-commercial-landing__card"><span class="tmd-commercial-landing__number">01</span><h3>Temporadas de alta demanda</h3><p>Refuerza el movimiento de carga cuando crece el volumen de trabajo.</p></article>
-      <article class="tmd-commercial-landing__card"><span class="tmd-commercial-landing__number">02</span><h3>Apertura o expansión</h3><p>Incorpora equipos durante la puesta en marcha o ampliación de una bodega.</p></article>
-      <article class="tmd-commercial-landing__card"><span class="tmd-commercial-landing__number">03</span><h3>Reemplazo temporal</h3><p>Consulta alternativas mientras uno de tus equipos está fuera de operación.</p></article>
-      <article class="tmd-commercial-landing__card"><span class="tmd-commercial-landing__number">04</span><h3>Proyectos definidos</h3><p>Planea una necesidad de capacidad por un periodo acordado, desde un mes.</p></article>
-    </div>
-  </div>
-</section>
-HTML);
-
-        $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
-<section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--dark" aria-labelledby="tmd-rental-support-heading">
-  <div class="tmd-commercial-landing__container">
-    <div class="tmd-commercial-landing__callout">
-      <div>
-        <span class="tmd-commercial-landing__eyebrow">Respaldo técnico</span>
-        <h2 id="tmd-rental-support-heading">Experiencia que acompaña el movimiento</h2>
-        <p>Servicio técnico desde 2000 y experiencia en alquiler de montacargas desde 2013.</p>
-      </div>
-      <ul class="tmd-commercial-landing__support-points">
-        <li>Diagnóstico de acuerdo con la necesidad de operación.</li>
-        <li>Acompañamiento técnico para los equipos cotizados.</li>
-        <li>Atención comercial para empresas en Colombia.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-HTML);
-
-        $blocks[] = tmd_commercial_landing_script_shortcode('[tmd_commercial_landing_form id="' . $form_id . '" type="rental"]');
-
-        $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
-<section class="tmd-commercial-landing tmd-commercial-landing__section" aria-labelledby="tmd-rental-faq-heading">
-  <div class="tmd-commercial-landing__container">
-    <div class="tmd-commercial-landing__section-heading">
-      <span class="tmd-commercial-landing__eyebrow">Preguntas frecuentes</span>
-      <h2 id="tmd-rental-faq-heading">Información para cotizar</h2>
-    </div>
-    <div class="tmd-commercial-landing__faq-grid">
-      <details class="tmd-commercial-landing__faq-item"><summary>¿Cuál es el periodo mínimo de alquiler?</summary><div class="tmd-commercial-landing__faq-answer"><p>El alquiler de montacargas eléctricos se cotiza desde un mínimo de un mes. El periodo y el equipo se definen según la operación.</p></div></details>
-      <details class="tmd-commercial-landing__faq-item"><summary>¿El alquiler incluye operador?</summary><div class="tmd-commercial-landing__faq-answer"><p>No. Los equipos de alquiler se entregan sin operador.</p></div></details>
-      <details class="tmd-commercial-landing__faq-item"><summary>¿En qué lugares prestan el servicio?</summary><div class="tmd-commercial-landing__faq-answer"><p>La cobertura comercial es nacional en Colombia. La atención de cada solicitud se coordina con el equipo comercial.</p></div></details>
-      <details class="tmd-commercial-landing__faq-item"><summary>¿Qué marcas manejan?</summary><div class="tmd-commercial-landing__faq-answer"><p>La experiencia de la compañía incluye equipos Yale, Crown, Clark, Jungheinrich y Hyster. Las referencias y su disponibilidad se verifican al cotizar.</p></div></details>
-      <details class="tmd-commercial-landing__faq-item"><summary>¿Qué equipos están disponibles para venta?</summary><div class="tmd-commercial-landing__faq-answer"><p>La oferta de venta corresponde a equipos usados cuya disponibilidad se confirma en Inventario antes de preparar una propuesta.</p></div></details>
-      <details class="tmd-commercial-landing__faq-item"><summary>¿Qué información debo enviar?</summary><div class="tmd-commercial-landing__faq-answer"><p>Indica ciudad, tipo de necesidad, peso de carga, altura de levante y ancho de pasillo. Si todavía no tienes todos los datos, cuéntanos lo que conoces.</p></div></details>
-    </div>
-  </div>
-</section>
-HTML);
-
-        $blocks[] = tmd_commercial_landing_script_shortcode('[tmd_commercial_landing_related_section topic="montacargas"]');
-
-        return implode("\n\n", $blocks);
+        return tmd_commercial_landing_script_rental_v2_content($form_id, $asset_root);
     }
 
     $blocks[] = tmd_commercial_landing_script_block(str_replace('TMD_ASSETS', $asset_root, <<<'HTML'
@@ -443,157 +300,15 @@ HTML);
     return implode("\n\n", $blocks);
 }
 
-function tmd_commercial_landing_script_rental_hero_update_plan(string $content): array
-{
-    $hero_open = '<section class="tmd-commercial-landing tmd-commercial-landing__hero tmd-commercial-landing__hero--rental';
-    if (1 !== substr_count($content, $hero_open)) {
-        throw new RuntimeException('El contenido publicado no contiene un único hero de alquiler; no se modificó la página.');
-    }
-
-    $hero_start = strpos($content, $hero_open);
-    $open_tag_end = false === $hero_start ? false : strpos($content, '>', $hero_start);
-    $hero_close = false === $open_tag_end ? false : strpos($content, '</section>', $open_tag_end);
-    if (false === $hero_start || false === $open_tag_end || false === $hero_close) {
-        throw new RuntimeException('No se encontró un único hero de alquiler completo para validar; no se modificó la página.');
-    }
-    if (false !== strpos(substr($content, $open_tag_end + 1, $hero_close - $open_tag_end - 1), '<section')) {
-        throw new RuntimeException('El hero contiene una sección anidada no prevista; no se modificó la página.');
-    }
-
-    $hero_length = $hero_close + strlen('</section>') - $hero_start;
-    $hero_markup = substr($content, $hero_start, $hero_length);
-    $replacements = [
-        '<span class="tmd-commercial-landing__eyebrow">Soluciones para Colombia</span>' => '',
-        '<h1 id="tmd-rental-heading">Alquiler y venta de <em>montacargas eléctricos</em></h1>' => '<h1 id="tmd-rental-heading">Alquiler de <em>montacargas eléctricos</em></h1>',
-        '<p class="tmd-commercial-landing__hero-lead">Equipos para centros de distribución, bodegas y plantas. Cuéntanos sobre tu operación y recibe asesoría para elegir una alternativa adecuada.</p>' => '<p class="tmd-commercial-landing__hero-subhead">Equipos propios con mantenimiento en nuestro taller técnico</p><p class="tmd-commercial-landing__hero-lead">Contrabalanceados, reach, pantógrafos y apiladores para bodegas, centros de distribución y plantas que necesitan más equipos en operación sin comprarlos.</p>',
-    ];
-
-    foreach ($replacements as $source => $_replacement) {
-        if (1 !== substr_count($hero_markup, $source)) {
-            throw new RuntimeException('El contenido publicado no coincide con el hero esperado; no se modificó la página.');
-        }
-    }
-
-    $updated_hero = str_replace(array_keys($replacements), array_values($replacements), $hero_markup);
-    $required_fragments = [
-        '<h1 id="tmd-rental-heading">Alquiler de <em>montacargas eléctricos</em></h1>',
-        '<p class="tmd-commercial-landing__hero-subhead">Equipos propios con mantenimiento en nuestro taller técnico</p>',
-        '<p class="tmd-commercial-landing__hero-lead">Contrabalanceados, reach, pantógrafos y apiladores para bodegas, centros de distribución y plantas que necesitan más equipos en operación sin comprarlos.</p>',
-        'href="#formulario-montacargas">Solicitar cotización</a>',
-        'Alquiler mínimo de 1 mes',
-        'Cobertura en Colombia',
-        'Alquiler sin operador',
-    ];
-    foreach ($required_fragments as $fragment) {
-        if (false === strpos($updated_hero, $fragment)) {
-            throw new RuntimeException('El hero actualizado no conserva todos los textos, el CTA y las condiciones comerciales.');
-        }
-    }
-
-    if (false !== strpos($updated_hero, 'tmd-commercial-landing__eyebrow')) {
-        throw new RuntimeException('El hero actualizado incluye una línea auxiliar fuera de la composición aprobada.');
-    }
-
-    $updated_content = substr_replace($content, $updated_hero, $hero_start, $hero_length);
-    if (false !== strpos($updated_content, 'tmd-commercial-landing__stats')
-        || false !== strpos($updated_content, 'tmd-commercial-landing__brand-note')) {
-        throw new RuntimeException('El contenido publicado incluye un bloque fuera de la composición aprobada; no se modificó la página.');
-    }
-
-    return [
-        'content' => $updated_content,
-        'before_sha256' => hash('sha256', $content),
-        'target_sha256' => hash('sha256', $updated_content),
-    ];
-}
-
-function tmd_commercial_landing_script_verify_rental_hero_hashes(array $plan, string $expected_sha256, string $target_sha256): void
-{
-    if (! hash_equals($expected_sha256, $plan['before_sha256'] ?? '')) {
-        throw new RuntimeException('El contenido de la página cambió desde la revisión; no se modificó la página.');
-    }
-    if (! hash_equals($target_sha256, $plan['target_sha256'] ?? '')) {
-        throw new RuntimeException('El resultado calculado no coincide con el hash aprobado; no se modificó la página.');
-    }
-}
-
-function tmd_commercial_landing_script_rental_page_row_matches(array $row, string $status, string $content_sha256): bool
-{
-    return 1558 === (int) ($row['ID'] ?? 0)
-        && 'page' === ($row['post_type'] ?? '')
-        && 'alquiler-montacargas-electricos' === ($row['post_name'] ?? '')
-        && $status === ($row['post_status'] ?? '')
-        && hash_equals($content_sha256, hash('sha256', (string) ($row['post_content'] ?? '')));
-}
-
-function tmd_commercial_landing_script_save_rental_hero_rollback_artifact(array $page, string $before_sha256): string
-{
-    $backup_path = realpath((string) getenv('TMD_VERIFIED_BACKUP_PATH'));
-    if (! is_string($backup_path) || ! is_dir($backup_path) || ! is_writable($backup_path)) {
-        throw new RuntimeException('No se pudo guardar el artefacto privado de restauración de la página.');
-    }
-    $directory_permissions = fileperms($backup_path);
-    if (false === $directory_permissions || 0 !== ($directory_permissions & 0077)) {
-        throw new RuntimeException('El directorio del backup debe conservar permisos privados antes de guardar la restauración de la página.');
-    }
-
-    $artifact_path = $backup_path . DIRECTORY_SEPARATOR . 'page-1558-content-before-hero-update.json';
-    $payload = [
-        'post_id' => 1558,
-        'post_type' => $page['post_type'] ?? '',
-        'post_name' => $page['post_name'] ?? '',
-        'post_status' => $page['post_status'] ?? '',
-        'content_sha256' => $before_sha256,
-        'post_content' => (string) ($page['post_content'] ?? ''),
-    ];
-    $encoded = wp_json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-    if (! is_string($encoded)) {
-        throw new RuntimeException('No se pudo serializar el artefacto privado de restauración de la página.');
-    }
-
-    $handle = @fopen($artifact_path, 'x');
-    if (! is_resource($handle)) {
-        throw new RuntimeException('El artefacto de restauración ya existe o no pudo crearse; no se modificó la página.');
-    }
-
-    try {
-        @chmod($artifact_path, 0600);
-        $written = fwrite($handle, $encoded);
-        if (false === $written || $written !== strlen($encoded) || ! fflush($handle)) {
-            throw new RuntimeException('No se pudo escribir el artefacto privado de restauración completo.');
-        }
-    } catch (Throwable $exception) {
-        fclose($handle);
-        @unlink($artifact_path);
-        throw $exception;
-    }
-    fclose($handle);
-    @chmod($artifact_path, 0600);
-
-    $permissions = fileperms($artifact_path);
-    $saved = json_decode((string) file_get_contents($artifact_path), true);
-    if (false === $permissions
-        || 0600 !== ($permissions & 0777)
-        || ! is_array($saved)
-        || 1558 !== ($saved['post_id'] ?? null)
-        || ! is_string($saved['post_content'] ?? null)
-        || ! hash_equals($before_sha256, hash('sha256', $saved['post_content']))) {
-        @unlink($artifact_path);
-        throw new RuntimeException('El artefacto privado de restauración no pasó su verificación.');
-    }
-
-    return $artifact_path;
-}
-
 function tmd_commercial_landing_script_page_specs(array $form_ids): array
 {
     return [
         'rental' => [
             'slug' => 'alquiler-montacargas-electricos',
-            'title' => 'Alquiler y venta de montacargas eléctricos',
-            'rank_title' => 'Alquiler de montacargas eléctricos en Colombia | Tecnimontacargas',
-            'rank_description' => 'Alquila montacargas eléctricos sin operador desde un mes o consulta equipos usados con disponibilidad confirmada en Colombia.',
-            'seed' => '2026-10-04-v1:rental',
+            'title' => 'Venta o alquiler de montacargas eléctricos',
+            'rank_title' => 'Venta o alquiler de montacargas eléctricos | Tecnimontacargas',
+            'rank_description' => 'Venta o alquiler de montacargas eléctricos para bodegas, centros de distribución y plantas. Alquiler sin operador desde 15 días, con recomendación técnica según tu operación.',
+            'seed' => '2026-10-05-v2:rental',
             'form_id' => $form_ids['rental'],
         ],
         'battery' => [
@@ -792,141 +507,6 @@ function tmd_commercial_landing_script_backup_is_valid(): bool
         && (bool) preg_match('/-- Dump completed on /i', $tail);
 }
 
-function tmd_commercial_landing_script_run_rental_hero_update(bool $execute): void
-{
-    $lock_path = trailingslashit(get_temp_dir()) . 'tmd-commercial-landings-seed.lock';
-    $lock = @fopen($lock_path, 'c');
-    if (! is_resource($lock) || ! flock($lock, LOCK_EX | LOCK_NB)) {
-        is_resource($lock) && fclose($lock);
-        throw new RuntimeException('No se pudo adquirir el bloqueo exclusivo de páginas comerciales.');
-    }
-    @chmod($lock_path, 0600);
-
-    try {
-        $expected_sha256 = trim((string) getenv('TMD_COMMERCIAL_LANDING_HERO_EXPECTED_SHA256'));
-        $target_sha256 = trim((string) getenv('TMD_COMMERCIAL_LANDING_HERO_TARGET_SHA256'));
-        if (! preg_match('/\A[a-f0-9]{64}\z/', $expected_sha256)
-            || ! preg_match('/\A[a-f0-9]{64}\z/', $target_sha256)) {
-            throw new RuntimeException('La actualización exige hashes SHA-256 válidos para el estado actual y el resultado esperado.');
-        }
-
-        $page = get_post(1558);
-        if (! $page instanceof WP_Post
-            || 'page' !== $page->post_type
-            || 'alquiler-montacargas-electricos' !== $page->post_name
-            || 'publish' !== $page->post_status) {
-            throw new RuntimeException('La página publicada 1558 no coincide con el slug y estado esperados.');
-        }
-
-        $plan = tmd_commercial_landing_script_rental_hero_update_plan((string) $page->post_content);
-        tmd_commercial_landing_script_verify_rental_hero_hashes($plan, $expected_sha256, $target_sha256);
-
-        WP_CLI::line('Página 1558 /alquiler-montacargas-electricos/: ' . $plan['before_sha256'] . ' → ' . $plan['target_sha256'] . '.');
-        if (! $execute) {
-            WP_CLI::success('Dry-run del hero sin escrituras.');
-            return;
-        }
-
-        if (! tmd_commercial_landing_script_backup_is_valid()) {
-            throw new RuntimeException('Ejecución detenida: se requiere un backup de producción reciente y verificado.');
-        }
-
-        global $wpdb;
-        $table_engine = $wpdb->get_var($wpdb->prepare(
-            'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s',
-            $wpdb->posts
-        ));
-        if ('INNODB' !== strtoupper((string) $table_engine)) {
-            throw new RuntimeException('La tabla de páginas no usa InnoDB; no es posible proteger la actualización con bloqueo transaccional.');
-        }
-
-        if (false === $wpdb->query('START TRANSACTION')) {
-            throw new RuntimeException('No se pudo iniciar la transacción para actualizar la página.');
-        }
-        $transaction_open = true;
-        try {
-            $locked_row = $wpdb->get_row($wpdb->prepare(
-                "SELECT ID, post_type, post_name, post_status, post_content FROM {$wpdb->posts} WHERE ID = %d FOR UPDATE",
-                1558
-            ), ARRAY_A);
-            if (! is_array($locked_row)
-                || ! tmd_commercial_landing_script_rental_page_row_matches($locked_row, 'publish', $expected_sha256)) {
-                throw new RuntimeException('El contenido o la identidad de la página cambió antes de obtener el bloqueo; no se modificó.');
-            }
-
-            $locked_plan = tmd_commercial_landing_script_rental_hero_update_plan((string) $locked_row['post_content']);
-            tmd_commercial_landing_script_verify_rental_hero_hashes($locked_plan, $expected_sha256, $target_sha256);
-            tmd_commercial_landing_script_save_rental_hero_rollback_artifact($locked_row, $locked_plan['before_sha256']);
-
-            clean_post_cache(1558);
-            $locked_page = get_post(1558);
-            if (! $locked_page instanceof WP_Post
-                || 'page' !== $locked_page->post_type
-                || 'alquiler-montacargas-electricos' !== $locked_page->post_name
-                || 'publish' !== $locked_page->post_status
-                || ! hash_equals($expected_sha256, hash('sha256', (string) $locked_page->post_content))) {
-                throw new RuntimeException('No se pudo recargar desde la fila bloqueada la página prevista; no se guardó el hero.');
-            }
-
-            $result = wp_update_post([
-                'ID' => 1558,
-                'post_content' => wp_slash($locked_plan['content']),
-            ], true);
-            $updated_row = $wpdb->get_row($wpdb->prepare(
-                "SELECT ID, post_type, post_name, post_status, post_content FROM {$wpdb->posts} WHERE ID = %d",
-                1558
-            ), ARRAY_A);
-            $update_verified = ! is_wp_error($result)
-                && 1558 === (int) $result
-                && is_array($updated_row)
-                && tmd_commercial_landing_script_rental_page_row_matches($updated_row, 'publish', $target_sha256);
-
-            if (! $update_verified) {
-                $rollback_result = $wpdb->query('ROLLBACK');
-                $transaction_open = false;
-                clean_post_cache(1558);
-                $restored_page = get_post(1558);
-                $rollback_verified = false !== $rollback_result
-                    && $restored_page instanceof WP_Post
-                    && 'page' === $restored_page->post_type
-                    && 'alquiler-montacargas-electricos' === $restored_page->post_name
-                    && 'publish' === $restored_page->post_status
-                    && hash_equals($locked_plan['before_sha256'], hash('sha256', (string) $restored_page->post_content));
-                if (! $rollback_verified) {
-                    throw new RuntimeException('La actualización no se verificó y el rollback transaccional del contenido original tampoco pudo verificarse.');
-                }
-                throw new RuntimeException('La actualización no se verificó; la transacción se revirtió y el contenido original quedó verificado.');
-            }
-
-            if (false === $wpdb->query('COMMIT')) {
-                throw new RuntimeException('No se pudo confirmar la transacción; hay que revisar el estado de la página antes de reintentar.');
-            }
-            $transaction_open = false;
-            clean_post_cache(1558);
-
-            $committed_page = get_post(1558);
-            $commit_verified = $committed_page instanceof WP_Post
-                && 'page' === $committed_page->post_type
-                && 'alquiler-montacargas-electricos' === $committed_page->post_name
-                && 'publish' === $committed_page->post_status
-                && hash_equals($target_sha256, hash('sha256', (string) $committed_page->post_content));
-            if (! $commit_verified) {
-                throw new RuntimeException('El contenido cambió después del COMMIT; no se ejecutó un rollback sobre el estado posterior.');
-            }
-
-            WP_CLI::success('Hero de alquiler actualizado y hash final verificado.');
-        } finally {
-            if ($transaction_open) {
-                $wpdb->query('ROLLBACK');
-                clean_post_cache(1558);
-            }
-        }
-    } finally {
-        flock($lock, LOCK_UN);
-        fclose($lock);
-    }
-}
-
 function tmd_commercial_landing_script_remove_created(array $page_ids, array $form_ids): array
 {
     $failures = [];
@@ -948,9 +528,9 @@ $created_form_ids = [];
 $seed_lock = null;
 
 $mode = trim((string) getenv('TMD_COMMERCIAL_LANDINGS_MODE'));
-if ('update-rental-hero' === $mode) {
+if ('update-rental-page' === $mode) {
     try {
-        tmd_commercial_landing_script_run_rental_hero_update('1' === getenv('TMD_COMMERCIAL_LANDINGS_EXECUTE'));
+        tmd_commercial_landing_script_run_rental_v2_update('1' === getenv('TMD_COMMERCIAL_LANDINGS_EXECUTE'));
     } catch (Throwable $exception) {
         WP_CLI::error($exception->getMessage());
     }
@@ -1024,7 +604,7 @@ try {
             WP_CLI::line('Página /' . $spec['slug'] . '/: ' . $page_action . '.');
             WP_CLI::line('Formulario ' . $form_specs[$type]['title'] . ': ' . $form_action . '.');
         }
-        WP_CLI::line('Campos de alquiler: nombre, cargo, empresa, ciudad, correo o celular, necesidad, carga, altura, pasillo y privacidad; control anti-spam server-side.');
+        WP_CLI::line('Campos de alquiler: nombre/cargo, empresa/ciudad, correo o celular, necesidad, requerimientos y privacidad; control anti-spam server-side.');
         WP_CLI::line('Campos de baterías: nombre, cargo, empresa, ciudad, correo o celular, equipo, voltaje, capacidad, compra o alquiler y privacidad; control anti-spam server-side.');
         WP_CLI::success('Dry-run sin escrituras. Las páginas se prepararían como borradores y no se publicarían.');
         return;

@@ -35,12 +35,14 @@ function tmd_commercial_landing_related_articles($attributes): string
 {
     $attributes = shortcode_atts([
         'topic' => 'montacargas',
+        'fallback' => 'blog',
     ], (array) $attributes, 'tmd_commercial_related_articles');
 
     $topic = sanitize_key((string) $attributes['topic']);
+    $fallback = sanitize_key((string) $attributes['fallback']);
     $category = get_term_by('slug', 'consejos-tecnicos', 'category');
     if (! $category || is_wp_error($category)) {
-        return tmd_commercial_landing_blog_fallback();
+        return 'none' === $fallback ? '' : tmd_commercial_landing_blog_fallback();
     }
 
     $posts = get_posts([
@@ -76,7 +78,7 @@ function tmd_commercial_landing_related_articles($attributes): string
     }
 
     if (! $ranked) {
-        return tmd_commercial_landing_blog_fallback();
+        return 'none' === $fallback ? '' : tmd_commercial_landing_blog_fallback();
     }
 
     usort($ranked, static function (array $left, array $right): int {
@@ -159,24 +161,38 @@ function tmd_commercial_landing_inventory($attributes): string
 {
     $attributes = shortcode_atts([
         'type' => 'equipment',
+        'eyebrow' => 'Referencias de inventario',
+        'heading' => 'Equipos eléctricos para tu operación',
+        'intro' => 'Mostramos hasta cinco referencias clasificadas en Inventario. Su disponibilidad se confirma al cotizar.',
+        'link_text' => 'Ver catálogo de equipos',
+        'link_url' => '/equipos/',
+        'variant' => '',
     ], (array) $attributes, 'tmd_commercial_landing_inventory');
     if ('equipment' !== sanitize_key((string) $attributes['type'])) {
         return '';
     }
 
+    $variant = sanitize_key((string) $attributes['variant']);
+    $section_class = 'tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__inventory';
+    if ('rental-v2' === $variant) {
+        $section_class .= ' tmd-rental-v2-section tmd-rental-v2__inventory';
+    }
+    $link_url = (string) $attributes['link_url'];
+    $link_url = str_starts_with($link_url, '/') ? home_url($link_url) : $link_url;
+
     ob_start();
     ?>
-    <section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__inventory" aria-labelledby="tmd-commercial-inventory-heading">
+    <section class="<?php echo esc_attr($section_class); ?>" aria-labelledby="tmd-commercial-inventory-heading">
       <div class="tmd-commercial-landing__container">
         <div class="tmd-commercial-landing__section-heading">
-          <span class="tmd-commercial-landing__eyebrow">Referencias de inventario</span>
-          <h2 id="tmd-commercial-inventory-heading">Equipos eléctricos para tu operación</h2>
-          <p>Mostramos hasta cinco referencias clasificadas en Inventario. Su disponibilidad se confirma al cotizar.</p>
+          <span class="tmd-commercial-landing__eyebrow"><?php echo esc_html((string) $attributes['eyebrow']); ?></span>
+          <h2 id="tmd-commercial-inventory-heading"><?php echo esc_html((string) $attributes['heading']); ?></h2>
+          <p><?php echo esc_html((string) $attributes['intro']); ?></p>
         </div>
         <?php echo tmd_commercial_landing_electric_inventory_grid(); ?>
         <p class="tmd-commercial-landing__inventory-link">
-          <a class="tmd-commercial-landing__text-link" href="<?php echo esc_url(home_url('/equipos/')); ?>">
-            Ver catálogo de equipos <span aria-hidden="true">→</span>
+          <a class="tmd-commercial-landing__text-link" href="<?php echo esc_url($link_url); ?>">
+            <?php echo esc_html((string) $attributes['link_text']); ?> <span aria-hidden="true">→</span>
           </a>
         </p>
       </div>
@@ -262,18 +278,35 @@ function tmd_commercial_landing_related_section($attributes): string
 {
     $attributes = shortcode_atts([
         'topic' => 'montacargas',
+        'eyebrow' => 'Contenido relacionado',
+        'heading' => 'Artículos para tu operación',
+        'subtitle' => '',
+        'variant' => '',
+        'fallback' => 'blog',
     ], (array) $attributes, 'tmd_commercial_landing_related_section');
     $topic = sanitize_key((string) $attributes['topic']);
+    $variant = sanitize_key((string) $attributes['variant']);
+    $eyebrow = sanitize_text_field((string) $attributes['eyebrow']);
+    $heading = sanitize_text_field((string) $attributes['heading']);
+    $subtitle = sanitize_text_field((string) $attributes['subtitle']);
+    $fallback = sanitize_key((string) $attributes['fallback']);
+    $section_class = 'tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--soft';
+    if ('rental-v2' === $variant) {
+        $section_class .= ' tmd-rental-v2-section tmd-rental-v2__blog';
+    }
 
     ob_start();
     ?>
-    <section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--soft" aria-labelledby="tmd-commercial-related-heading">
+    <section class="<?php echo esc_attr($section_class); ?>" aria-labelledby="tmd-commercial-related-heading">
       <div class="tmd-commercial-landing__container">
         <div class="tmd-commercial-landing__section-heading">
-          <span class="tmd-commercial-landing__eyebrow">Contenido relacionado</span>
-          <h2 id="tmd-commercial-related-heading">Artículos para tu operación</h2>
+          <?php if ('' !== $eyebrow) : ?><span class="tmd-commercial-landing__eyebrow"><?php echo esc_html($eyebrow); ?></span><?php endif; ?>
+          <h2 id="tmd-commercial-related-heading"><?php echo esc_html($heading); ?></h2>
+          <?php if ('' !== $subtitle) : ?>
+            <h3><?php echo esc_html($subtitle); ?></h3>
+          <?php endif; ?>
         </div>
-        <?php echo do_shortcode('[tmd_commercial_related_articles topic="' . esc_attr($topic) . '"]'); ?>
+        <?php echo do_shortcode('[tmd_commercial_related_articles topic="' . esc_attr($topic) . '" fallback="' . esc_attr($fallback) . '"]'); ?>
       </div>
     </section>
     <?php
@@ -282,9 +315,23 @@ function tmd_commercial_landing_related_section($attributes): string
 }
 add_shortcode('tmd_commercial_landing_related_section', 'tmd_commercial_landing_related_section');
 
+function tmd_commercial_landing_is_rental_v2(): bool
+{
+    if (! is_page('alquiler-montacargas-electricos')) {
+        return false;
+    }
+
+    $page = get_queried_object();
+    return $page instanceof WP_Post && str_contains((string) $page->post_content, 'tmd-rental-v2-section');
+}
+
 add_filter('body_class', static function (array $classes): array {
     if (is_page('baterias-para-montacargas')) {
         $classes[] = 'tmd-commercial-landing-battery';
+    }
+
+    if (tmd_commercial_landing_is_rental_v2()) {
+        $classes[] = 'tmd-rental-layout-v2';
     }
 
     return $classes;
@@ -307,4 +354,14 @@ add_action('wp_enqueue_scripts', static function (): void {
         $dependencies,
         file_exists($css) ? filemtime($css) : '1.0.0'
     );
+
+    if (tmd_commercial_landing_is_rental_v2()) {
+        $rental_css = get_stylesheet_directory() . '/assets/css/tmd-commercial-landing-rental-v2.css';
+        wp_enqueue_style(
+            'tmd-commercial-landing-rental-v2',
+            get_stylesheet_directory_uri() . '/assets/css/tmd-commercial-landing-rental-v2.css',
+            ['tmd-commercial-landings'],
+            file_exists($rental_css) ? filemtime($rental_css) : '1.0.0'
+        );
+    }
 }, 96);
