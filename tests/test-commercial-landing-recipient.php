@@ -487,7 +487,8 @@ tmd_commercial_landing_recipient_assert(
         && $current_form_properties['messages'] === $target_form_properties['messages']
         && $current_form_properties['additional_settings'] === $target_form_properties['additional_settings']
         && false !== strpos($target_form_properties['mail']['body'], '[nombre_cargo]')
-        && false !== strpos($target_form_properties['mail']['body'], '[requerimientos]'),
+        && false !== strpos($target_form_properties['mail']['body'], '[requerimientos]')
+        && ! str_ends_with($target_form_properties['mail']['body'], "\n"),
     'El mapeo del correo debe cambiar solo el cuerpo y conservar destinatario, cabeceras y opciones del formulario.'
 );
 

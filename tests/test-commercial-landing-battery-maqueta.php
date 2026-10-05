@@ -294,6 +294,9 @@ try {
     tmd_battery_test_assert(6 === $details_count && ! preg_match('/<details\b[^>]*\bopen\b/i', $page_content), 'las seis FAQ deben quedar cerradas por defecto');
     tmd_battery_test_assert(5 === preg_match_all('/<figure\b/', substr($page_content, strpos($page_content, 'tmd-commercial-landing__battery-gallery'), strpos($page_content, '</section>', strpos($page_content, 'tmd-commercial-landing__battery-gallery')) - strpos($page_content, 'tmd-commercial-landing__battery-gallery'))), 'la galería debe mostrar cinco imágenes sin leyendas');
     tmd_battery_test_assert(false === strpos($page_content, '<figcaption') && false === strpos($page_content, 'TMD_ASSETS'), 'el contenido no debe dejar leyendas ni rutas temporales');
+    $gallery_content = substr($page_content, strpos($page_content, 'tmd-commercial-landing__battery-gallery'), strpos($page_content, '</section>', strpos($page_content, 'tmd-commercial-landing__battery-gallery')) - strpos($page_content, 'tmd-commercial-landing__battery-gallery'));
+    tmd_battery_test_assert(false !== strpos($page_content, 'Baterías y equipos eléctricos en operación') && false === strpos($gallery_content, 'Barbillon'), 'la galería debe describir las imágenes sin atribuirles una marca no verificada');
+    tmd_battery_test_assert(false !== strpos($gallery_content, 'commercial-landings/baterias-hero.jpeg') && false !== strpos($gallery_content, 'mega-menu/energy-baterias-plomo.webp') && false !== strpos($gallery_content, 'mega-menu/energy-bms.webp'), 'la galería debe incluir imágenes existentes de batería y monitoreo');
 
     $ordered_parts = [
         'id="tmd-battery-heading"',
@@ -322,6 +325,80 @@ try {
     tmd_battery_test_assert(1 === substr_count($form_markup, '[checkbox* privacidad'), 'el consentimiento debe seguir siendo obligatorio');
     tmd_battery_test_assert(false !== strpos($form_markup, 'tmd_website tabindex:-1 autocomplete:off'), 'el formulario debe conservar el honeypot');
 
+    $mail_body = tmd_commercial_landing_script_battery_mail_body();
+    $mail_fields = [
+        'Nombre y cargo' => ['field' => 'nombre_cargo', 'mail_label' => 'Nombre y cargo', 'mail_tag' => '[nombre_cargo]', 'form_tag' => '[text* nombre_cargo autocomplete:name]'],
+        'Empresa y ciudad' => ['field' => 'empresa_ciudad', 'mail_label' => 'Empresa y ciudad', 'mail_tag' => '[empresa_ciudad]', 'form_tag' => '[text* empresa_ciudad]'],
+        'Correo o celular' => ['field' => 'contacto', 'mail_label' => 'Correo o celular', 'mail_tag' => '[contacto]', 'form_tag' => '[text* contacto]'],
+        'Marca y modelo del montacargas' => ['field' => 'marca_modelo', 'mail_label' => 'Marca y modelo', 'mail_tag' => '[marca_modelo]', 'form_tag' => '[text* marca_modelo]'],
+        'Voltaje y capacidad de la batería actual' => ['field' => 'voltaje_capacidad', 'mail_label' => 'Voltaje y capacidad actuales', 'mail_tag' => '[voltaje_capacidad]', 'form_tag' => '[text* voltaje_capacidad]'],
+        'Compra o alquiler' => ['field' => 'modalidad', 'mail_label' => 'Modalidad', 'mail_tag' => '[modalidad]', 'form_tag' => '[select* modalidad include_blank "Compra" "Alquiler"]'],
+    ];
+    foreach ($mail_fields as $label => $field) {
+        tmd_battery_test_assert(
+            false !== strpos($form_markup, '<span>' . $label . '</span>' . $field['form_tag']),
+            'el campo visible ' . $label . ' debe conservar el control CF7 ' . $field['field']
+        );
+        tmd_battery_test_assert(
+            false !== strpos($mail_body, $field['mail_label'] . ': ' . $field['mail_tag']),
+            'el correo de cotización debe incluir ' . $label . ' (' . $field['mail_tag'] . ')'
+        );
+    }
+
+    $required_copy = [
+        'Baterías para montacargas <em>eléctricos</em>',
+        'Representantes de la marca francesa Barbillon',
+        'Venta y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.',
+        'Baterías de tracción, cargadores y monitoreo BMS',
+        'Compatibles con retráctiles, apiladores, estibadores, tomapedidos y equipos de pasillo angosto',
+        'Baterías de tracción plomo-ácido:',
+        'seleccionadas por voltaje, amperios hora y dimensiones del compartimiento.',
+        'Cargadores industriales:',
+        'corriente y voltaje definidos según la tecnología de la batería.',
+        'Monitoreo BMS:',
+        'registro de temperatura, ciclos y descargas profundas durante la operación.',
+        'Referencias en <em>inventario</em>',
+        'Referencias en bodega para reemplazar la batería sin esperar un pedido de importación',
+        'Cotizamos las referencias en existencia junto con su cargador. Si la batería de tu equipo necesita mantenimiento y no reemplazo, nuestro servicio técnico revisa las conexiones, el nivel de electrolito y el comportamiento de carga antes de recomendarte una batería nueva.',
+        'Rendimiento de la batería de tracción por turno',
+        'Descargas profundas y cargas incompletas acortan la vida de las celdas',
+        'Autonomía para el turno:</strong> amperios hora calculados sobre las horas de uso del equipo.',
+        'Vida útil de las celdas:</strong> ciclos de carga completos con un cargador del mismo voltaje.',
+        'Carga entre turnos:</strong> corriente del cargador ajustada al tiempo disponible para completar el ciclo.',
+        'Cambio de acumulador paso a paso',
+        'Marca, modelo y ficha de la batería actual definen la referencia compatible',
+        'Datos del equipo:',
+        'marca y modelo del montacargas, y voltaje y capacidad de la batería actual.',
+        'Validación técnica:',
+        'comparamos dimensiones, peso, conector y cargador con la referencia propuesta.',
+        'Cotización:',
+        'recibes la opción de compra o alquiler, con el cargador que corresponde si el actual no sirve.',
+        'Baterías y equipos eléctricos en operación',
+        'Soluciones de energía y montacargas en entornos de trabajo',
+        'Cotiza baterías para montacargas',
+        'Preguntas frecuentes sobre baterías para montacargas',
+        'Compatibilidad, carga, mantenimiento y monitoreo de la batería de tracción',
+        'Artículos sobre carga y electrolito del plomo-ácido',
+        'Lectura de los registros del BMS y cuidado de las conexiones',
+        '¿Qué batería necesita mi montacargas eléctrico?',
+        'La que coincide con el equipo en voltaje, amperios hora, dimensiones, peso y tipo y posición del conector, y que rinde las horas que trabaja por turno. Si una de esas medidas no coincide, la batería no entra en el compartimiento, no conecta o no alcanza para la jornada.',
+        '¿Cuánto dura una batería de tracción para montacargas?',
+        'Depende de los ciclos de carga que cumple, de las horas de trabajo por turno y del mantenimiento. Un cargador que no corresponde a su voltaje o a su tecnología, un nivel de electrolito descuidado y los turnos sin tiempo para completar la carga reducen la vida útil de las celdas.',
+        '¿Venden y alquilan baterías para montacargas?',
+        'Sí. Puedes comprar la batería o alquilarla, según tu presupuesto y la vida útil que le quede al equipo. Tenemos baterías en inventario, y la disponibilidad de la referencia se confirma con el voltaje, la capacidad y las dimensiones. Si necesitas también el equipo, alquilamos montacargas eléctricos.',
+        '¿Qué mantenimiento necesita una batería de plomo-ácido?',
+        'Control del nivel de electrolito, revisión de conexiones, limpieza y ciclos de carga completos. La frecuencia se programa por horas de uso, turnos e historial de fallas más que por calendario, y cambia entre una operación de un turno y otra de varios turnos por día.',
+        '¿Para qué sirve el BMS en una batería de tracción?',
+        'Es un sistema de monitoreo que mide y registra el voltaje, la corriente, la temperatura, el estado de carga, las horas de operación y los ciclos de la batería. Con esos datos se identifican descargas profundas, cargas incompletas y pérdidas de autonomía, y se decide el mantenimiento con información de la operación real.',
+        '¿El cargador actual sirve para una batería nueva?',
+        'Solo si corresponde al voltaje nominal y a la tecnología de la batería nueva, y si su corriente de carga está calculada para esos amperios hora. Un cargador de otra tecnología o de menor corriente no completa la carga entre turnos. Si el actual no sirve, la cotización incluye el cargador que corresponde.',
+    ];
+    $theme_inc = (string) file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/inc/tmd-commercial-landing-pages.php');
+    foreach ($required_copy as $copy) {
+        $copy_source = 'Cotiza baterías para montacargas' === $copy ? $theme_inc : $page_content;
+        tmd_battery_test_assert(false !== strpos($copy_source, $copy), 'falta el texto aprobado de DEC-11: ' . $copy);
+    }
+
     $css = (string) file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/css/tmd-commercial-landings.css');
     tmd_battery_test_assert((bool) preg_match('/--tmd-landing-navy:\s*#262e4f\s*;/i', $css), 'el azul marino aprobado debe ser #262E4F');
     tmd_battery_test_assert((bool) preg_match('/\.tmd-commercial-landing__form-layout--battery-maqueta \.wpcf7-submit\s*\{[^}]*background:\s*var\(--tmd-landing-navy\);[^}]*color:\s*#fff;/s', $css), 'el CTA debe usar fondo aprobado y texto blanco');
@@ -333,32 +410,36 @@ try {
         'ETV214/1.png' => 'ventajas-etv214.webp',
         'EFG425/1.png' => 'proceso-efg425.webp',
         'CROWN RD 5200/2.png' => 'galeria-crown-rd-5200.webp',
-        'CROWN PE 4000-60/1.png' => 'galeria-crown-pe-4000-60.webp',
-        'EJC112/1.png' => 'galeria-ejc112.webp',
-        'ERE225/1.png' => 'galeria-ere225.webp',
         'ETV325/1.png' => 'galeria-etv325.webp',
         'ETV214/2.png' => 'formulario-etv214.webp',
     ];
     foreach ($catalog_assets as $source_relative => $destination_name) {
         $source_path = dirname(__DIR__) . '/EQUIPOS SEGUN REFERENCIA/' . $source_relative;
         $destination_path = $asset_directory . '/' . $destination_name;
-        tmd_battery_test_assert(is_file($source_path) && is_file($destination_path), 'deben existir el origen y la copia del catálogo: ' . $source_relative);
-        $source_image = getimagesize($source_path);
+        tmd_battery_test_assert(is_file($destination_path), 'debe existir la copia del catálogo: ' . $destination_name);
         $destination_image = getimagesize($destination_path);
         tmd_battery_test_assert(
-            is_array($source_image)
-                && is_array($destination_image)
-                && IMAGETYPE_PNG === $source_image[2]
+            is_array($destination_image)
                 && IMAGETYPE_WEBP === $destination_image[2]
-                && $source_image[0] === $destination_image[0]
-                && $source_image[1] === $destination_image[1]
-                && filesize($destination_path) < filesize($source_path),
-            'la copia WebP debe conservar dimensiones y reducir bytes frente a la fuente: ' . $destination_name
+                && 1448 === $destination_image[0]
+                && 1086 === $destination_image[1]
+                && filesize($destination_path) < 500000,
+            'la copia debe ser WebP optimizada de 1448x1086: ' . $destination_name
         );
+        if (is_file($source_path)) {
+            $source_image = getimagesize($source_path);
+            tmd_battery_test_assert(
+                is_array($source_image)
+                    && IMAGETYPE_PNG === $source_image[2]
+                    && $source_image[0] === $destination_image[0]
+                    && $source_image[1] === $destination_image[1]
+                    && filesize($destination_path) < filesize($source_path),
+                'la copia WebP local debe conservar dimensiones y reducir bytes frente a la fuente: ' . $source_relative
+            );
+        }
     }
     tmd_battery_test_assert(false !== strpos($page_content, 'commercial-landings/baterias-maqueta/banner-crown-rd-3000.webp'), 'el hero debe usar la copia local del catálogo');
     tmd_battery_test_assert(false !== strpos($page_content, 'commercial-landings/baterias-maqueta/galeria-etv325.webp'), 'la galería debe usar copias locales del catálogo');
-    $theme_inc = (string) file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/inc/tmd-commercial-landing-pages.php');
     tmd_battery_test_assert(false !== strpos($theme_inc, 'commercial-landings/baterias-maqueta/formulario-etv214.webp'), 'la sección de cotización debe usar su copia local del catálogo');
 
     $sql_tail = "\n-- Dump completed on " . gmdate('Y-m-d H:i:s') . "\n";

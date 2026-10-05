@@ -16,9 +16,11 @@
 
 [Criterio de publicación pendiente descrito por la maqueta] La guía requiere confirmar procedencia, uso y correspondencia de fotografías reales antes de publicarlas. Resolver ese control con evidencia antes de escribir contenido en producción.
 
+[Resolución DEC-11: 2026-10-05] El catálogo `EQUIPOS SEGUN REFERENCIA/` contiene fotografías de montacargas, no fotografías identificables de celdas, baterías y conectores. Por eso la galería combina dos copias WebP del catálogo para mostrar equipos eléctricos con los activos de batería/monitoreo ya publicados en el tema; su encabezado describe esa mezcla de forma neutral y no atribuye las fotos a Barbillon. Las tarjetas de soluciones conservan las imágenes de producto ya usadas en el sitio.
+
 [Decisión aprobada por el usuario: 2026-10-05] El CTA de esta maqueta usa fondo azul oscuro `#262E4F` y texto blanco. La aprobación resuelve el contraste; no cambia la paleta de los demás botones o enlaces.
 
-[Aclaración del usuario: 2026-10-05] Las fotografías de catálogo que se pueden usar están en `EQUIPOS SEGUN REFERENCIA/` en la raíz del proyecto. Copiar al directorio dedicado `wp-content/themes/blocksy-child/assets/img/commercial-landings/baterias-maqueta/` las fotografías usadas por la página y servir copias WebP optimizadas; dejar intactas las fuentes del catálogo.
+[Aclaración del usuario: 2026-10-05] Las fotografías de catálogo que se pueden usar están en `EQUIPOS SEGUN REFERENCIA/` en la raíz del proyecto. Copiar al directorio dedicado `wp-content/themes/blocksy-child/assets/img/commercial-landings/baterias-maqueta/` solo las fotografías de catálogo usadas por la página y servir copias WebP optimizadas; dejar intactas las fuentes del catálogo.
 
 ## Contexto
 

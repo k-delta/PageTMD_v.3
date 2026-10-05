@@ -17,8 +17,7 @@
  *   TMD_RENTAL_V2_TARGET_PAGE_SHA256=<hash-objetivo> \
  *   wp eval-file scripts/create-commercial-landing-pages.php
  * Pasar también los hashes CF7/meta exigidos por update-rental-landing-v2.php.
- * Para escribir, añadir TMD_COMMERCIAL_LANDINGS_EXECUTE=1 y un backup verificado.
- *
+ * Para escribir, añadir TMD_COMMERCIAL_LANDINGS_EXECUTE=1 y un backup verificado. *
  * Reemplazo acotado de contenido/formulario de baterías (dry-run por defecto):
  *   TMD_COMMERCIAL_LANDINGS_MODE=update-battery-maqueta \
  *   TMD_BATTERY_PAGE_EXPECTED_SHA256=<hash-actual> \
@@ -26,8 +25,8 @@
  *   TMD_BATTERY_FORM_EXPECTED_SHA256=<hash-actual> \
  *   TMD_BATTERY_FORM_TARGET_SHA256=<hash-destino> \
  *   wp eval-file scripts/create-commercial-landing-pages.php
- * Pasar también los hashes CF7/meta exigidos por update-rental-landing-v2.php.
  * Para escribir, añadir TMD_COMMERCIAL_LANDINGS_EXECUTE=1 y un backup verificado.
+
  */
 
 if (! defined('ABSPATH') || ! defined('WP_CLI') || ! WP_CLI) {
@@ -57,12 +56,16 @@ function tmd_commercial_landing_script_form_markup(string $type): string
     $honeypot = '<div class="tmd-landing-form__honeypot" aria-hidden="true">'
         . '<label>Dejar este campo vacío [text tmd_website tabindex:-1 autocomplete:off]</label>'
         . '</div>';
+    $privacy = '<p class="tmd-landing-form__privacy">'
+        . '[checkbox* privacidad use_label_element "He leído y autorizo el tratamiento de mis datos"]'
+        . '</p><p class="tmd-landing-form__privacy-copy">Consulta nuestra '
+        . '<a href="' . $privacy_url . '" target="_blank" rel="noopener">política de privacidad</a>.'
+        . '</p>';
+
     $consent = '<p class="tmd-landing-form__privacy">'
         . '[checkbox* privacidad use_label_element "He leído y autorizo el tratamiento de mis datos"]'
         . '</p>';
     $privacy_link = '<a href="' . $privacy_url . '" target="_blank" rel="noopener">política de privacidad</a>';
-    $privacy = $consent . '<p class="tmd-landing-form__privacy-copy">Consulta nuestra '
-        . $privacy_link . '.</p>';
     $battery_maqueta_privacy = $consent . '<p class="tmd-landing-form__privacy-copy">Usamos tus datos solo para responder esta solicitud, según nuestra '
         . $privacy_link . '.</p>';
 
@@ -99,11 +102,15 @@ function tmd_commercial_landing_script_form_markup(string $type): string
 
     return '<div class="tmd-landing-form">'
         . '<div class="tmd-landing-form__grid">'
-        . '<fieldset class="tmd-landing-form__field tmd-landing-form__field--wide"><legend>Nombre y cargo</legend><div class="tmd-landing-form__field-pair"><label><span>Nombre</span>[text* nombre autocomplete:name]</label><label><span>Cargo</span>[text* cargo]</label></div></fieldset>'
-        . '<fieldset class="tmd-landing-form__field tmd-landing-form__field--wide"><legend>Empresa y ciudad</legend><div class="tmd-landing-form__field-pair"><label><span>Empresa</span>[text* empresa]</label><label><span>Ciudad</span>[text* ciudad]</label></div></fieldset>'
+        . '<label class="tmd-landing-form__field"><span>Nombre</span>[text* nombre autocomplete:name]</label>'
+        . '<label class="tmd-landing-form__field"><span>Cargo</span>[text* cargo]</label>'
+        . '<label class="tmd-landing-form__field"><span>Empresa</span>[text* empresa]</label>'
+        . '<label class="tmd-landing-form__field"><span>Ciudad</span>[text* ciudad]</label>'
         . '<label class="tmd-landing-form__field tmd-landing-form__field--wide"><span>Correo electrónico o celular</span>[text* contacto placeholder "Escribe tu correo o número celular"]</label>'
         . '<label class="tmd-landing-form__field tmd-landing-form__field--wide"><span>Tipo de equipo o necesidad</span>[text* necesidad placeholder "Cuéntanos qué requiere tu operación"]</label>'
-        . '<label class="tmd-landing-form__field tmd-landing-form__field--wide"><span>Peso de la carga, altura de levante y ancho de pasillo</span>[textarea requerimientos placeholder "Cuéntanos los requerimientos de tu operación"]</label>'
+        . '<label class="tmd-landing-form__field"><span>Peso de la carga</span>[text peso_carga]</label>'
+        . '<label class="tmd-landing-form__field"><span>Altura de levante</span>[text altura_levante]</label>'
+        . '<label class="tmd-landing-form__field tmd-landing-form__field--wide"><span>Ancho del pasillo</span>[text ancho_pasillo]</label>'
         . '</div>' . $honeypot . $privacy
         . '<p class="tmd-landing-form__submit">[submit "Solicitar cotización"]</p>'
         . '</div>';
@@ -179,12 +186,152 @@ function tmd_commercial_landing_script_page_content(string $type, int $form_id):
     $asset_root = esc_url_raw(untrailingslashit(get_stylesheet_directory_uri()) . '/assets/img');
     $blocks = [];
 
+    if ('battery' === $type) {
+        return tmd_commercial_landing_script_battery_content($asset_root, $form_id);
+    }
+
     if ('rental' === $type) {
         return tmd_commercial_landing_script_rental_v2_content($form_id, $asset_root);
     }
 
+    $blocks[] = tmd_commercial_landing_script_block(str_replace('TMD_ASSETS', $asset_root, <<<'HTML'
+<section class="tmd-commercial-landing tmd-commercial-landing__hero tmd-commercial-landing__hero--battery" aria-labelledby="tmd-battery-heading">
+  <div class="tmd-commercial-landing__hero-media"><img src="TMD_ASSETS/commercial-landings/baterias-hero.jpeg" alt="" fetchpriority="high" decoding="async"></div>
+  <div class="tmd-commercial-landing__hero-content">
+    <div class="tmd-commercial-landing__hero-copy">
+      <span class="tmd-commercial-landing__eyebrow">Representantes de la Marca Barbillon</span>
+      <h1 id="tmd-battery-heading">Baterías para <em>montacargas eléctricos</em></h1>
+      <p class="tmd-commercial-landing__hero-lead">Venta y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.</p>
+      <a class="tmd-commercial-landing__button" href="#formulario-baterias">Cotizar batería</a>
+      <div class="tmd-commercial-landing__hero-meta">
+        <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#128CEB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="vertical-align:-0.18em;margin-right:8px"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>Cobertura nacional en Colombia</span>
+        <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#128CEB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="vertical-align:-0.18em;margin-right:8px"><path d="m3 10 9-6 9 6v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><path d="M9 21v-6h6v6M7 12h.01M12 12h.01M17 12h.01"/></svg>Instalación en la bodega del cliente</span>
+        <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#128CEB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="vertical-align:-0.18em;margin-right:8px"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18M8 15h.01M12 15h.01M16 15h.01"/></svg>Alquiler desde 1 mes</span>
+      </div>
+    </div>
+  </div>
+</section>
+HTML));
 
-    return tmd_commercial_landing_script_battery_content($asset_root, $form_id);
+    $blocks[] = tmd_commercial_landing_script_block(str_replace('TMD_ASSETS', $asset_root, <<<'HTML'
+<section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--soft" aria-labelledby="tmd-battery-solutions-heading">
+  <div class="tmd-commercial-landing__container">
+    <div class="tmd-commercial-landing__section-heading">
+      <span class="tmd-commercial-landing__eyebrow">Barbillon</span>
+      <h2 id="tmd-battery-solutions-heading">Soluciones de energía para tu equipo</h2>
+      <p>Explora las líneas de producto y consulta su compatibilidad para tu montacargas.</p>
+    </div>
+    <div class="tmd-commercial-landing__solution-grid">
+      <article class="tmd-commercial-landing__solution">
+        <img src="TMD_ASSETS/mega-menu/energy-baterias-plomo.webp" alt="Batería de plomo para montacargas" loading="lazy" decoding="async">
+        <div><h3>Baterías de plomo-ácido</h3><p>Alternativas para equipos de movimiento eléctrico, sujetas a validación de voltaje, capacidad y medidas.</p><a href="/energia/baterias/plomo/">Conocer baterías <span aria-hidden="true">→</span></a></div>
+      </article>
+      <article class="tmd-commercial-landing__solution">
+        <img src="TMD_ASSETS/mega-menu/energy-cargadores.png" alt="Cargador industrial para batería de montacargas" loading="lazy" decoding="async">
+        <div><h3>Cargadores</h3><p>Revisa opciones para baterías de plomo-ácido y las condiciones eléctricas de tu operación.</p><a href="/energia/cargadores/">Conocer cargadores <span aria-hidden="true">→</span></a></div>
+      </article>
+      <article class="tmd-commercial-landing__solution">
+        <img src="TMD_ASSETS/mega-menu/energy-bms.webp" alt="Sistema de monitoreo de batería BMS" loading="lazy" decoding="async">
+        <div><h3>BMS</h3><p>Monitoreo de batería, estado y rendimiento para apoyar el diagnóstico técnico.</p><a href="/energia/bms/">Conocer BMS <span aria-hidden="true">→</span></a></div>
+      </article>
+    </div>
+  </div>
+</section>
+HTML));
+
+    $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
+<section class="tmd-commercial-landing tmd-commercial-landing__section" aria-labelledby="tmd-battery-diagnostic-heading">
+  <div class="tmd-commercial-landing__container tmd-commercial-landing__split">
+    <div>
+      <span class="tmd-commercial-landing__eyebrow">Acompañamiento técnico</span>
+      <h2 id="tmd-battery-diagnostic-heading">Primero entendemos la operación</h2>
+      <p>Antes de recomendar un cambio, revisamos los datos disponibles de la batería, el montacargas y los ciclos de trabajo. La propuesta se basa en la compatibilidad y en las necesidades del cliente.</p>
+    </div>
+    <ul class="tmd-commercial-landing__benefit-list">
+      <li>Revisión de marca, modelo, voltaje y capacidad.</li>
+      <li>Orientación sobre estado y rendimiento de la batería.</li>
+      <li>Alternativas de batería, cargador o monitoreo según la evaluación técnica.</li>
+    </ul>
+  </div>
+</section>
+HTML);
+
+    $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
+<section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--soft" aria-labelledby="tmd-battery-benefits-heading">
+  <div class="tmd-commercial-landing__container">
+    <div class="tmd-commercial-landing__section-heading">
+      <span class="tmd-commercial-landing__eyebrow">Rendimiento</span>
+      <h2 id="tmd-battery-benefits-heading">Una recomendación conectada con tus turnos</h2>
+    </div>
+    <div class="tmd-commercial-landing__card-grid tmd-commercial-landing__card-grid--three">
+      <article class="tmd-commercial-landing__card"><span class="tmd-commercial-landing__number">01</span><h3>Autonomía de operación</h3><p>Consideramos recorridos, carga de trabajo y duración de los turnos al revisar una alternativa.</p></article>
+      <article class="tmd-commercial-landing__card"><span class="tmd-commercial-landing__number">02</span><h3>Estado de las celdas</h3><p>Los datos y la evaluación de la batería ayudan a orientar mantenimiento o reemplazo.</p></article>
+      <article class="tmd-commercial-landing__card"><span class="tmd-commercial-landing__number">03</span><h3>Carga entre turnos</h3><p>Revisamos las ventanas de carga y la compatibilidad del cargador con la batería.</p></article>
+    </div>
+  </div>
+</section>
+HTML);
+
+    $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
+<section class="tmd-commercial-landing tmd-commercial-landing__section" aria-labelledby="tmd-battery-process-heading">
+  <div class="tmd-commercial-landing__container">
+    <div class="tmd-commercial-landing__section-heading">
+      <span class="tmd-commercial-landing__eyebrow">Proceso</span>
+      <h2 id="tmd-battery-process-heading">De los datos del equipo a la solución</h2>
+    </div>
+    <div class="tmd-commercial-landing__steps tmd-commercial-landing__steps--three">
+      <article class="tmd-commercial-landing__step"><h3>Compartes los datos</h3><p>Cuéntanos marca, modelo, voltaje, capacidad y condiciones de uso.</p></article>
+      <article class="tmd-commercial-landing__step"><h3>Validamos la necesidad</h3><p>Revisamos la aplicación y la compatibilidad de batería, cargador y monitoreo.</p></article>
+      <article class="tmd-commercial-landing__step"><h3>Preparamos la cotización</h3><p>Definimos contigo una alternativa de compra o alquiler; el alquiler parte de un mes.</p></article>
+    </div>
+    <p class="tmd-commercial-landing__service-note"><strong>Servicio en sitio:</strong> la instalación y el mantenimiento se realizan en la bodega del cliente, con cobertura en Colombia.</p>
+  </div>
+</section>
+HTML);
+
+    $blocks[] = tmd_commercial_landing_script_block(str_replace('TMD_ASSETS', $asset_root, <<<'HTML'
+<section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--soft" aria-labelledby="tmd-battery-gallery-heading">
+  <div class="tmd-commercial-landing__container">
+    <div class="tmd-commercial-landing__section-heading">
+      <span class="tmd-commercial-landing__eyebrow">Soluciones en operación</span>
+      <h2 id="tmd-battery-gallery-heading">Baterías y equipos de trabajo</h2>
+      <p>Imágenes de referencia; no representan una confirmación de inventario o disponibilidad.</p>
+    </div>
+    <div class="tmd-commercial-landing__battery-gallery">
+      <div class="tmd-commercial-landing__battery-gallery-image tmd-commercial-landing__battery-gallery-image--one" role="img" aria-label="Montacargas en zona de almacenamiento"></div>
+      <div class="tmd-commercial-landing__battery-gallery-image tmd-commercial-landing__battery-gallery-image--two" role="img" aria-label="Batería industrial con conexiones"></div>
+      <div class="tmd-commercial-landing__battery-gallery-image tmd-commercial-landing__battery-gallery-image--three" role="img" aria-label="Detalle de una batería industrial"></div>
+      <div class="tmd-commercial-landing__battery-gallery-image tmd-commercial-landing__battery-gallery-image--four" role="img" aria-label="Montacargas en operación de bodega"></div>
+      <div class="tmd-commercial-landing__battery-gallery-image tmd-commercial-landing__battery-gallery-image--five" role="img" aria-label="Batería industrial en primer plano"></div>
+    </div>
+  </div>
+</section>
+HTML));
+
+    $blocks[] = tmd_commercial_landing_script_shortcode('[tmd_commercial_landing_form id="' . $form_id . '" type="battery"]');
+
+    $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
+<section class="tmd-commercial-landing tmd-commercial-landing__section" aria-labelledby="tmd-battery-faq-heading">
+  <div class="tmd-commercial-landing__container">
+    <div class="tmd-commercial-landing__section-heading">
+      <span class="tmd-commercial-landing__eyebrow">Preguntas frecuentes</span>
+      <h2 id="tmd-battery-faq-heading">Resolvemos tus dudas</h2>
+    </div>
+    <div class="tmd-commercial-landing__faq-grid">
+      <details class="tmd-commercial-landing__faq-item"><summary>¿Qué datos necesitan para recomendar una batería?</summary><div class="tmd-commercial-landing__faq-answer"><p>Solicitamos marca y modelo del montacargas, voltaje y capacidad de la batería actual, además de información sobre la operación.</p></div></details>
+      <details class="tmd-commercial-landing__faq-item"><summary>¿La instalación se hace en mi bodega?</summary><div class="tmd-commercial-landing__faq-answer"><p>Sí. La instalación se realiza en la bodega del cliente y se coordina de acuerdo con la ubicación de la operación en Colombia.</p></div></details>
+      <details class="tmd-commercial-landing__faq-item"><summary>¿También hacen mantenimiento en sitio?</summary><div class="tmd-commercial-landing__faq-answer"><p>Sí. El mantenimiento se coordina en la bodega del cliente.</p></div></details>
+      <details class="tmd-commercial-landing__faq-item"><summary>¿Qué soluciones puedo cotizar?</summary><div class="tmd-commercial-landing__faq-answer"><p>Puedes consultar baterías de plomo-ácido, cargadores y sistemas BMS, de acuerdo con la compatibilidad de tu equipo.</p></div></details>
+      <details class="tmd-commercial-landing__faq-item"><summary>¿En qué ciudades prestan atención?</summary><div class="tmd-commercial-landing__faq-answer"><p>La cobertura comercial es nacional en Colombia. La instalación y el mantenimiento se coordinan en las instalaciones del cliente.</p></div></details>
+      <details class="tmd-commercial-landing__faq-item"><summary>¿Puedo cotizar compra o alquiler?</summary><div class="tmd-commercial-landing__faq-answer"><p>Sí. Indica la modalidad que te interesa. Para el alquiler de baterías, el periodo mínimo es de un mes.</p></div></details>
+    </div>
+  </div>
+</section>
+HTML);
+
+    $blocks[] = tmd_commercial_landing_script_shortcode('[tmd_commercial_landing_related_section topic="baterias"]');
+
+    return implode("\n\n", $blocks);
 }
 
 function tmd_commercial_landing_script_battery_content(string $asset_root, int $form_id): string
@@ -313,21 +460,21 @@ HTML));
 <section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--battery-gallery" aria-labelledby="tmd-battery-gallery-heading">
   <div class="tmd-commercial-landing__container">
     <div class="tmd-commercial-landing__section-heading tmd-commercial-landing__section-heading--stacked">
-      <h2 id="tmd-battery-gallery-heading">Celdas de plomo-ácido Barbillon en operación</h2>
-      <h3>Compartimientos de batería, conectores y zonas de carga en montacargas eléctricos</h3>
+      <h2 id="tmd-battery-gallery-heading">Baterías y equipos eléctricos en operación</h2>
+      <h3>Soluciones de energía y montacargas en entornos de trabajo</h3>
     </div>
     <div class="tmd-commercial-landing__battery-gallery">
       <figure><img src="TMD_ASSETS/commercial-landings/baterias-maqueta/galeria-crown-rd-5200.webp" alt="Montacargas eléctrico de pasillo angosto en bodega" loading="lazy" decoding="async"></figure>
-      <figure><img src="TMD_ASSETS/commercial-landings/baterias-maqueta/galeria-crown-pe-4000-60.webp" alt="Equipo eléctrico para traslado de carga en bodega" loading="lazy" decoding="async"></figure>
-      <figure><img src="TMD_ASSETS/commercial-landings/baterias-maqueta/galeria-ejc112.webp" alt="Apilador eléctrico en operación de bodega" loading="lazy" decoding="async"></figure>
-      <figure><img src="TMD_ASSETS/commercial-landings/baterias-maqueta/galeria-ere225.webp" alt="Estibador eléctrico con plataforma para operador" loading="lazy" decoding="async"></figure>
+      <figure><img src="TMD_ASSETS/commercial-landings/baterias-hero.jpeg" alt="Vista de celdas y terminales de una batería de tracción" loading="lazy" decoding="async"></figure>
+      <figure><img src="TMD_ASSETS/mega-menu/energy-baterias-plomo.webp" alt="Batería industrial de plomo-ácido con conector" loading="lazy" decoding="async"></figure>
+      <figure><img src="TMD_ASSETS/mega-menu/energy-bms.webp" alt="Batería de tracción con monitoreo junto a equipos en bodega" loading="lazy" decoding="async"></figure>
       <figure><img src="TMD_ASSETS/commercial-landings/baterias-maqueta/galeria-etv325.webp" alt="Montacargas eléctrico para trabajo en pasillo" loading="lazy" decoding="async"></figure>
     </div>
   </div>
 </section>
 HTML));
 
-    $blocks[] = tmd_commercial_landing_script_shortcode('[tmd_commercial_landing_form id="' . absint($form_id) . '" type="battery-maqueta"]');
+    $blocks[] = tmd_commercial_landing_script_shortcode('[tmd_commercial_landing_form id="' . intval($form_id) . '" type="battery-maqueta"]');
 
     $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
 <section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--battery-faq" aria-labelledby="tmd-battery-faq-heading">
@@ -358,6 +505,8 @@ HTML);
 
     return implode("\n\n", $blocks);
 }
+
+
 
 function tmd_commercial_landing_script_page_specs(array $form_ids): array
 {
@@ -564,22 +713,6 @@ function tmd_commercial_landing_script_backup_is_valid(): bool
         && (bool) preg_match('/CREATE TABLE/i', $header)
         && is_string($tail)
         && (bool) preg_match('/-- Dump completed on /i', $tail);
-}
-
-function tmd_commercial_landing_script_remove_created(array $page_ids, array $form_ids): array
-{
-    $failures = [];
-    foreach (array_reverse($page_ids) as $post_id) {
-        if (! wp_delete_post($post_id, true)) {
-            $failures[] = 'página ' . (int) $post_id;
-        }
-    }
-    foreach (array_reverse($form_ids) as $post_id) {
-        if (! wp_delete_post($post_id, true)) {
-            $failures[] = 'formulario ' . (int) $post_id;
-        }
-    }
-    return $failures;
 }
 
 function tmd_commercial_landing_script_battery_mail_body(): string
@@ -955,6 +1088,23 @@ function tmd_commercial_landing_script_run_battery_maqueta_update(bool $execute)
     }
 }
 
+
+function tmd_commercial_landing_script_remove_created(array $page_ids, array $form_ids): array
+{
+    $failures = [];
+    foreach (array_reverse($page_ids) as $post_id) {
+        if (! wp_delete_post($post_id, true)) {
+            $failures[] = 'página ' . (int) $post_id;
+        }
+    }
+    foreach (array_reverse($form_ids) as $post_id) {
+        if (! wp_delete_post($post_id, true)) {
+            $failures[] = 'formulario ' . (int) $post_id;
+        }
+    }
+    return $failures;
+}
+
 $created_page_ids = [];
 $created_form_ids = [];
 $seed_lock = null;
@@ -1045,7 +1195,7 @@ try {
             WP_CLI::line('Formulario ' . $form_specs[$type]['title'] . ': ' . $form_action . '.');
         }
         WP_CLI::line('Campos de alquiler: nombre/cargo, empresa/ciudad, correo o celular, necesidad, requerimientos y privacidad; control anti-spam server-side.');
-        WP_CLI::line('Campos de baterías: nombre y cargo, empresa y ciudad, correo o celular, marca/modelo, voltaje/capacidad y compra/alquiler; autorización y control anti-spam conservados.');
+        WP_CLI::line('Campos de baterías: nombre, cargo, empresa, ciudad, correo o celular, equipo, voltaje, capacidad, compra o alquiler y privacidad; control anti-spam server-side.');
         WP_CLI::success('Dry-run sin escrituras. Las páginas se prepararían como borradores y no se publicarían.');
         return;
     }

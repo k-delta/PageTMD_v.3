@@ -95,4 +95,11 @@ render_assert(
         && false === strpos($blog_html, 'Historia de la empresa'),
     'Blog debe envolver hasta tres publicaciones reales priorizadas y omitir una entrada irrelevante.'
 );
+$rental_css = file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/css/tmd-commercial-landing-rental-v2.css');
+render_assert(
+    is_string($rental_css)
+        && false !== strpos($rental_css, 'body.tmd-rental-layout-v2 .ct-container-full,')
+        && false !== strpos($rental_css, 'padding: 0 !important;'),
+    'El layout v2 debe quitar el espaciado superior global de Blocksy en el contenedor de la landing.'
+);
 fwrite(STDOUT, "OK: DOM rental-v2 con doce secciones, shortcodes reales y máximo de inventario.\n");
