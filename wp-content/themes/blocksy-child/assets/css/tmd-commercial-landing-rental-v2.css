@@ -5,10 +5,7 @@ body.tmd-rental-layout-v2 {
   font-family: 'Work Sans', sans-serif;
 }
 
-body.tmd-rental-layout-v2 #header,
-body.tmd-rental-layout-v2 .tmd-mm-header,
 body.tmd-rental-layout-v2 .entry-header,
-body.tmd-rental-layout-v2 .tmd-site-footer,
 body.tmd-rental-layout-v2 .tmd-contact-rail {
   display: none !important;
 }
@@ -82,7 +79,7 @@ body.tmd-rental-layout-v2 .tmd-rental-v2-section li {
   line-height: 1.65;
 }
 
-/* 01. Banner sin header, logo ni CTA. */
+/* 01. Hero de la landing debajo de la navegación global. */
 body.tmd-rental-layout-v2 .tmd-rental-v2__hero {
   display: flex;
   min-height: min(780px, calc(100svh - 24px));
@@ -458,6 +455,10 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__sectors-layout h2 span {
   color: #ffc33c;
 }
 
+body.tmd-rental-layout-v2 .tmd-rental-v2__sectors-layout h2 {
+  color: #fff;
+}
+
 body.tmd-rental-layout-v2 .tmd-rental-v2__sectors-layout h3 {
   color: #e6e6e6;
 }
@@ -476,7 +477,7 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__sector-grid {
   display: grid;
   grid-column: 1 / -1;
   grid-row: 2;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 20px;
   margin-top: 4px;
 }

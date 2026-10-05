@@ -162,8 +162,8 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
         $form_post_storage_before = tmd_commercial_landing_rental_v2_post_record(1556);
         $form_meta_storage_before = tmd_commercial_landing_rental_v2_meta_records(1556);
         $target_meta = [
-            'rank_math_title' => 'Venta o alquiler de montacargas eléctricos | Tecnimontacargas',
-            'rank_math_description' => 'Venta o alquiler de montacargas eléctricos para bodegas, centros de distribución y plantas. Alquiler sin operador desde 15 días, con recomendación técnica según tu operación.',
+            'rank_math_title' => 'Alquiler de montacargas eléctricos | Tecnimontacargas',
+            'rank_math_description' => 'Alquiler de montacargas eléctricos para bodegas, centros de distribución y plantas. Alquiler sin operador desde 15 días, con recomendación técnica según tu operación.',
         ];
         $asset_root = esc_url_raw(untrailingslashit(get_stylesheet_directory_uri()) . '/assets/img');
         $target_content = tmd_commercial_landing_script_rental_v2_content(1556, $asset_root);
@@ -307,7 +307,7 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
 
             $page_result = wp_update_post([
                 'ID' => 1558,
-                'post_title' => 'Venta o alquiler de montacargas eléctricos',
+                'post_title' => 'Alquiler de montacargas eléctricos',
                 'post_content' => wp_slash($target_content),
             ], true);
             if (is_wp_error($page_result) || 1558 !== (int) $page_result) {
@@ -341,7 +341,7 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
             ];
             $verification_failures = [];
             if (! $verified_page instanceof WP_Post
-                || 'Venta o alquiler de montacargas eléctricos' !== $verified_page->post_title
+                || 'Alquiler de montacargas eléctricos' !== $verified_page->post_title
                 || ! hash_equals($hashes['page_target'], hash('sha256', (string) $verified_page->post_content))) {
                 $verification_failures[] = 'página 1558';
             }
@@ -378,7 +378,7 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
                 && hash_equals($hashes['form_before'], tmd_commercial_landing_rental_v2_hash($persisted_form_properties))
                 && hash_equals($hashes['meta_before'], tmd_commercial_landing_rental_v2_hash($persisted_meta));
             $target_persisted = $persisted_page instanceof WP_Post
-                && 'Venta o alquiler de montacargas eléctricos' === $persisted_page->post_title
+                && 'Alquiler de montacargas eléctricos' === $persisted_page->post_title
                 && hash_equals($hashes['page_target'], hash('sha256', (string) $persisted_page->post_content))
                 && hash_equals($hashes['form_target'], tmd_commercial_landing_rental_v2_hash($persisted_form_properties))
                 && hash_equals($hashes['meta_target'], tmd_commercial_landing_rental_v2_hash($persisted_meta));

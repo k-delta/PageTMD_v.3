@@ -167,8 +167,8 @@ $properties_before = $GLOBALS['test_form'];
 $properties_after = tmd_commercial_landing_rental_v2_target_form_properties($properties_before);
 $meta_before = $GLOBALS['test_meta'][1558];
 $meta_after = [
-    'rank_math_title' => 'Venta o alquiler de montacargas eléctricos | Tecnimontacargas',
-    'rank_math_description' => 'Venta o alquiler de montacargas eléctricos para bodegas, centros de distribución y plantas. Alquiler sin operador desde 15 días, con recomendación técnica según tu operación.',
+    'rank_math_title' => 'Alquiler de montacargas eléctricos | Tecnimontacargas',
+    'rank_math_description' => 'Alquiler de montacargas eléctricos para bodegas, centros de distribución y plantas. Alquiler sin operador desde 15 días, con recomendación técnica según tu operación.',
 ];
 $content_after = tmd_commercial_landing_script_rental_v2_content(
     1556, untrailingslashit(get_stylesheet_directory_uri()) . '/assets/img'
@@ -235,7 +235,7 @@ $GLOBALS['test_fail_form_save'] = false;
 
 tmd_commercial_landing_script_run_rental_v2_update(true);
 test_assert(
-    'Venta o alquiler de montacargas eléctricos' === $GLOBALS['test_page']->post_title
+    'Alquiler de montacargas eléctricos' === $GLOBALS['test_page']->post_title
         && $meta_after === $GLOBALS['test_meta'][1558]
         && hash_equals($hashes['TMD_RENTAL_V2_TARGET_PAGE_SHA256'], hash('sha256', $GLOBALS['test_page']->post_content))
         && $properties_after === $GLOBALS['test_form']
@@ -268,7 +268,7 @@ $warning_text = implode("\n", array_column(array_filter(
 ), 1));
 test_assert(
     false !== strpos($warning_text, 'COMMIT fue ambiguo')
-        && 'Venta o alquiler de montacargas eléctricos' === $GLOBALS['test_page']->post_title
+        && 'Alquiler de montacargas eléctricos' === $GLOBALS['test_page']->post_title
         && $properties_after === $GLOBALS['test_form']
         && 'ROLLBACK' === end($GLOBALS['wpdb']->queries),
     'Si COMMIT devuelve estado ambiguo pero el destino persistió, el runner debe conciliarlo por hashes.'

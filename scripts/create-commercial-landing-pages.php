@@ -516,9 +516,9 @@ function tmd_commercial_landing_script_page_specs(array $form_ids): array
     return [
         'rental' => [
             'slug' => 'alquiler-montacargas-electricos',
-            'title' => 'Venta o alquiler de montacargas eléctricos',
-            'rank_title' => 'Venta o alquiler de montacargas eléctricos | Tecnimontacargas',
-            'rank_description' => 'Venta o alquiler de montacargas eléctricos para bodegas, centros de distribución y plantas. Alquiler sin operador desde 15 días, con recomendación técnica según tu operación.',
+            'title' => 'Alquiler de montacargas eléctricos',
+            'rank_title' => 'Alquiler de montacargas eléctricos | Tecnimontacargas',
+            'rank_description' => 'Alquiler de montacargas eléctricos para bodegas, centros de distribución y plantas. Alquiler sin operador desde 15 días, con recomendación técnica según tu operación.',
             'seed' => '2026-10-05-v2:rental',
             'form_id' => $form_ids['rental'],
         ],

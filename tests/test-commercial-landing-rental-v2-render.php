@@ -18,6 +18,12 @@ function home_url($path = '') { return 'https://example.test' . $path; }
 function untrailingslashit($value) { return rtrim($value, '/'); }
 function is_wp_error($value) { return $value instanceof WP_Error; }
 class WP_Error {}
+class WP_Post { public $post_content = ''; }
+function is_page($slug = '') {
+    $current_slug = $GLOBALS['test_current_page_slug'] ?? '';
+    return is_array($slug) ? in_array($current_slug, $slug, true) : $current_slug === $slug;
+}
+function get_queried_object() { return $GLOBALS['test_queried_page'] ?? null; }
 function tmd_inventory_api_items_by_type($type) {
     return array_map(static fn ($number) => ['id' => 'equipment-' . $number, 'subcategory' => 'Eléctricos de 3 ruedas'], range(1, 7));
 }
@@ -79,6 +85,24 @@ $content = str_replace('[contact-form-7 id="1556"]', '<form data-form-id="1556">
 
 render_assert(12 === preg_match_all('/<section\b/i', $content), 'El DOM renderizado debe tener doce secciones en orden.');
 render_assert(1 === preg_match_all('/<h1\b/i', $content), 'El DOM renderizado debe tener un H1.');
+$blocksy_hero_filter = $GLOBALS['filters']['blocksy:single:has-default-hero'][0] ?? null;
+render_assert(is_callable($blocksy_hero_filter), 'La landing debe registrar el filtro para suprimir el hero automático de Blocksy.');
+$GLOBALS['test_current_page_slug'] = 'alquiler-montacargas-electricos';
+$GLOBALS['test_queried_page'] = new WP_Post();
+$GLOBALS['test_queried_page']->post_content = 'tmd-rental-v2-section';
+$theme_hero = $blocksy_hero_filter(true) ? '<h1 class="page-title">Título de WordPress</h1>' : '';
+render_assert(
+    1 === preg_match_all('/<h1\b/i', $theme_hero . $content),
+    'La página completa debe conservar solo el H1 del hero de la maqueta.'
+);
+render_assert(false === $blocksy_hero_filter(false), 'La landing v2 mantiene desactivado el hero automático de Blocksy.');
+$GLOBALS['test_queried_page']->post_content = 'contenido anterior';
+render_assert(true === $blocksy_hero_filter(true), 'Las páginas de alquiler sin el marcador v2 conservan el hero de Blocksy.');
+render_assert(false === $blocksy_hero_filter(false), 'Las páginas de alquiler sin el marcador v2 conservan el valor false recibido.');
+$GLOBALS['test_current_page_slug'] = 'baterias-para-montacargas';
+$GLOBALS['test_queried_page']->post_content = 'tmd-rental-v2-section';
+render_assert(true === $blocksy_hero_filter(true), 'La página de baterías conserva su comportamiento de hero.');
+render_assert(false === $blocksy_hero_filter(false), 'La página de baterías conserva el valor false recibido.');
 render_assert(6 === preg_match_all('/<details\b/i', $content), 'El DOM renderizado debe tener las seis FAQ.');
 render_assert(
     5 === preg_match_all('/<article data-equipment=/', $inventory_html)
@@ -98,8 +122,15 @@ render_assert(
 $rental_css = file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/css/tmd-commercial-landing-rental-v2.css');
 render_assert(
     is_string($rental_css)
+        && false === strpos($rental_css, 'body.tmd-rental-layout-v2 #header')
+        && false === strpos($rental_css, 'body.tmd-rental-layout-v2 .tmd-mm-header')
+        && false === strpos($rental_css, 'body.tmd-rental-layout-v2 .tmd-site-footer')
+        && 1 === preg_match(
+            '/body\.tmd-rental-layout-v2 \.entry-header,\s*body\.tmd-rental-layout-v2 \.tmd-contact-rail\s*\{\s*display: none !important;\s*\}/',
+            $rental_css
+        )
         && false !== strpos($rental_css, 'body.tmd-rental-layout-v2 .ct-container-full,')
         && false !== strpos($rental_css, 'padding: 0 !important;'),
-    'El layout v2 debe quitar el espaciado superior global de Blocksy en el contenedor de la landing.'
+    'El layout v2 conserva visibles navegación/footer, oculta el título duplicado y quita el espaciado superior global.'
 );
 fwrite(STDOUT, "OK: DOM rental-v2 con doce secciones, shortcodes reales y máximo de inventario.\n");

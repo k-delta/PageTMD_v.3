@@ -1,30 +1,17 @@
-/* Oculta el título automático de WordPress/Blocksy y conserva el H1 del hero. */
-body.page-id-1558 .entry-header,
-body.page-id-1558 .ct-entry-header,
-body.page-id-1558 .ct-hero-section,
-body.page-id-1558 .hero-section,
-body.page-id-1558 .wp-block-post-title,
-body.page-id-1558 h1.entry-title,
+/* La landing v2 suprime el hero de Blocksy desde PHP; los títulos de baterías se ocultan aquí. */
 body.tmd-commercial-landing-battery .entry-header,
-body.page-id-1558 .page-title,
-body.page-id-1558 .page-title-container,
-body.page-alquiler-montacargas-electricos .entry-header,
 body.tmd-commercial-landing-battery .page-title,
 body.tmd-commercial-landing-battery .page-title-container,
-body.tmd-commercial-landing-battery .ct-page-title,
-body.page-id-1558 .ct-page-title,
-body.page-alquiler-montacargas-electricos .ct-page-title {
+body.tmd-commercial-landing-battery .ct-page-title {
   display: none !important;
 }
 
-body.page-alquiler-montacargas-electricos .entry-content,
-body.page-id-1558 .entry-content,
+body.tmd-rental-layout-v2 .entry-content,
 body.tmd-commercial-landing-battery .entry-content {
   margin-top: 0 !important;
 }
 
-body.page-alquiler-montacargas-electricos .site-main,
-body.page-id-1558 .site-main,
+body.tmd-rental-layout-v2 .site-main,
 body.tmd-commercial-landing-battery .site-main {
   padding-top: 0 !important;
 }

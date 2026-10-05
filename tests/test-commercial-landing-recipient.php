@@ -293,6 +293,13 @@ tmd_commercial_landing_recipient_assert(
     'info@tmdual.com' === $form_specs['battery']['mail']['recipient'],
     'El formulario nuevo de baterías debe dirigirse al correo autorizado.'
 );
+$page_specs = tmd_commercial_landing_script_page_specs(['rental' => 1556, 'battery' => 1559]);
+tmd_commercial_landing_recipient_assert(
+    'Alquiler de montacargas eléctricos' === $page_specs['rental']['title']
+        && 'Alquiler de montacargas eléctricos | Tecnimontacargas' === $page_specs['rental']['rank_title']
+        && 'Alquiler de montacargas eléctricos para bodegas, centros de distribución y plantas. Alquiler sin operador desde 15 días, con recomendación técnica según tu operación.' === $page_specs['rental']['rank_description'],
+    'La creación de la landing debe guardar título y metadatos enfocados únicamente en alquiler.'
+);
 
 $managed_form_id = 200;
 $managed_form_title = 'TMD | Cotización de alquiler y venta de montacargas eléctricos';
@@ -372,8 +379,9 @@ $hero_block_end = false === $hero_heading_position
     ? false
     : strpos($rental_content, '<!-- /wp:html -->', $hero_heading_position);
 tmd_commercial_landing_recipient_assert(
-    false !== strpos($rental_content, 'Venta o alquiler de montacargas <span>eléctricos</span>'),
-    'El hero debe mantener el H1 exacto de la maqueta vigente como HTML editable.'
+    false !== strpos($rental_content, 'Alquiler de montacargas <span>eléctricos</span>')
+        && false === strpos($rental_content, 'Venta o alquiler de montacargas'),
+    'El hero debe mantener el H1 actualizado por la aclaración del usuario como HTML editable.'
 );
 tmd_commercial_landing_recipient_assert(
     false !== $hero_start
@@ -448,6 +456,28 @@ tmd_commercial_landing_recipient_assert(
     1 === preg_match_all('/<h1\\b/i', $rental_content)
         && 6 === preg_match_all('/<details\\b/i', $rental_content),
     'La landing debe contener un H1 y las seis preguntas frecuentes aprobadas.'
+);
+$sector_start = strpos($rental_content, '<section class="tmd-rental-v2-section tmd-rental-v2__sectors"');
+$sector_end = false === $sector_start ? false : strpos($rental_content, '</section>', $sector_start);
+$sector_markup = false === $sector_end ? '' : substr($rental_content, $sector_start, $sector_end - $sector_start);
+tmd_commercial_landing_recipient_assert(
+    5 === preg_match_all('/<article><img\\b/', $sector_markup)
+        && false !== strpos($sector_markup, '<h4>Logística</h4><p>Recepción, almacenamiento y despacho para varios clientes.</p>')
+        && false !== strpos($sector_markup, '<h4>Alimentos y bebidas</h4><p>Operaciones continuas y entornos exigentes.</p>')
+        && false !== strpos($sector_markup, '<h4>Manufactura</h4><p>Materia prima y producto terminado entre planta y bodega.</p>')
+        && false !== strpos($sector_markup, '<h4>Retail</h4><p>Reposición y distribución desde centros propios.</p>')
+        && false !== strpos($sector_markup, '<h4>Construcción</h4><p>Movimiento de materiales para obras y proyectos.</p>')
+        && false !== strpos($sector_markup, 'montacargas-construccion.webp'),
+    'Sectores debe conservar el layout y presentar las cinco cards con textos e imagen de construcción aprobados.'
+);
+$rental_v2_css = file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/css/tmd-commercial-landing-rental-v2.css');
+tmd_commercial_landing_recipient_assert(
+    is_string($rental_v2_css)
+        && 1 === preg_match('/body\\.tmd-rental-layout-v2 \\.tmd-rental-v2__sectors-layout h2 \\{\\s*color:\\s*#fff;/i', $rental_v2_css)
+        && 1 === preg_match('/body\\.tmd-rental-layout-v2 \\.tmd-rental-v2__sectors-layout h2 span \\{\\s*color:\\s*#ffc33c;/i', $rental_v2_css)
+        && false !== strpos($rental_v2_css, 'grid-template-columns: repeat(5, minmax(0, 1fr));')
+        && is_file(dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/img/commercial-landings-v2/montacargas-construccion.webp'),
+    'La sección de sectores debe mostrar el H2 blanco con énfasis amarillo y admitir cinco tarjetas en escritorio.'
 );
 tmd_commercial_landing_recipient_assert(
     1 === substr_count($rental_content, '[contact-form-7 id="1556"]')

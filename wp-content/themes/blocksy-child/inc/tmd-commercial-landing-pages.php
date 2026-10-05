@@ -350,6 +350,14 @@ function tmd_commercial_landing_is_rental_v2(): bool
     return $page instanceof WP_Post && str_contains((string) $page->post_content, 'tmd-rental-v2-section');
 }
 
+add_filter('blocksy:single:has-default-hero', static function ($has_default_hero): bool {
+    if (tmd_commercial_landing_is_rental_v2()) {
+        return false;
+    }
+
+    return (bool) $has_default_hero;
+});
+
 add_filter('body_class', static function (array $classes): array {
     if (is_page('baterias-para-montacargas')) {
         $classes[] = 'tmd-commercial-landing-battery';
