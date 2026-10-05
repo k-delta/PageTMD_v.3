@@ -129,6 +129,18 @@ La solicitud vigente sustituye para baterías el hero y el contenido de la versi
 
 **Validación local y preflight (2026-10-05):** Siete fotos del catálogo quedaron copiadas y optimizadas como WebP dentro de la carpeta de la maqueta (1,1 MB total); las fuentes no se modificaron. Pasaron los tests focalizados de maqueta y blog, destinatario, render/update rental-v2 y antispam; también los lint PHP y `git diff --check`. No hay configuración de Stylelint. La revisión de imágenes confirmó el uso neutral de batería/monitoreo existente y montacargas del catálogo. Producción y `origin/main` estaban en `08cad501`; el CSS y el PHP activos coinciden con ese SHA. El check detectó solo el delta intencional de baterías en CSS/PHP/assets y snapshots de auditoría desactualizados: páginas 1558/1559 ausentes del snapshot local, contenido de nueve páginas y tres posts actualizado en producción, versiones de terceros más nuevas y cinco entradas productivas más una entrada local con nombres distintos en el listado de plugins. Esas rutas no se incluyen en el deploy; no hubo deriva en plugins propios, Compose ni otros archivos de tema. No se usó `--pull`. Todavía no hay backup ni escritura DEC-11. La URL pública responde HTTP 200 y conserva el contenido anterior. El navegador Playwright está disponible para validar escritorio y móvil tras desplegar.
 
+### Reemplazo de fotografías de baterías — 2026-10-05 (DEC-12)
+
+El usuario solicita cambiar las fotografías de montacargas en la página `/baterias-para-montacargas/` por imágenes del catálogo nuevo `BATERIAS SEGÚN REFERENCIAS/`. Se conservan los nueve bloques y sus textos; las imágenes propias de cargador/BMS y las miniaturas de artículos relacionados no se reemplazan.
+
+- [x] Copiar siete fuentes del catálogo a `assets/img/commercial-landings/baterias-referencias/` como WebP optimizadas, sin alterar la carpeta original.
+- [x] Cambiar referencias y textos alternativos del generador de contenido, además de la foto dinámica del formulario.
+- [x] Añadir un modo WP-CLI de actualización solo de la página 1559, con precondición de hash, dry-run, backup completo verificado, snapshot privado de contenido, transacción y verificación posterior.
+- [ ] Ejecutar lint PHP, revisar el diff y completar el manifiesto de despliegue exacto.
+- [ ] Desplegar los archivos seleccionados sobre el `main` actual y verificar SHA/Action.
+- [ ] Crear backup completo reciente, ejecutar dry-run y actualizar únicamente `post_content` de la página 1559.
+- [ ] Purgar caché y verificar HTTP, referencias de imágenes y visualización de escritorio/móvil; registrar hashes y evidencia productiva en DEC-12.
+
 ## Evidencia consultada
 
 - Context7, WordPress Functions: `wp_insert_post()` devuelve ID o `WP_Error` y admite `post_type`, `post_name`, `post_content` y `post_status`.

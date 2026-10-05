@@ -495,28 +495,28 @@ try {
     tmd_battery_test_assert((bool) preg_match('/--tmd-landing-navy:\s*#262e4f\s*;/i', $css), 'el azul marino aprobado debe ser #262E4F');
     tmd_battery_test_assert((bool) preg_match('/\.tmd-commercial-landing__form-layout--battery-maqueta \.wpcf7-submit\s*\{[^}]*background:\s*var\(--tmd-landing-navy\);[^}]*color:\s*#fff;/s', $css), 'el CTA debe usar fondo aprobado y texto blanco');
 
-    $asset_directory = dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/img/commercial-landings/baterias-maqueta';
+    $asset_directory = dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/img/commercial-landings/baterias-referencias';
     $catalog_assets = [
-        'CROWN RD 3000/1.png' => 'banner-crown-rd-3000.webp',
-        'HYSTER E50Z-33/2.png' => 'diferencial-hyster-e50z-33.webp',
-        'ETV214/1.png' => 'ventajas-etv214.webp',
-        'EFG425/1.png' => 'proceso-efg425.webp',
-        'CROWN RD 5200/2.png' => 'galeria-crown-rd-5200.webp',
-        'ETV325/1.png' => 'galeria-etv325.webp',
-        'ETV214/2.png' => 'formulario-etv214.webp',
+        '24V-375/7.png' => ['banner-bateria-barbillon.webp', 1672, 941],
+        '48V-770/5.png' => ['diferencial-celdas-barbillon.webp', 1448, 1086],
+        '36V-930/6.png' => ['ventajas-bateria-barbillon.webp', 1448, 1086],
+        '48V-620/4.png' => ['proceso-cambio-bateria-barbillon.webp', 1448, 1086],
+        '48V-920/6.png' => ['galeria-bateria-celdas-barbillon.webp', 1448, 1086],
+        '80V-620/5.png' => ['galeria-bateria-traccion-barbillon.webp', 1448, 1086],
+        '80V-620/6.png' => ['formulario-bateria-barbillon.webp', 1448, 1086],
     ];
-    foreach ($catalog_assets as $source_relative => $destination_name) {
-        $source_path = dirname(__DIR__) . '/EQUIPOS SEGUN REFERENCIA/' . $source_relative;
+    foreach ($catalog_assets as $source_relative => [$destination_name, $expected_width, $expected_height]) {
+        $source_path = dirname(__DIR__) . '/BATERIAS SEGÚN REFERENCIAS/' . $source_relative;
         $destination_path = $asset_directory . '/' . $destination_name;
         tmd_battery_test_assert(is_file($destination_path), 'debe existir la copia del catálogo: ' . $destination_name);
         $destination_image = getimagesize($destination_path);
         tmd_battery_test_assert(
             is_array($destination_image)
                 && IMAGETYPE_WEBP === $destination_image[2]
-                && 1448 === $destination_image[0]
-                && 1086 === $destination_image[1]
+                && $expected_width === $destination_image[0]
+                && $expected_height === $destination_image[1]
                 && filesize($destination_path) < 500000,
-            'la copia debe ser WebP optimizada de 1448x1086: ' . $destination_name
+            'la copia debe ser WebP optimizada y conservar dimensiones: ' . $destination_name
         );
         if (is_file($source_path)) {
             $source_image = getimagesize($source_path);
@@ -530,9 +530,9 @@ try {
             );
         }
     }
-    tmd_battery_test_assert(false !== strpos($page_content, 'commercial-landings/baterias-maqueta/banner-crown-rd-3000.webp'), 'el hero debe usar la copia local del catálogo');
-    tmd_battery_test_assert(false !== strpos($page_content, 'commercial-landings/baterias-maqueta/galeria-etv325.webp'), 'la galería debe usar copias locales del catálogo');
-    tmd_battery_test_assert(false !== strpos($theme_inc, 'commercial-landings/baterias-maqueta/formulario-etv214.webp'), 'la sección de cotización debe usar su copia local del catálogo');
+    tmd_battery_test_assert(false !== strpos($page_content, 'commercial-landings/baterias-referencias/banner-bateria-barbillon.webp'), 'el hero debe usar una copia local del catálogo de baterías');
+    tmd_battery_test_assert(false !== strpos($page_content, 'commercial-landings/baterias-referencias/galeria-bateria-traccion-barbillon.webp'), 'la galería debe usar copias locales del catálogo de baterías');
+    tmd_battery_test_assert(false !== strpos($theme_inc, 'commercial-landings/baterias-referencias/formulario-bateria-barbillon.webp'), 'la sección de cotización debe usar su copia local del catálogo de baterías');
 
     $sql_tail = "\n-- Dump completed on " . gmdate('Y-m-d H:i:s') . "\n";
     $sql_header = "-- MariaDB dump\nCREATE TABLE `wp_posts` (`ID` bigint);\n";
