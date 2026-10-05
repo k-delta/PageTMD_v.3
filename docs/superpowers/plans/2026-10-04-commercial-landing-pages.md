@@ -88,14 +88,30 @@
 - [x] Confirmar en producción las páginas publicadas 1558 y 1559. La verificación de lectura identificó el hero anterior en la página 1558 y guardó su hash como precondición para el cambio de contenido.
 - [ ] Completar la actualización del hero después de resolver el control de deriva, preparar el backup verificado y obtener autorización ligada a los archivos y al contenido exactos.
 
-**Validation:** La prueba focal `php tests/test-commercial-landing-recipient.php`, `php -l` del seed, del archivo de tema y de la prueba pasan en esta iteración; `git diff --check` pasa. `./scripts/sync-production.sh --check` detectó diferencias: los snapshots locales no incluyen las páginas 1558/1559 que existen en producción, y los archivos CSS/PHP locales contienen los cambios de esta iteración; también encontró `.DS_Store` locales ignorados. No se ejecutó `--pull`. Falta navegador conectado para verificar el render visual; no se ha escrito contenido ni desplegado código en producción.
+**Validation:** La prueba focal `php tests/test-commercial-landing-recipient.php`, `php -l` del seed, del archivo de tema y de la prueba pasan en la iteración anterior; `git diff --check` pasa. `./scripts/sync-production.sh --check` detectó diferencias: los snapshots locales no incluyen las páginas 1558/1559 que existen en producción, y los archivos CSS/PHP locales contienen cambios de esta iteración; también encontró `.DS_Store` locales ignorados. No se ejecutó `--pull`. Después, bajo DEC-09, se retiró de la página publicada 1558 el bloque de cifras con backup completo y snapshot verificados, dry-run y comprobación posterior a `wp_update_post()`. La URL canónica respondió HTTP 200 sin las clases de la sección y conservó el mínimo mensual y el bloque siguiente. No se capturó una verificación visual de navegador; el ajuste del hero sigue pendiente y no se desplegó código.
 
 ### Ajuste del hero de alquiler — 2026-10-04
 
-- [x] Reutilizar `alquiler-hero.jpeg` y reconstruir la referencia con texto HTML editable; mantener el header global, el CTA, el mínimo de un mes, la cobertura Colombia y el alquiler sin operador.
+- [x] Reutilizar `alquiler-hero.jpeg` y reconstruir la referencia con texto HTML editable; quitar la línea auxiliar y mantener el header global, el CTA, el mínimo de un mes, la cobertura Colombia y el alquiler sin operador.
 - [x] Ajustar jerarquía tipográfica, posición de la imagen, legibilidad y comportamiento móvil en el CSS de la landing.
 - [x] Actualizar el contenido que generará el seed y cubrirlo con aserciones de la prueba focal.
 - [ ] Aplicar la actualización a la página publicada ID 1558 y verificar escritorio/móvil después de aprobar el manifiesto exacto.
+
+### Retiro de la franja de cifras — 2026-10-04
+
+- [x] Retirar las tres tarjetas de cifras y la nota de marcas inmediata del generador, sus estilos y el contenido publicado de la página 1558; conservar el mínimo de un mes en los demás bloques.
+- [x] Crear y verificar un backup privado de MariaDB y una copia del contenido previo de la página antes de la escritura.
+- [x] Ejecutar un dry-run que confirmó un solo bloque objetivo, actualizar con `wp_update_post()` y comprobar la URL canónica.
+
+**Validation:** `php -l scripts/create-commercial-landing-pages.php` y `git diff --check` pasan. La lectura pública posterior respondió HTTP 200; no encontró `tmd-commercial-landing__stats` ni `tmd-commercial-landing__brand-note`, y sí encontró el mínimo de un mes y la sección de necesidades siguiente. No se realizó captura visual de escritorio o móvil.
+
+### Iconos del hero de baterías — 2026-10-04 (DEC-10)
+
+- [ ] Añadir en el generador tres SVG inline decorativos de 18 px y trazo azul: marcador para cobertura, bodega para instalación y calendario para alquiler desde un mes. Mantener intactos los tres textos y la fila existente.
+- [ ] Respaldar y actualizar únicamente el bloque HTML de la página publicada `/baterias-para-montacargas/`; verificar que cada SVG y texto aparezcan una sola vez.
+- [ ] Validar sintaxis PHP, diff y presentación pública en escritorio/móvil, incluidos el ajuste de línea y la ausencia de overflow horizontal.
+
+**Validation:** Antes de la escritura, backup completo verificado y copia del contenido de la página. Después, comprobar HTTP, DOM público y render visual en los dos tamaños; no desplegar código del tema en esta operación.
 
 ## Evidencia consultada
 
@@ -104,6 +120,7 @@
 - Context7, Contact Form 7: `WPCF7_Submission::get_contact_form()`, `get_posted_data()` y `add_spam_log()` sustentan el filtro `wpcf7_spam`, restringido por el marcador de los formularios administrados.
 - Context7, WordPress Functions: `is_email()` devuelve la dirección válida o `false`; valida el override antes de incluirlo en los formularios nuevos.
 - Context7, WP-CLI: `wp eval-file -` acepta el script por STDIN; permite probar el seed desplegable sin copiar archivos a producción.
+- Context7, WordPress Functions: `wp_update_post()` devuelve el ID al actualizar y permite solicitar `WP_Error`; el actualizador aplica `wp_slash()` al contenido para conservarlo al guardar y al restaurar.
 - Context7, Rank Math: `rank_math_title` y `rank_math_description` son metadatos reconocidos. El tema ya usa `rank_math/json_ld` y WordPress/Rank Math resuelve canonical y sitemap.
 - Código local: `tmd_inventory_api_items_by_type()` filtra por estado publicable; la clasificación de montacargas separa subcategorías eléctricas y combustión. La nueva página limita el resultado a cinco registros.
 - Código local: el menú de escritorio/móvil está en `template-parts/tmd-header.php`; navegación móvil puede envolver acciones y CSS actual `tmd-mm-panel-footer` ya permite wrap.

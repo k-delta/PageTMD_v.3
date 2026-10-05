@@ -2,7 +2,8 @@
 
 ## Estado
 
-- Aprobado — 2026-10-04. La instrucción del usuario «implementa el spec» aprueba las rutas y la dirección visual descritas aquí para esta primera versión, con posibilidad de ajustar después textos e imágenes.
+- Versión base aprobada — 2026-10-04. La instrucción del usuario «implementa el spec» aprueba las rutas y la dirección visual de la primera versión, con posibilidad de ajustar después textos e imágenes.
+- Enmienda DEC-10 aprobada — 2026-10-04. El usuario aprobó la versión escrita del SPEC para los iconos de los tres textos existentes del hero de baterías.
 
 ## Contexto
 
@@ -23,6 +24,8 @@
 [Solicitud] Los textos fuente son `pageTMD/01 - Alquiler o venta  de montacargas eléctricos.docx` y `pageTMD/02 - Baterías para montacargas eléctricos.docx`. Las guías visuales son `pageTMD/EQUIPOS VISUALES.docx` y `pageTMD/Sugerencias para referencias visuales.docx`. Las fotografías de referencia están en `pageTMD/EQUIPOS SEGUN REFERENCIA/`.
 
 [Decisión del usuario: 2026-10-04] Omitir de la página de alquiler la franja de tres cifras (120 equipos, servicio técnico desde 2000 y periodo mínimo de 1 mes) y la nota de marcas inmediatamente posterior. El mínimo de alquiler se conserva en el banner y los demás bloques aprobados; la retirada no elimina las secciones de respaldo técnico o preguntas frecuentes.
+
+[Solicitud y diseño aprobados en conversación: 2026-10-04] En `/baterias-para-montacargas/`, añadir iconos SVG lineales azules de 18 px a los tres textos existentes del hero: marcador para “Cobertura nacional en Colombia”, bodega para “Instalación en la bodega del cliente” y calendario para “Alquiler desde 1 mes”. Mantener los textos sin cambios, tratar los SVG como decorativos para lectores de pantalla y conservar el ajuste de la fila en móvil.
 
 Mapa de navegación propuesto (jerarquía del menú; las rutas de las páginas nuevas son independientes de esa jerarquía):
 
@@ -82,7 +85,7 @@ En las tablas siguientes, `imageN` identifica un archivo dentro de `word/media/`
 
 | Bloques de baterías | Estructura del Word 02 | Referencias visuales |
 |---|---|---|
-| Banner | Título, apoyo, batería protagonista y CTA confirmado; omitir la franja de tres iconos del ejemplo original. | `image5.jpeg`–`image8.jpeg` de “Sugerencias”: versiones clara/oscura, con y sin texto. |
+| Banner | Título, apoyo, batería protagonista y CTA confirmado. No duplicar una franja de beneficios; los tres textos existentes bajo el CTA reciben los iconos especificados en DEC-10. | `image5.jpeg`–`image8.jpeg` de “Sugerencias”: versiones clara/oscura, con y sin texto. |
 | Soluciones | Tres tarjetas con flecha: plomo-ácido, cargadores y BMS, enlazadas a las páginas correspondientes. | `image8.jpg` del Word 02 solo define distribución; su tarjeta de litio no forma parte del contenido final. |
 | Diferencial | Párrafo sobre oferta y diagnóstico previo a reemplazar; sin duplicar los cuatro iconos del ejemplo. | `image2.jpg` del Word 02. |
 | Ventajas | Tres tarjetas: autonomía, celdas y carga entre turnos; conservar las condiciones del texto fuente, sin prometer rendimientos universales. | `image6.jpg` del Word 02 aporta la composición, no la cantidad de tarjetas de su captura. |
@@ -136,6 +139,7 @@ En las tablas siguientes, `imageN` identifica un archivo dentro de `word/media/`
 25. [Solicitud] Respetar las cantidades y los contenidos de bloques recogidos en las tablas de Contexto; las capturas de ejemplo no añaden ofertas, sectores, marcas ni beneficios ausentes del texto confirmado.
 26. [Solicitud] Dar a ambas vistas una familia visual coherente con el sitio y con las guías entregadas. La propuesta concreta de tipografía, escala, variantes de banner y componentes se recoge en DEC-03.
 27. [Regla: docs/domain/INVENTORY.md:5-14] Seleccionar imágenes cuya representación del equipo y tecnología corresponda al contenido; una imagen editorial no debe presentarse como fotografía de una unidad disponible. Las tarjetas de inventario usan la imagen asociada al registro canónico.
+28. [Enmienda DEC-10 aprobada] En el hero de `/baterias-para-montacargas/`, mostrar antes de cada uno de los tres textos acordados un icono SVG lineal azul de 18 px: marcador, bodega y calendario, respectivamente. El SVG es decorativo (`aria-hidden="true"`); los textos permanecen íntegros y accesibles. La fila debe seguir envolviendo correctamente en móvil sin overflow horizontal.
 
 ## Reglas de negocio
 
@@ -236,6 +240,7 @@ Campos recibidos en los documentos, manteniendo sus agrupaciones:
 15. [Solicitud] Las dos vistas aplican la dirección visual acordada en DEC-03 y la paleta del sitio. Las capturas rojas de los Word de contenido no introducen un segundo sistema de colores.
 16. [Solicitud] La revisión de contenido no encuentra una oferta de alquiler por semanas o 15 días, una cobertura limitada a Bogotá ni tarjetas de litio o sectores no confirmados añadidos desde las imágenes de ejemplo.
 17. [Solicitud] Se omite la franja de cifras de montacargas y su nota de marcas inmediata; se conservan las cuatro necesidades de operación, las tres soluciones de baterías y los demás pasos y formularios aprobados.
+18. [Enmienda DEC-10 aprobada] Los tres apoyos del hero de baterías muestran sus iconos antes del texto, mantienen exactamente la redacción existente y se leen sin depender del icono; en escritorio y móvil no hay solapamientos ni overflow horizontal.
 
 ## Validación
 
@@ -245,6 +250,7 @@ Campos recibidos en los documentos, manteniendo sus agrupaciones:
 - Evidencia de análisis del SPEC: los cuatro DOCX se leyeron mediante su XML y se inspeccionaron visualmente sus imágenes incrustadas. Se compararon fuentes canónicas con capturas y estilos calculados de las ocho páginas públicas indicadas en Contexto. Los recursos de análisis están en `.codex-tmp/landing-style-study/` y no son archivos de publicación.
 - [Verificación productiva: 2026-10-04] Las páginas raíz `/alquiler-montacargas-electricos/` (ID 1558) y `/baterias-para-montacargas/` (ID 1559) están publicadas. La primera conserva el hero anterior; esta iteración prepara el nuevo texto editable y sus estilos. La revisión visual en navegador, escritorio y móvil sigue pendiente.
 - Antes de aplicar el nuevo hero en producción: crear backup verificado, revisar deriva con `./scripts/sync-production.sh --check`, actualizar únicamente los archivos aprobados y el contenido del ID 1558, purgar caché y comprobar HTTP, sitemap, metadatos y navegador. Un HTTP 200 por sí solo no acredita el render ni el flujo.
+- Antes de aplicar DEC-10 en producción: verificar la deriva del tema y preparar backup verificado del contenido de la página de baterías. Actualizar únicamente los tres elementos del hero y desplegar solo los archivos aprobados; purgar caché y comprobar la página en escritorio y móvil.
 
 ## Riesgos
 
@@ -278,5 +284,6 @@ Campos recibidos en los documentos, manteniendo sus agrupaciones:
 - DEC-05: Los dos formularios CF7 incorporan un campo honeypot fuera del área visible y controles server-side aplicados únicamente a formularios con el marcador de estas páginas. El límite es de cinco envíos por hora y dirección `REMOTE_ADDR`; la IP se usa solo en una clave hash de transient. Se conservan los controles de User-Agent existentes y el registro anti-spam no guarda valores enviados por el usuario.
 - DEC-06: El seed WP-CLI obtiene un bloqueo exclusivo en el directorio temporal del proceso antes de consultar formularios/páginas y mantiene el bloqueo durante dry-run o ejecución para impedir duplicados por ejecuciones concurrentes.
 - DEC-07: Los formularios nuevos de alquiler y baterías usan `info@tmdual.com` como destinatario. El seed lo recibe mediante `TMD_COMMERCIAL_LANDINGS_RECIPIENT`, valida el override y solo usa como alternativa el destinatario del formulario CF7 ID 14 cuando no se indica override. El formulario 14 permanece de solo lectura y no se altera.
-- DEC-08: Tras revisar la página publicada, el usuario aprobó reconstruir el banner de alquiler a partir de su nueva referencia como composición HTML editable. Se conserva la fotografía limpia existente `alquiler-hero.jpeg`; el H1 pasa a “Alquiler de montacargas eléctricos”, seguido por “Equipos propios con mantenimiento en nuestro taller técnico” y el párrafo sobre contrabalanceados, reach, pantógrafos y apiladores. Se mantiene el CTA, los datos de mínimo mensual, cobertura Colombia y alquiler sin operador, y el logotipo del header global no se duplica dentro del banner.
+- DEC-08: Tras revisar la página publicada, el usuario aprobó reconstruir el banner de alquiler a partir de su nueva referencia como composición HTML editable. Se conserva la fotografía limpia existente `alquiler-hero.jpeg`; el H1 pasa a “Alquiler de montacargas eléctricos”, seguido por “Equipos propios con mantenimiento en nuestro taller técnico” y el párrafo sobre contrabalanceados, reach, pantógrafos y apiladores. Se elimina la línea “Soluciones para Colombia”, se mantiene el CTA y los datos de mínimo mensual, cobertura Colombia y alquiler sin operador, y el logotipo del header global no se duplica dentro del banner.
 - DEC-09: Por solicitud explícita del usuario del 2026-10-04, la página de alquiler no incluye la sección HTML de tres cifras ni la nota de marcas inmediatamente posterior. El periodo mínimo de un mes se conserva en el hero, proceso, situaciones de alquiler y FAQ; las demás secciones permanecen.
+- DEC-10 (enmienda aprobada — 2026-10-04): En la página de baterías, añadir SVG lineales decorativos de 18 px en azul `#128CEB` a los tres textos existentes del hero: marcador para cobertura nacional, bodega para instalación en sitio y calendario para el alquiler desde un mes. Mantener las etiquetas textuales, no duplicar la franja ni modificar el hero de alquiler.

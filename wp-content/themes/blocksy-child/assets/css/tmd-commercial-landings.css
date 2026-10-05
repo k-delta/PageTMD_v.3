@@ -219,11 +219,6 @@ body.tmd-commercial-landing-battery .site-main {
   color: var(--tmd-landing-yellow);
 }
 
-.tmd-commercial-landing__hero--rental .tmd-commercial-landing__eyebrow {
-  margin-bottom: 22px;
-  font-size: 15px;
-}
-
 .tmd-commercial-landing__hero-subhead {
   max-width: 790px;
   margin-bottom: 24px;
@@ -326,7 +321,6 @@ body.tmd-commercial-landing-battery .site-main {
   font-size: 17px;
 }
 
-.tmd-commercial-landing__stats,
 .tmd-commercial-landing__card-grid,
 .tmd-commercial-landing__steps,
 .tmd-commercial-landing__sector-grid,
@@ -335,11 +329,6 @@ body.tmd-commercial-landing-battery .site-main {
   gap: 18px;
 }
 
-.tmd-commercial-landing__stats {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.tmd-commercial-landing__stat,
 .tmd-commercial-landing__card,
 .tmd-commercial-landing__step,
 .tmd-commercial-landing__sector,
@@ -349,25 +338,6 @@ body.tmd-commercial-landing-battery .site-main {
   border-radius: 12px;
   background: #fff;
   box-shadow: 0 10px 26px rgba(38, 46, 79, 0.06);
-}
-
-.tmd-commercial-landing__stat {
-  padding: 26px 24px;
-  text-align: center;
-}
-
-.tmd-commercial-landing__stat strong {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--tmd-landing-navy);
-  font-size: clamp(25px, 3vw, 34px);
-  font-weight: 700;
-  line-height: 1.15;
-}
-
-.tmd-commercial-landing__stat span {
-  color: var(--tmd-landing-muted);
-  font-size: 14px;
 }
 
 .tmd-commercial-landing__card-grid--four,
@@ -759,13 +729,6 @@ body.tmd-commercial-landing-battery .site-main {
   text-align: center;
 }
 
-.tmd-commercial-landing__brand-note {
-  margin: 18px 0 0;
-  color: var(--tmd-landing-muted);
-  font-size: 14px;
-  text-align: center;
-}
-
 .tmd-commercial-landing__inventory-link {
   margin: 22px 0 0;
   text-align: center;
@@ -1014,11 +977,6 @@ body.tmd-commercial-landing-battery .site-main {
     font-size: clamp(46px, 11vw, 56px);
   }
 
-  .tmd-commercial-landing__hero--rental .tmd-commercial-landing__eyebrow {
-    margin-bottom: 16px;
-    font-size: 12px;
-  }
-
   .tmd-commercial-landing__hero-subhead {
     margin-bottom: 18px;
     font-size: 22px;
@@ -1037,7 +995,6 @@ body.tmd-commercial-landing-battery .site-main {
     font-size: 16px;
   }
 
-  .tmd-commercial-landing__stats,
   .tmd-commercial-landing__card-grid--four,
   .tmd-commercial-landing__card-grid--three,
   .tmd-commercial-landing__sector-grid,
@@ -1075,14 +1032,6 @@ body.tmd-commercial-landing-battery .site-main {
 
   .tmd-commercial-landing .tmd-landing-form__grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .tmd-commercial-landing__stats {
-    gap: 12px;
-  }
-
-  .tmd-commercial-landing__stat {
-    padding: 20px 18px;
   }
 
   .tmd-commercial-landing__solution > img {
