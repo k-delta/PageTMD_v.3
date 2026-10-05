@@ -112,13 +112,33 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__hero-content {
   color: #fff;
 }
 
+body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow {
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 18px;
+  color: #128ceb;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  line-height: 1.25;
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow::before {
+  flex: 0 0 64px;
+  height: 3px;
+  background: currentColor;
+  content: '';
+}
+
 body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1 {
-  max-width: 700px;
+  max-width: 980px;
   margin: 0 0 20px;
   color: #fff;
-  font-size: clamp(40px, 4.1vw, 52px);
+  font-size: clamp(48px, 4.8vw, 66px);
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.05;
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1 span {
@@ -140,33 +160,42 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__hero p {
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__metrics {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 24px;
   margin-top: 30px;
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__metrics p {
-  flex: 0 1 240px;
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  max-width: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
   margin: 0;
   color: #fff;
   font-size: 15px;
   font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__metric-icon {
-  flex: 0 0 30px;
-  color: #fff;
+  display: grid;
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 195, 60, .14);
+  color: #ffc33c;
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__metric-icon svg {
   display: block;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
 }
 
 /* 02. Descripción y cifras sin tarjetas. */
@@ -208,17 +237,43 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__description .tmd-rental-v2__metrics {
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__description .tmd-rental-v2__metrics p {
-  display: block;
+  display: flex;
   color: #3c3c3c;
   font-size: 15px;
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__description .tmd-rental-v2__metric-icon {
-  display: none;
+  display: grid;
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__description .tmd-rental-v2__metrics strong {
   color: #128ceb;
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__description-cta {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 28px;
+  padding: 12px 22px;
+  border-radius: 8px;
+  background: #0d70bd;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__description-cta:hover {
+  background: #0b5c9e;
+  color: #fff;
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__description-cta:focus-visible {
+  outline: 3px solid #262e4f;
+  outline-offset: 3px;
 }
 
 /* 03. Necesidades de la operación. */
@@ -893,8 +948,18 @@ body.tmd-rental-layout-v2 :focus-visible {
     object-position: 66% center;
   }
 
+  body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow {
+    gap: 10px;
+    font-size: 13px;
+    letter-spacing: .04em;
+  }
+
+  body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow::before {
+    flex-basis: 34px;
+  }
+
   body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1 {
-    font-size: clamp(36px, 9vw, 42px);
+    font-size: clamp(40px, 10vw, 46px);
   }
 
   body.tmd-rental-layout-v2 .tmd-rental-v2__hero h2 {
@@ -934,7 +999,12 @@ body.tmd-rental-layout-v2 :focus-visible {
   }
 
   body.tmd-rental-layout-v2 .tmd-rental-v2__description .tmd-rental-v2__metrics {
-    gap: 8px;
+    gap: 18px;
+  }
+
+  body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__metrics,
+  body.tmd-rental-layout-v2 .tmd-rental-v2__description .tmd-rental-v2__metrics {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   body.tmd-rental-layout-v2 .tmd-rental-v2__sectors {

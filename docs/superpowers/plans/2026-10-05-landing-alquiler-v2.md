@@ -29,8 +29,12 @@ El SPEC fija los requisitos. Esta hoja registra su implementación. La hoja espe
 11. [x] Aplicar la aclaración DEC-12 del usuario: H1 limitado a “Alquiler de montacargas eléctricos”; texto inicial del H2 de sectores en blanco; cinco tarjetas con las etiquetas y textos de la nueva referencia, conservando el diseño existente; optimizar la fotografía suministrada para la tarjeta Construcción. Añadir pruebas focales de contenido, cantidad de tarjetas y contraste.
 12. [x] Revisar los cambios y ejecutar las pruebas focales después de la enmienda. La actualización local quedó validada; la revisión del diff H1 no encontró hallazgos críticos o importantes.
 13. [x] Corregir la regla CSS que ocultaba `#header`, `.tmd-mm-header` y `.tmd-site-footer`; conservar las reglas específicas de `.entry-header` y `.tmd-contact-rail`, y actualizar las pruebas y el SPEC según DEC-13. La prueba focal del render y `git diff --check` pasan.
-14. [ ] Tras cerrar todos los gates para el manifiesto y la operación de contenido nuevos, desplegar los archivos autorizados vía `main`; escribir el contenido/formulario/meta autorizados con el actualizador y purgar la página 1558.
-15. [ ] Verificar código/HTTP/HTML/formulario, hashes del código y sync final. Playwright Chromium ya está disponible fuera del repositorio; capturar y revisar escritorio/móvil después de publicar.
+14. [x] Aplicar DEC-14: H1 solo de alquiler, “montacargas eléctricos” en amarillo, tipografía más grande y tres iconos de métricas a 40 px, preservando la imagen de fondo. Añadir aserciones focales para contenido y estilos.
+15. [x] Aplicar DEC-15: conservar el H1 solo de alquiler y añadir el rótulo “SOLUCIÓN PARA TU OPERACIÓN” con línea corta en el azul de marca; actualizar las aserciones de contenido y estilos.
+16. [x] Aplicar DEC-16 a las dos apariciones de métricas: tres columnas en escritorio, iconos semánticos amarillos arriba de cada texto y apilado móvil.
+17. [x] Aplicar DEC-17: añadir debajo de las métricas del bloque descriptivo el botón “cotización →”, enlazado a la sección del formulario.
+18. [ ] Tras cerrar todos los gates para el manifiesto y la operación de contenido nuevos, desplegar los archivos autorizados vía `main`; escribir el contenido/formulario/meta autorizados con el actualizador y purgar la página 1558.
+19. [ ] Verificar código/HTTP/HTML/formulario, hashes del código y sync final. Playwright Chromium ya está disponible fuera del repositorio; capturar y revisar escritorio/móvil después de publicar.
 
 ## Evidencia ya obtenida
 

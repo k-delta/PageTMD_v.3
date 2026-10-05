@@ -27,7 +27,8 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
     $blocks[] = $html_block('<section class="tmd-rental-v2-section tmd-rental-v2__hero" aria-labelledby="tmd-rental-v2-heading">'
         . '<img class="tmd-rental-v2__hero-image" src="' . esc_url($asset('hero-dark.webp')) . '" alt="" fetchpriority="high" decoding="async">'
         . '<div class="tmd-rental-v2__container tmd-rental-v2__hero-content">'
-        . '<h1 id="tmd-rental-v2-heading">Alquiler de montacargas <span>eléctricos</span></h1>'
+        . '<p class="tmd-rental-v2__eyebrow">SOLUCIÓN PARA TU OPERACIÓN</p>'
+        . '<h1 id="tmd-rental-v2-heading">Alquiler de <span>montacargas eléctricos</span></h1>'
         . '<h2>Equipos propios con mantenimiento en nuestro taller técnico</h2>'
         . '<p>Contrabalanceados, reach, pantógrafos y apiladores para bodegas, centros de distribución y plantas que necesitan más equipos en operación sin comprarlos.</p>'
         . $metrics
@@ -38,6 +39,7 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
         . '<h2 id="tmd-rental-v2-description-heading">Montacargas eléctricos para operación continua en bodega</h2>'
         . '<h3>' . esc_html($brand_heading) . '</h3>'
         . $metrics
+        . '<a class="tmd-rental-v2__description-cta" href="#tmd-rental-v2-quote">cotización →</a>'
         . '</div><img src="' . esc_url($asset('description.webp')) . '" alt="Montacargas eléctrico trabajando en una bodega" loading="lazy" decoding="async">'
         . '</div></section>');
 
@@ -108,7 +110,7 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
         . '</div></div></section>');
 
     $blocks[] = $html_block('<div class="tmd-rental-v2-section tmd-rental-v2__quote-faq"><div class="tmd-rental-v2__container tmd-rental-v2__quote-faq-layout">'
-        . '<section class="tmd-rental-v2__quote" aria-labelledby="tmd-rental-v2-quote-heading"><div class="tmd-rental-v2__quote-copy">'
+        . '<section id="tmd-rental-v2-quote" class="tmd-rental-v2__quote" aria-labelledby="tmd-rental-v2-quote-heading"><div class="tmd-rental-v2__quote-copy">'
         . '<h2 id="tmd-rental-v2-quote-heading">Cotiza el alquiler de montacargas en Bogotá</h2>'
         . '<h3>Un asesor comercial responde tu solicitud de lunes a viernes en horario laboral</h3></div>'
         . '<div class="tmd-rental-v2__form">[contact-form-7 id="' . absint($form_id) . '"]</div></section>'

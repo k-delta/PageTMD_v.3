@@ -379,15 +379,16 @@ $hero_block_end = false === $hero_heading_position
     ? false
     : strpos($rental_content, '<!-- /wp:html -->', $hero_heading_position);
 tmd_commercial_landing_recipient_assert(
-    false !== strpos($rental_content, 'Alquiler de montacargas <span>eléctricos</span>')
+    false !== strpos($rental_content, '<h1 id="tmd-rental-v2-heading">Alquiler de <span>montacargas eléctricos</span></h1>')
         && false === strpos($rental_content, 'Venta o alquiler de montacargas'),
-    'El hero debe mantener el H1 actualizado por la aclaración del usuario como HTML editable.'
+    'El hero debe anunciar únicamente alquiler y resaltar “montacargas eléctricos” como HTML editable.'
 );
 tmd_commercial_landing_recipient_assert(
     false !== $hero_start
         && false !== $hero_end
-        && false === strpos(substr($rental_content, $hero_start, $hero_end - $hero_start), 'tmd-commercial-landing__eyebrow'),
-    'El hero no debe incluir una línea auxiliar adicional.'
+        && false !== strpos($rental_hero, 'class="tmd-rental-v2__eyebrow">SOLUCIÓN PARA TU OPERACIÓN</p>')
+        && strpos($rental_hero, 'tmd-rental-v2__eyebrow') < strpos($rental_hero, '<h1 id="tmd-rental-v2-heading">'),
+    'El rótulo de operación debe aparecer antes del H1 en el hero.'
 );
 tmd_commercial_landing_recipient_assert(
     false !== $hero_block_start

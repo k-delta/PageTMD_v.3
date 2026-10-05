@@ -52,6 +52,19 @@ require_once dirname(__DIR__) . '/wp-content/themes/blocksy-child/inc/tmd-commer
 function render_assert($condition, $message) {
     if (! $condition) { fwrite(STDERR, 'FAIL: ' . $message . "\n"); exit(1); }
 }
+function render_css_rule_body(string $css, string $selector): string {
+    $selector_start = strpos($css, $selector);
+    if (false === $selector_start) { return ''; }
+    $open_brace = strpos($css, '{', $selector_start);
+    if (false === $open_brace) { return ''; }
+    $depth = 0;
+    for ($index = $open_brace; $index < strlen($css); $index++) {
+        if ('{' === $css[$index]) { $depth++; }
+        if ('}' === $css[$index]) { $depth--; }
+        if (0 === $depth) { return substr($css, $open_brace + 1, $index - $open_brace - 1); }
+    }
+    return '';
+}
 $GLOBALS['published_posts'] = [
     (object) ['post_title' => 'Mantenimiento de montacargas', 'post_excerpt' => 'Bodega y operación', 'post_content' => 'Mantenimiento preventivo', 'url' => '/blog/mantenimiento', 'thumbnail' => '/uploads/mantenimiento.webp'],
     (object) ['post_title' => 'Baterías de tracción en bodega', 'post_excerpt' => 'Carga y baterías', 'post_content' => 'Operación eléctrica', 'url' => '/blog/baterias', 'thumbnail' => '/uploads/baterias.webp'],
@@ -120,6 +133,13 @@ render_assert(
     'Blog debe envolver hasta tres publicaciones reales priorizadas y omitir una entrada irrelevante.'
 );
 $rental_css = file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/css/tmd-commercial-landing-rental-v2.css');
+$hero_h1_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1') : '';
+$hero_h1_span_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1 span') : '';
+$hero_eyebrow_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow') : '';
+$hero_eyebrow_rule_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow::before') : '';
+$mobile_css = is_string($rental_css) ? render_css_rule_body($rental_css, '@media (max-width: 720px)') : '';
+$mobile_hero_h1_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1');
+$mobile_eyebrow_rule_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow::before');
 render_assert(
     is_string($rental_css)
         && false === strpos($rental_css, 'body.tmd-rental-layout-v2 #header')
@@ -132,5 +152,23 @@ render_assert(
         && false !== strpos($rental_css, 'body.tmd-rental-layout-v2 .ct-container-full,')
         && false !== strpos($rental_css, 'padding: 0 !important;'),
     'El layout v2 conserva visibles navegación/footer, oculta el título duplicado y quita el espaciado superior global.'
+);
+render_assert(
+    false !== strpos($content, '<p class="tmd-rental-v2__eyebrow">SOLUCIÓN PARA TU OPERACIÓN</p>')
+        && false !== strpos($content, '<h1 id="tmd-rental-v2-heading">Alquiler de <span>montacargas eléctricos</span></h1>')
+        && false !== strpos($hero_h1_css, 'font-size: clamp(48px, 4.8vw, 66px);')
+        && false !== strpos($mobile_hero_h1_css, 'font-size: clamp(40px, 10vw, 46px);')
+        && false !== strpos($hero_h1_span_css, 'color: #ffc33c;')
+        && false !== strpos($hero_eyebrow_css, 'color: #128ceb;')
+        && false !== strpos($hero_eyebrow_rule_css, 'flex: 0 0 64px;')
+        && false !== strpos($hero_eyebrow_rule_css, 'height: 3px;')
+        && false !== strpos($hero_eyebrow_rule_css, 'background: currentColor;')
+        && false !== strpos($hero_eyebrow_rule_css, "content: '';" )
+        && false !== strpos($mobile_eyebrow_rule_css, 'flex-basis: 34px;')
+        && 1 === preg_match(
+            '/body\.tmd-rental-layout-v2 \.tmd-rental-v2__metric-icon svg\s*\{\s*display: block;\s*width: 40px;\s*height: 40px;\s*\}/',
+            $rental_css
+        ),
+    'El hero mantiene el H1 solo de alquiler, el rótulo azul, el acento amarillo y los iconos métricos de 40 px.'
 );
 fwrite(STDOUT, "OK: DOM rental-v2 con doce secciones, shortcodes reales y máximo de inventario.\n");
