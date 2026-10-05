@@ -831,6 +831,40 @@ function tmd_commercial_landing_script_save_battery_rollback_artifact(
     return $artifact_path;
 }
 
+function tmd_commercial_landing_script_normalize_battery_form_properties(
+    WPCF7_ContactForm $form,
+    array $properties
+): array {
+    foreach ([
+        'wpcf7_sanitize_form',
+        'wpcf7_sanitize_mail',
+        'wpcf7_sanitize_messages',
+        'wpcf7_sanitize_additional_settings',
+    ] as $sanitizer) {
+        if (! function_exists($sanitizer)) {
+            throw new RuntimeException('La API de normalización de Contact Form 7 no está disponible.');
+        }
+    }
+
+    if (! is_array($properties['mail'] ?? null)) {
+        throw new RuntimeException('El correo principal de Contact Form 7 no tiene propiedades reconocibles.');
+    }
+
+    $normalized_properties = [
+        'form' => wpcf7_sanitize_form((string) ($properties['form'] ?? '')),
+        'mail' => wpcf7_sanitize_mail($properties['mail']),
+        'mail_2' => wpcf7_sanitize_mail(is_array($properties['mail_2'] ?? null) ? $properties['mail_2'] : []),
+        'messages' => wpcf7_sanitize_messages(is_array($properties['messages'] ?? null) ? $properties['messages'] : []),
+        'additional_settings' => wpcf7_sanitize_additional_settings((string) ($properties['additional_settings'] ?? '')),
+    ];
+    $normalized_properties['mail']['active'] = true;
+
+    $normalized_form = clone $form;
+    $normalized_form->set_properties($normalized_properties);
+
+    return $normalized_form->get_properties();
+}
+
 function tmd_commercial_landing_script_run_battery_maqueta_update(bool $execute): void
 {
     if (! class_exists('WPCF7_ContactForm')
@@ -882,6 +916,7 @@ function tmd_commercial_landing_script_run_battery_maqueta_update(bool $execute)
             throw new RuntimeException('El correo principal de CF7 1557 no tiene una configuración reconocible.');
         }
         $target_form_properties['mail']['body'] = tmd_commercial_landing_script_battery_mail_body();
+        $target_form_properties = tmd_commercial_landing_script_normalize_battery_form_properties($form, $target_form_properties);
         $current_form_hash = tmd_commercial_landing_script_hash_form_properties($current_form_properties);
         $target_form_hash = tmd_commercial_landing_script_hash_form_properties($target_form_properties);
         $target_form_markup = (string) $target_form_properties['form'];
@@ -993,20 +1028,47 @@ function tmd_commercial_landing_script_run_battery_maqueta_update(bool $execute)
                 throw new RuntimeException('El correo principal de CF7 1557 cambió durante la actualización.');
             }
             $locked_target_form_properties['mail']['body'] = tmd_commercial_landing_script_battery_mail_body();
+            $locked_target_form_properties = tmd_commercial_landing_script_normalize_battery_form_properties(
+                $locked_form,
+                $locked_target_form_properties
+            );
             if (! hash_equals($target_form_sha256, tmd_commercial_landing_script_hash_form_properties($locked_target_form_properties))) {
                 throw new RuntimeException('La configuración destino del formulario cambió bajo el bloqueo; no se modificó producción.');
             }
 
-            $saved_form = wpcf7_save_contact_form([
-                'id' => 1557,
-                'title' => $locked_form->title(),
-                'locale' => $locked_form->locale(),
-                'form' => $locked_target_form_properties['form'],
-                'mail' => $locked_target_form_properties['mail'],
-                'mail_2' => $locked_target_form_properties['mail_2'] ?? [],
-                'messages' => $locked_target_form_properties['messages'] ?? [],
-                'additional_settings' => $locked_target_form_properties['additional_settings'] ?? '',
-            ], 'save');
+            // CF7's Sendinblue callback reads editor POST fields that do not exist in WP-CLI.
+            // Leave its stored integration property untouched during this narrow content update.
+            $sendinblue_callback = 'wpcf7_sendinblue_save_contact_form';
+            $sendinblue_priority = function_exists('has_action')
+                ? has_action('wpcf7_save_contact_form', $sendinblue_callback)
+                : false;
+            $sendinblue_removed = false;
+            if (false !== $sendinblue_priority) {
+                $sendinblue_removed = remove_action('wpcf7_save_contact_form', $sendinblue_callback, (int) $sendinblue_priority);
+                if (! $sendinblue_removed) {
+                    throw new RuntimeException('No se pudo preservar la integración Sendinblue del formulario.');
+                }
+            }
+
+            try {
+                $saved_form = wpcf7_save_contact_form([
+                    'id' => 1557,
+                    'title' => $locked_form->title(),
+                    'locale' => $locked_form->locale(),
+                    'form' => $locked_target_form_properties['form'],
+                    'mail' => $locked_target_form_properties['mail'],
+                    'mail_2' => $locked_target_form_properties['mail_2'] ?? [],
+                    'messages' => $locked_target_form_properties['messages'] ?? [],
+                    'additional_settings' => $locked_target_form_properties['additional_settings'] ?? '',
+                ], 'save');
+            } finally {
+                if ($sendinblue_removed) {
+                    add_action('wpcf7_save_contact_form', $sendinblue_callback, (int) $sendinblue_priority, 3);
+                    if (false === has_action('wpcf7_save_contact_form', $sendinblue_callback)) {
+                        throw new RuntimeException('No se pudo restaurar la integración Sendinblue después de guardar el formulario.');
+                    }
+                }
+            }
             if (! $saved_form instanceof WPCF7_ContactForm
                 || 1557 !== (int) $saved_form->id()
                 || ! hash_equals($target_form_hash, tmd_commercial_landing_script_hash_form_properties($saved_form->get_properties()))) {

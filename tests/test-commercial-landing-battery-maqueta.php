@@ -59,6 +59,8 @@ class WP_Error
 
 class WPCF7_ContactForm
 {
+    private $local_properties = null;
+
     public function id(): int
     {
         return 1557;
@@ -76,7 +78,14 @@ class WPCF7_ContactForm
 
     public function get_properties(): array
     {
-        return $GLOBALS['tmd_battery_form_properties'];
+        return is_array($this->local_properties)
+            ? $this->local_properties
+            : $GLOBALS['tmd_battery_form_properties'];
+    }
+
+    public function set_properties(array $properties): void
+    {
+        $this->local_properties = array_merge($this->get_properties(), $properties);
     }
 }
 
@@ -184,17 +193,95 @@ function clean_post_cache($post_id): void {}
 function get_post($post_id) { return 1559 === (int) $post_id ? $GLOBALS['tmd_battery_page'] : null; }
 function get_post_meta($post_id, string $key, $single = false) { return '2026-10-04-v1:battery'; }
 function wpcf7_contact_form($id) { return 1557 === (int) $id ? new WPCF7_ContactForm() : false; }
+function has_action(string $hook, string $callback = '')
+{
+    return 'wpcf7_save_contact_form' === $hook
+        && 'wpcf7_sendinblue_save_contact_form' === $callback
+        && ! empty($GLOBALS['tmd_battery_sendinblue_hook_registered'])
+        ? 10
+        : false;
+}
+function remove_action(string $hook, string $callback, int $priority = 10): bool
+{
+    if (false === has_action($hook, $callback) || 10 !== $priority) {
+        return false;
+    }
+    $GLOBALS['tmd_battery_sendinblue_hook_registered'] = false;
+    return true;
+}
+function add_action(string $hook, string $callback, int $priority = 10, int $accepted_args = 1): bool
+{
+    if ('wpcf7_save_contact_form' !== $hook
+        || 'wpcf7_sendinblue_save_contact_form' !== $callback
+        || 10 !== $priority
+        || 3 !== $accepted_args) {
+        return false;
+    }
+    $GLOBALS['tmd_battery_sendinblue_hook_registered'] = true;
+    return true;
+}
+
+function wpcf7_sanitize_form(string $input): string
+{
+    return trim($input);
+}
+
+function wpcf7_sanitize_mail(array $input): array
+{
+    $values = array_merge([
+        'active' => false,
+        'subject' => '',
+        'sender' => '',
+        'recipient' => '',
+        'body' => '',
+        'additional_headers' => '',
+        'attachments' => '',
+        'use_html' => false,
+        'exclude_blank' => false,
+    ], $input);
+
+    return [
+        'active' => (bool) $values['active'],
+        'subject' => trim((string) $values['subject']),
+        'sender' => trim((string) $values['sender']),
+        'recipient' => trim((string) $values['recipient']),
+        'body' => trim((string) $values['body']),
+        'additional_headers' => trim((string) $values['additional_headers']),
+        'attachments' => trim((string) $values['attachments']),
+        'use_html' => (bool) $values['use_html'],
+        'exclude_blank' => (bool) $values['exclude_blank'],
+    ];
+}
+
+function wpcf7_sanitize_messages(array $input): array
+{
+    return array_map(static fn ($message): string => trim((string) $message), $input);
+}
+
+function wpcf7_sanitize_additional_settings(string $input): string
+{
+    return trim($input);
+}
 
 function wpcf7_save_contact_form(array $data, string $context = 'save')
 {
     ++WP_CLI::$form_saves;
     $GLOBALS['tmd_battery_form_properties'] = [
-        'form' => $data['form'],
-        'mail' => $data['mail'],
-        'mail_2' => $data['mail_2'],
-        'messages' => $data['messages'],
-        'additional_settings' => $data['additional_settings'],
+        'form' => wpcf7_sanitize_form($data['form']),
+        'mail' => wpcf7_sanitize_mail($data['mail']),
+        'mail_2' => wpcf7_sanitize_mail($data['mail_2']),
+        'messages' => wpcf7_sanitize_messages($data['messages']),
+        'additional_settings' => wpcf7_sanitize_additional_settings($data['additional_settings']),
     ];
+    $GLOBALS['tmd_battery_form_properties']['mail']['active'] = true;
+    if (false !== has_action('wpcf7_save_contact_form', 'wpcf7_sendinblue_save_contact_form')) {
+        $GLOBALS['tmd_battery_form_properties']['sendinblue'] = [
+            'enable_contact_list' => false,
+            'contact_lists' => [],
+            'enable_transactional_email' => false,
+            'email_template' => 0,
+        ];
+    }
     if (! empty($GLOBALS['tmd_battery_drop_transaction_after_form_save'])) {
         $GLOBALS['wpdb']->in_transaction = false;
         $GLOBALS['tmd_battery_drop_transaction_after_form_save'] = false;
@@ -234,6 +321,7 @@ function tmd_battery_test_reset(): void
         'messages' => ['mail_sent_ok' => 'Recibido'],
         'additional_settings' => 'demo_setting: retained',
     ];
+    $GLOBALS['tmd_battery_sendinblue_hook_registered'] = true;
     $GLOBALS['wpdb'] = new TMD_Battery_Test_WPDB();
     $GLOBALS['tmd_battery_page_content_override'] = null;
     $GLOBALS['tmd_battery_drop_transaction_after_form_save'] = false;
@@ -246,6 +334,10 @@ function tmd_battery_test_reset(): void
     $form_target = $GLOBALS['tmd_battery_form_properties'];
     $form_target['form'] = tmd_commercial_landing_script_form_markup('battery-maqueta');
     $form_target['mail']['body'] = tmd_commercial_landing_script_battery_mail_body();
+    $form_target = tmd_commercial_landing_script_normalize_battery_form_properties(
+        new WPCF7_ContactForm(),
+        $form_target
+    );
     putenv('TMD_BATTERY_PAGE_EXPECTED_SHA256=' . hash('sha256', $GLOBALS['tmd_battery_page']->post_content));
     putenv('TMD_BATTERY_PAGE_TARGET_SHA256=' . hash('sha256', $page_target));
     putenv('TMD_BATTERY_FORM_EXPECTED_SHA256=' . tmd_commercial_landing_script_hash_form_properties($GLOBALS['tmd_battery_form_properties']));
@@ -492,6 +584,8 @@ try {
     tmd_battery_test_assert(! $GLOBALS['wpdb']->in_transaction && 1 === WP_CLI::$form_saves && 1 === WP_CLI::$page_saves, 'la ejecución aprobada debe guardar página y formulario en una transacción');
     tmd_battery_test_assert(hash('sha256', $GLOBALS['tmd_battery_page']->post_content) === getenv('TMD_BATTERY_PAGE_TARGET_SHA256'), 'la página debe terminar con el hash destino');
     tmd_battery_test_assert(tmd_commercial_landing_script_hash_form_properties($GLOBALS['tmd_battery_form_properties']) === getenv('TMD_BATTERY_FORM_TARGET_SHA256'), 'el formulario debe terminar con el hash destino completo');
+    tmd_battery_test_assert(10 === has_action('wpcf7_save_contact_form', 'wpcf7_sendinblue_save_contact_form'), 'la integración Sendinblue debe volver a quedar conectada después del guardado');
+    tmd_battery_test_assert(false === array_key_exists('sendinblue', $GLOBALS['tmd_battery_form_properties']), 'la actualización WP-CLI no debe agregar valores Sendinblue por defecto que faltaban en el formulario original');
     tmd_battery_test_assert(is_file($backup_root . '/battery-page-1559-form-1557-before-maqueta.json'), 'la ejecución debe guardar el snapshot previo privado');
     tmd_battery_test_assert($expected_page !== hash('sha256', $GLOBALS['tmd_battery_page']->post_content) && $expected_form !== tmd_commercial_landing_script_hash_form_properties($GLOBALS['tmd_battery_form_properties']), 'el destino debe diferir del estado original');
 
