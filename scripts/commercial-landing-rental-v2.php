@@ -40,7 +40,11 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
         . '<h3>' . esc_html($brand_heading) . '</h3>'
         . $metrics
         . '<a class="tmd-rental-v2__description-cta" href="#tmd-rental-v2-quote">cotización →</a>'
-        . '</div><img src="' . esc_url($asset('description.webp')) . '" alt="Montacargas eléctrico trabajando en una bodega" loading="lazy" decoding="async">'
+        . '</div><div class="tmd-rental-v2__description-visual"><img src="' . esc_url($asset('description.webp')) . '" alt="Montacargas eléctrico trabajando en una bodega" loading="lazy" decoding="async">'
+        . '<div class="tmd-rental-v2__description-badge"><span class="tmd-rental-v2__description-badge-accent" aria-hidden="true"></span>'
+        . '<svg class="tmd-rental-v2__description-badge-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 6v29m0-24h3m-3 6h3m-3 6h3m-3 6h3M10 12h15l5 7v11H10V12Zm20 7h7l5 6v5H30M16 17h6m-6 5h6"/><circle cx="17" cy="33" r="4"/><circle cx="36" cy="33" r="4"/><path d="M3 38h42"/></svg>'
+        . '<div class="tmd-rental-v2__description-badge-copy"><span>FLOTA DISPONIBLE</span><strong>Equipos listos para tu operación</strong></div>'
+        . '</div></div>'
         . '</div></section>');
 
     $blocks[] = $html_block('<section class="tmd-rental-v2-section tmd-rental-v2__needs" aria-labelledby="tmd-rental-v2-needs-heading">'

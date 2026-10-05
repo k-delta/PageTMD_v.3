@@ -33,8 +33,10 @@ El SPEC fija los requisitos. Esta hoja registra su implementación. La hoja espe
 15. [x] Aplicar DEC-15: conservar el H1 solo de alquiler y añadir el rótulo “SOLUCIÓN PARA TU OPERACIÓN” con línea corta en el azul de marca; actualizar las aserciones de contenido y estilos.
 16. [x] Aplicar DEC-16 a las dos apariciones de métricas: tres columnas en escritorio, iconos semánticos amarillos arriba de cada texto y apilado móvil.
 17. [x] Aplicar DEC-17: añadir debajo de las métricas del bloque descriptivo el botón “cotización →”, enlazado a la sección del formulario.
-18. [ ] Tras cerrar todos los gates para el manifiesto y la operación de contenido nuevos, desplegar los archivos autorizados vía `main`; escribir el contenido/formulario/meta autorizados con el actualizador y purgar la página 1558.
-19. [ ] Verificar código/HTTP/HTML/formulario, hashes del código y sync final. Playwright Chromium ya está disponible fuera del repositorio; capturar y revisar escritorio/móvil después de publicar.
+18. [x] Aplicar DEC-18: aclarar progresivamente la fotografía hacia la derecha y conservar el overlay azul oscuro detrás del texto en el inicio del hero.
+19. [x] Aplicar DEC-19: superponer en la parte inferior de la imagen descriptiva una tarjeta blanca con icono de montacargas, textos de flota y acento azul de marca, adaptable a móvil.
+20. [ ] Tras cerrar todos los gates para el manifiesto y la operación de contenido nuevos, desplegar los archivos autorizados vía `main`; escribir el contenido/formulario/meta autorizados con el actualizador y purgar la página 1558.
+21. [ ] Verificar código/HTTP/HTML/formulario, hashes del código y sync final. Playwright Chromium ya está disponible fuera del repositorio; capturar y revisar escritorio/móvil después de publicar.
 
 ## Evidencia ya obtenida
 
