@@ -3,11 +3,55 @@
 define('ABSPATH', dirname(__DIR__) . '/');
 
 $mock_actions = [];
+$mock_filters = [];
 $mock_contact_mail_calls = 0;
+$mock_transients = [];
+$mock_landing_seed = [];
+$mock_antispam_temp = sys_get_temp_dir() . '/tmd-antispam-' . bin2hex(random_bytes(5));
+mkdir($mock_antispam_temp, 0700);
+define('HOUR_IN_SECONDS', 3600);
 
 function add_action($hook, $callback, $priority = 10, $accepted_args = 1) {
     global $mock_actions;
     $mock_actions[$hook][$priority][] = compact('callback', 'accepted_args');
+}
+
+function add_filter($hook, $callback, $priority = 10, $accepted_args = 1) {
+    global $mock_filters;
+    $mock_filters[$hook][$priority][] = compact('callback', 'accepted_args');
+}
+
+function get_post_meta($post_id, $key, $single = false) {
+    global $mock_landing_seed;
+    return $mock_landing_seed[$post_id][$key] ?? '';
+}
+
+function sanitize_text_field($value) {
+    return trim(strip_tags((string) $value));
+}
+
+function trailingslashit($path) {
+    return rtrim($path, '/') . '/';
+}
+
+function get_temp_dir() {
+    global $mock_antispam_temp;
+    return $mock_antispam_temp;
+}
+
+function wp_hash($value) {
+    return hash('sha256', (string) $value);
+}
+
+function get_transient($key) {
+    global $mock_transients;
+    return $mock_transients[$key] ?? false;
+}
+
+function set_transient($key, $value, $expiration) {
+    global $mock_transients;
+    $mock_transients[$key] = $value;
+    return true;
 }
 
 function wp_unslash($value) {
@@ -38,6 +82,30 @@ class Tmd_Form_Antispam_Submission {
 
     public function add_spam_log($entry) {
         $this->spam_logs[] = $entry;
+    }
+}
+
+class Tmd_Form_Antispam_Rental_Form {
+    public function id() {
+        return 1556;
+    }
+}
+
+class Tmd_Form_Antispam_Rental_Submission extends Tmd_Form_Antispam_Submission {
+    private $posted_data;
+    private $contact_form;
+
+    public function __construct($honeypot) {
+        $this->posted_data = $honeypot;
+        $this->contact_form = new Tmd_Form_Antispam_Rental_Form();
+    }
+
+    public function get_contact_form() {
+        return $this->contact_form;
+    }
+
+    public function get_posted_data($key) {
+        return 'tmd_website' === $key ? $this->posted_data : '';
     }
 }
 
@@ -99,4 +167,33 @@ $abort = tmd_form_antispam_run_cf7_cycle(new Tmd_Form_Antispam_Other_Form(), $su
 tmd_form_antispam_assert(false === $abort, 'El hook no debe afectar otros formularios de Contact Form 7.');
 tmd_form_antispam_assert(2 === $mock_contact_mail_calls, 'Otro formulario de Contact Form 7 debe conservar su transporte.');
 
-fwrite(STDOUT, "OK: detector de User-Agent y aborto focalizado de Contact Form 7.\n");
+$mock_landing_seed[1556]['_tmd_commercial_landing_form_seed'] = '2026-10-04-v1:rental';
+$_SERVER['HTTP_USER_AGENT'] = $normal;
+$_SERVER['REMOTE_ADDR'] = '203.0.113.77';
+$rental_spam_filter = $mock_filters['wpcf7_spam'][20][0]['callback'];
+$empty_honeypot_submission = new Tmd_Form_Antispam_Rental_Submission('');
+$empty_honeypot_is_spam = $rental_spam_filter(false, $empty_honeypot_submission);
+tmd_form_antispam_assert(
+    false === $empty_honeypot_is_spam && [] === $empty_honeypot_submission->spam_logs,
+    'CF7 1556 debe permitir un envío con el honeypot vacío.'
+);
+
+$filled_honeypot_submission = new Tmd_Form_Antispam_Rental_Submission('bot-filled');
+$filled_honeypot_is_spam = $rental_spam_filter(false, $filled_honeypot_submission);
+tmd_form_antispam_assert(
+    true === $filled_honeypot_is_spam
+        && 1 === count($filled_honeypot_submission->spam_logs)
+        && 'Honeypot field was filled.' === $filled_honeypot_submission->spam_logs[0]['reason'],
+    'CF7 1556 debe marcar spam si el honeypot está lleno, sin depender del límite de tasa.'
+);
+tmd_form_antispam_assert(
+    1 === count($mock_transients),
+    'El envío con honeypot lleno debe evitar incrementar el contador de tasa legítimo.'
+);
+
+foreach (glob($mock_antispam_temp . '/*') ?: [] as $temporary_file) {
+    unlink($temporary_file);
+}
+rmdir($mock_antispam_temp);
+
+fwrite(STDOUT, "OK: detector de User-Agent, envío legítimo y honeypot CF7 1556 vacío/lleno.\n");

@@ -17,6 +17,51 @@ function tmd_commercial_landing_rental_v2_hash($value): string
     return hash('sha256', $encoded);
 }
 
+function tmd_commercial_landing_rental_v2_target_form_properties(array $current): array
+{
+    $target = $current;
+    $target['form'] = tmd_commercial_landing_rental_v2_form_markup();
+    $target['mail'] = is_array($target['mail'] ?? null) ? $target['mail'] : [];
+    $target['mail']['body'] = "Solicitud de cotización de montacargas\n\n"
+        . "Nombre y cargo: [nombre_cargo]\nEmpresa y ciudad: [empresa_ciudad]\n"
+        . "Correo o celular: [contacto]\nNecesidad: [necesidad]\n"
+        . "Requerimientos de carga, altura y pasillo: [requerimientos]";
+
+    return $target;
+}
+
+function tmd_commercial_landing_rental_v2_post_record(int $post_id, bool $for_update = false): array
+{
+    global $wpdb;
+
+    $sql = $wpdb->prepare("SELECT * FROM {$wpdb->posts} WHERE ID = %d" . ($for_update ? ' FOR UPDATE' : ''), $post_id);
+    $record = $wpdb->get_row($sql, ARRAY_A);
+    if (! is_array($record) || '' !== $wpdb->last_error) {
+        throw new RuntimeException('No se pudo leer el registro de contenido esperado.');
+    }
+
+    return $record;
+}
+
+function tmd_commercial_landing_rental_v2_meta_records(int $post_id, array $keys = [], bool $for_update = false): array
+{
+    global $wpdb;
+
+    $sql = "SELECT meta_id, meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id = %d";
+    $arguments = [$post_id];
+    if ([] !== $keys) {
+        $sql .= ' AND meta_key IN (' . implode(', ', array_fill(0, count($keys), '%s')) . ')';
+        $arguments = array_merge($arguments, $keys);
+    }
+    $sql .= ' ORDER BY meta_id' . ($for_update ? ' FOR UPDATE' : '');
+    $records = $wpdb->get_results($wpdb->prepare($sql, ...$arguments), ARRAY_A);
+    if (! is_array($records) || '' !== $wpdb->last_error) {
+        throw new RuntimeException('No se pudieron leer los metadatos esperados.');
+    }
+
+    return $records;
+}
+
 function tmd_commercial_landing_rental_v2_save_rollback_artifact(
     string $backup_path,
     WP_Post $page,
@@ -93,6 +138,8 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
             throw new RuntimeException('La API de guardado de Contact Form 7 no está disponible.');
         }
 
+        clean_post_cache(1558);
+        clean_post_cache(1556);
         $page = get_post(1558);
         $form = wpcf7_contact_form(1556);
         if (! $page instanceof WP_Post || 'page' !== $page->post_type
@@ -108,9 +155,15 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
             'rank_math_title' => (string) get_post_meta(1558, 'rank_math_title', true),
             'rank_math_description' => (string) get_post_meta(1558, 'rank_math_description', true),
         ];
+        $page_meta_storage_before = tmd_commercial_landing_rental_v2_meta_records(
+            1558,
+            ['rank_math_title', 'rank_math_description']
+        );
+        $form_post_storage_before = tmd_commercial_landing_rental_v2_post_record(1556);
+        $form_meta_storage_before = tmd_commercial_landing_rental_v2_meta_records(1556);
         $target_meta = [
             'rank_math_title' => 'Venta o alquiler de montacargas eléctricos | Tecnimontacargas',
-            'rank_math_description' => 'Venta de montacargas eléctricos usados y alquiler sin operador desde 15 días. Selección según capacidad, altura y operación en Colombia.',
+            'rank_math_description' => 'Venta o alquiler de montacargas eléctricos para bodegas, centros de distribución y plantas. Alquiler sin operador desde 15 días, con recomendación técnica según tu operación.',
         ];
         $asset_root = esc_url_raw(untrailingslashit(get_stylesheet_directory_uri()) . '/assets/img');
         $target_content = tmd_commercial_landing_script_rental_v2_content(1556, $asset_root);
@@ -120,15 +173,7 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
             throw new RuntimeException('El formulario 1556 no conserva el honeypot esperado; requiere revisión manual.');
         }
 
-        $target_form_properties = $current_form_properties;
-        $target_form_properties['form'] = tmd_commercial_landing_rental_v2_form_markup();
-        $target_form_properties['mail'] = is_array($target_form_properties['mail'] ?? null)
-            ? $target_form_properties['mail']
-            : [];
-        $target_form_properties['mail']['body'] = "Solicitud de cotización de montacargas\n\n"
-            . "Nombre: [nombre]\nCargo: [cargo]\nEmpresa: [empresa]\nCiudad: [ciudad]\n"
-            . "Correo o celular: [contacto]\nNecesidad: [necesidad]\n"
-            . "Requerimientos de carga, altura y pasillo: [requerimientos]\n";
+        $target_form_properties = tmd_commercial_landing_rental_v2_target_form_properties($current_form_properties);
 
         $hashes = [
             'page_before' => hash('sha256', (string) $page->post_content),
@@ -137,6 +182,11 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
             'form_target' => tmd_commercial_landing_rental_v2_hash($target_form_properties),
             'meta_before' => tmd_commercial_landing_rental_v2_hash($page_meta_before),
             'meta_target' => tmd_commercial_landing_rental_v2_hash($target_meta),
+            'meta_storage_before' => tmd_commercial_landing_rental_v2_hash($page_meta_storage_before),
+            'form_storage_before' => tmd_commercial_landing_rental_v2_hash([
+                'post' => $form_post_storage_before,
+                'meta' => $form_meta_storage_before,
+            ]),
         ];
         $expected_names = [
             'page_before' => 'TMD_RENTAL_V2_EXPECTED_PAGE_SHA256',
@@ -145,6 +195,8 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
             'form_target' => 'TMD_RENTAL_V2_TARGET_FORM_SHA256',
             'meta_before' => 'TMD_RENTAL_V2_EXPECTED_META_SHA256',
             'meta_target' => 'TMD_RENTAL_V2_TARGET_META_SHA256',
+            'meta_storage_before' => 'TMD_RENTAL_V2_EXPECTED_META_STORAGE_SHA256',
+            'form_storage_before' => 'TMD_RENTAL_V2_EXPECTED_FORM_STORAGE_SHA256',
         ];
         foreach ($expected_names as $key => $environment_name) {
             $provided = trim((string) getenv($environment_name));
@@ -157,10 +209,22 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
         WP_CLI::line('Página 1558: ' . $hashes['page_before'] . ' → ' . $hashes['page_target'] . '.');
         WP_CLI::line('Formulario 1556: ' . $hashes['form_before'] . ' → ' . $hashes['form_target'] . '.');
         WP_CLI::line('Metadatos Rank Math de 1558: ' . $hashes['meta_before'] . ' → ' . $hashes['meta_target'] . '.');
-        WP_CLI::line('Campos solicitados: cinco grupos; consentimiento, enlace de privacidad y honeypot conservados.');
+        WP_CLI::line('Huella de filas Rank Math: ' . $hashes['meta_storage_before'] . '.');
+        WP_CLI::line('Huella de almacenamiento CF7 1556: ' . $hashes['form_storage_before'] . '.');
+        WP_CLI::line('Campos solicitados: cinco campos; nota de privacidad y honeypot conservados.');
+        $commercial_claims_confirmed = 'yes' === strtolower(trim((string) getenv('TMD_RENTAL_V2_COMMERCIAL_CLAIMS_CONFIRMED')));
+        $inventory_button_contrast_approved = 'yes' === strtolower(trim((string) getenv('TMD_RENTAL_V2_CONTRAST_APPROVED')));
+        WP_CLI::line('Confirmación comercial de 120 equipos y Yale: ' . ($commercial_claims_confirmed ? 'registrada.' : 'pendiente.'));
+        WP_CLI::line('Decisión de contraste del botón de inventario: ' . ($inventory_button_contrast_approved ? 'registrada.' : 'pendiente.'));
         if (! $execute) {
             WP_CLI::success('Dry-run sin escrituras.');
             return;
+        }
+        if (! $commercial_claims_confirmed || ! $inventory_button_contrast_approved) {
+            throw new RuntimeException(
+                'No se permite ejecutar hasta confirmar los datos comerciales y resolver el contraste; '
+                . 'se requieren TMD_RENTAL_V2_COMMERCIAL_CLAIMS_CONFIRMED=yes y TMD_RENTAL_V2_CONTRAST_APPROVED=yes.'
+            );
         }
 
         if (! tmd_commercial_landing_script_backup_is_valid()) {
@@ -190,6 +254,8 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
         if (false === $wpdb->query('START TRANSACTION')) {
             throw new RuntimeException('No se pudo iniciar la transacción del contenido.');
         }
+        $commit_attempted = false;
+        $transaction_confirmed = false;
         try {
             $locked_page = $wpdb->get_row($wpdb->prepare(
                 "SELECT ID, post_type, post_name, post_status, post_title, post_content FROM {$wpdb->posts} WHERE ID = %d FOR UPDATE",
@@ -201,6 +267,42 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
                 || 'Alquiler y venta de montacargas eléctricos' !== ($locked_page['post_title'] ?? '')
                 || ! hash_equals($hashes['page_before'], hash('sha256', (string) ($locked_page['post_content'] ?? '')))) {
                 throw new RuntimeException('La página cambió antes de escribir; la transacción se revertirá.');
+            }
+
+            $locked_page_meta = tmd_commercial_landing_rental_v2_meta_records(
+                1558,
+                ['rank_math_title', 'rank_math_description'],
+                true
+            );
+            if (! hash_equals(
+                $hashes['meta_storage_before'],
+                tmd_commercial_landing_rental_v2_hash($locked_page_meta)
+            )) {
+                throw new RuntimeException('Los metadatos Rank Math cambiaron antes de escribir; la transacción se revertirá.');
+            }
+            clean_post_cache(1558);
+            $locked_page_meta_values = [
+                'rank_math_title' => (string) get_post_meta(1558, 'rank_math_title', true),
+                'rank_math_description' => (string) get_post_meta(1558, 'rank_math_description', true),
+            ];
+            if (! hash_equals($hashes['meta_before'], tmd_commercial_landing_rental_v2_hash($locked_page_meta_values))) {
+                throw new RuntimeException('Los metadatos Rank Math cambiaron antes de escribir; la transacción se revertirá.');
+            }
+
+            $locked_form_post = tmd_commercial_landing_rental_v2_post_record(1556, true);
+            $locked_form_meta = tmd_commercial_landing_rental_v2_meta_records(1556, [], true);
+            if ('wpcf7_contact_form' !== ($locked_form_post['post_type'] ?? '')
+                || ! hash_equals($hashes['form_storage_before'], tmd_commercial_landing_rental_v2_hash([
+                    'post' => $locked_form_post,
+                    'meta' => $locked_form_meta,
+                ]))) {
+                throw new RuntimeException('El formulario CF7 1556 cambió antes de escribir; la transacción se revertirá.');
+            }
+            clean_post_cache(1556);
+            $form = wpcf7_contact_form(1556);
+            if (! $form instanceof WPCF7_ContactForm
+                || ! hash_equals($hashes['form_before'], tmd_commercial_landing_rental_v2_hash($form->get_properties()))) {
+                throw new RuntimeException('Las propiedades de CF7 1556 cambiaron antes de escribir; la transacción se revertirá.');
             }
 
             $page_result = wp_update_post([
@@ -237,23 +339,72 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
                 'rank_math_title' => (string) get_post_meta(1558, 'rank_math_title', true),
                 'rank_math_description' => (string) get_post_meta(1558, 'rank_math_description', true),
             ];
+            $verification_failures = [];
             if (! $verified_page instanceof WP_Post
                 || 'Venta o alquiler de montacargas eléctricos' !== $verified_page->post_title
-                || ! hash_equals($hashes['page_target'], hash('sha256', (string) $verified_page->post_content))
-                || ! hash_equals($hashes['form_target'], tmd_commercial_landing_rental_v2_hash($verified_form_properties))
-                || ! hash_equals($hashes['meta_target'], tmd_commercial_landing_rental_v2_hash($verified_meta))) {
-                throw new RuntimeException('La comprobación posterior del contenido, formulario o metadatos falló.');
+                || ! hash_equals($hashes['page_target'], hash('sha256', (string) $verified_page->post_content))) {
+                $verification_failures[] = 'página 1558';
             }
+            if (! hash_equals($hashes['form_target'], tmd_commercial_landing_rental_v2_hash($verified_form_properties))) {
+                $verification_failures[] = 'propiedades CF7 1556';
+            }
+            if (! hash_equals($hashes['meta_target'], tmd_commercial_landing_rental_v2_hash($verified_meta))) {
+                $verification_failures[] = 'metadatos Rank Math';
+            }
+            if ([] !== $verification_failures) {
+                throw new RuntimeException('La comprobación posterior falló para: ' . implode(', ', $verification_failures) . '.');
+            }
+            $commit_attempted = true;
             if (false === $wpdb->query('COMMIT')) {
                 throw new RuntimeException('No se confirmó la transacción de contenido.');
             }
+            $transaction_confirmed = true;
         } catch (Throwable $exception) {
-            $wpdb->query('ROLLBACK');
+            $rollback_result = $wpdb->query('ROLLBACK');
             clean_post_cache(1558);
-            if (function_exists('wpcf7_contact_form')) {
-                wpcf7_contact_form(1556);
+            clean_post_cache(1556);
+            $persisted_page = get_post(1558);
+            $persisted_form = wpcf7_contact_form(1556);
+            $persisted_form_properties = $persisted_form instanceof WPCF7_ContactForm
+                ? $persisted_form->get_properties()
+                : [];
+            $persisted_meta = [
+                'rank_math_title' => (string) get_post_meta(1558, 'rank_math_title', true),
+                'rank_math_description' => (string) get_post_meta(1558, 'rank_math_description', true),
+            ];
+            $source_persisted = $persisted_page instanceof WP_Post
+                && 'Alquiler y venta de montacargas eléctricos' === $persisted_page->post_title
+                && hash_equals($hashes['page_before'], hash('sha256', (string) $persisted_page->post_content))
+                && hash_equals($hashes['form_before'], tmd_commercial_landing_rental_v2_hash($persisted_form_properties))
+                && hash_equals($hashes['meta_before'], tmd_commercial_landing_rental_v2_hash($persisted_meta));
+            $target_persisted = $persisted_page instanceof WP_Post
+                && 'Venta o alquiler de montacargas eléctricos' === $persisted_page->post_title
+                && hash_equals($hashes['page_target'], hash('sha256', (string) $persisted_page->post_content))
+                && hash_equals($hashes['form_target'], tmd_commercial_landing_rental_v2_hash($persisted_form_properties))
+                && hash_equals($hashes['meta_target'], tmd_commercial_landing_rental_v2_hash($persisted_meta));
+
+            if ($source_persisted) {
+                throw new RuntimeException(
+                    $exception->getMessage() . ' Se verificó que página, formulario y metadatos siguen en su estado original.'
+                    . (false === $rollback_result ? ' La reconexión/rollback informó resultado incierto.' : ''),
+                    0,
+                    $exception
+                );
             }
-            throw $exception;
+            if ($target_persisted && $commit_attempted) {
+                $transaction_confirmed = true;
+                WP_CLI::warning('El resultado del COMMIT fue ambiguo, pero página, formulario y metadatos coinciden con los hashes destino persistidos.');
+            } else {
+                throw new RuntimeException(
+                    'El estado persistido no coincide con origen ni destino. No se intentó sobrescribirlo; conservar el artefacto privado de rollback y detener nuevos writes.',
+                    0,
+                    $exception
+                );
+            }
+        }
+
+        if (! $transaction_confirmed) {
+            throw new RuntimeException('No se pudo confirmar el resultado de la transacción.');
         }
 
         if (function_exists('do_action')) {

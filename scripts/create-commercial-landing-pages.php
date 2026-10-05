@@ -26,6 +26,7 @@
  *   TMD_BATTERY_FORM_EXPECTED_SHA256=<hash-actual> \
  *   TMD_BATTERY_FORM_TARGET_SHA256=<hash-destino> \
  *   wp eval-file scripts/create-commercial-landing-pages.php
+ * Pasar también los hashes CF7/meta exigidos por update-rental-landing-v2.php.
  * Para escribir, añadir TMD_COMMERCIAL_LANDINGS_EXECUTE=1 y un backup verificado.
  */
 
@@ -48,6 +49,10 @@ function tmd_commercial_landing_script_shortcode(string $shortcode): string
 
 function tmd_commercial_landing_script_form_markup(string $type): string
 {
+    if ('rental' === $type) {
+        return tmd_commercial_landing_rental_v2_form_markup();
+    }
+
     $privacy_url = esc_url(home_url('/nosotros/legal/politica-de-privacidad/'));
     $honeypot = '<div class="tmd-landing-form__honeypot" aria-hidden="true">'
         . '<label>Dejar este campo vacío [text tmd_website tabindex:-1 autocomplete:off]</label>'
@@ -361,8 +366,8 @@ function tmd_commercial_landing_script_page_specs(array $form_ids): array
             'slug' => 'alquiler-montacargas-electricos',
             'title' => 'Venta o alquiler de montacargas eléctricos',
             'rank_title' => 'Venta o alquiler de montacargas eléctricos | Tecnimontacargas',
-            'rank_description' => 'Venta de montacargas eléctricos usados y alquiler sin operador desde 15 días. Selección según capacidad, altura y operación en Colombia.',
-            'seed' => '2026-10-04-v1:rental',
+            'rank_description' => 'Venta o alquiler de montacargas eléctricos para bodegas, centros de distribución y plantas. Alquiler sin operador desde 15 días, con recomendación técnica según tu operación.',
+            'seed' => '2026-10-05-v2:rental',
             'form_id' => $form_ids['rental'],
         ],
         'battery' => [
@@ -1039,7 +1044,7 @@ try {
             WP_CLI::line('Página /' . $spec['slug'] . '/: ' . $page_action . '.');
             WP_CLI::line('Formulario ' . $form_specs[$type]['title'] . ': ' . $form_action . '.');
         }
-        WP_CLI::line('Campos de alquiler: nombre, cargo, empresa, ciudad, correo o celular, necesidad, carga, altura, pasillo y privacidad; control anti-spam server-side.');
+        WP_CLI::line('Campos de alquiler: nombre/cargo, empresa/ciudad, correo o celular, necesidad, requerimientos y privacidad; control anti-spam server-side.');
         WP_CLI::line('Campos de baterías: nombre y cargo, empresa y ciudad, correo o celular, marca/modelo, voltaje/capacidad y compra/alquiler; autorización y control anti-spam conservados.');
         WP_CLI::success('Dry-run sin escrituras. Las páginas se prepararían como borradores y no se publicarían.');
         return;
