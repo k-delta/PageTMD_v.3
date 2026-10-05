@@ -237,21 +237,38 @@ function tmd_commercial_landing_form($attributes): string
             'title' => 'Revisemos la batería de tu montacargas',
             'copy' => 'Comparte los datos de la batería y del equipo. La instalación y el mantenimiento se coordinan en la bodega del cliente.',
         ],
+        'battery-maqueta' => [
+            'id' => 'formulario-baterias',
+            'title' => 'Cotiza baterías para montacargas',
+            'subtitle' => 'Indica el voltaje y los amperios hora de la batería actual',
+        ],
     ];
     if (! isset($settings[$type])) {
         return tmd_commercial_landing_form_unavailable();
     }
 
     $setting = $settings[$type];
+    $battery_maqueta_class = 'battery-maqueta' === $type ? ' tmd-commercial-landing__form-layout--battery-maqueta' : '';
+    $battery_image = get_stylesheet_directory_uri() . '/assets/img/commercial-landings/baterias-maqueta/formulario-etv214.webp';
     ob_start();
     ?>
     <section id="<?php echo esc_attr($setting['id']); ?>" class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--soft tmd-commercial-landing__form-section" aria-labelledby="<?php echo esc_attr($setting['id']); ?>-heading">
-      <div class="tmd-commercial-landing__container tmd-commercial-landing__form-layout">
-        <div class="tmd-commercial-landing__form-copy">
-          <span class="tmd-commercial-landing__eyebrow"><?php echo esc_html($setting['eyebrow']); ?></span>
-          <h2 id="<?php echo esc_attr($setting['id']); ?>-heading"><?php echo esc_html($setting['title']); ?></h2>
-          <p><?php echo esc_html($setting['copy']); ?></p>
-        </div>
+      <div class="tmd-commercial-landing__container tmd-commercial-landing__form-layout<?php echo esc_attr($battery_maqueta_class); ?>">
+        <?php if ('battery-maqueta' === $type) : ?>
+          <figure class="tmd-commercial-landing__form-image">
+            <img src="<?php echo esc_url($battery_image); ?>" alt="Montacargas eléctrico en una bodega" loading="lazy" decoding="async">
+          </figure>
+          <div class="tmd-commercial-landing__form-copy">
+            <h2 id="<?php echo esc_attr($setting['id']); ?>-heading"><?php echo esc_html($setting['title']); ?></h2>
+            <h3><?php echo esc_html($setting['subtitle']); ?></h3>
+          </div>
+        <?php else : ?>
+          <div class="tmd-commercial-landing__form-copy">
+            <span class="tmd-commercial-landing__eyebrow"><?php echo esc_html($setting['eyebrow']); ?></span>
+            <h2 id="<?php echo esc_attr($setting['id']); ?>-heading"><?php echo esc_html($setting['title']); ?></h2>
+            <p><?php echo esc_html($setting['copy']); ?></p>
+          </div>
+        <?php endif; ?>
         <div class="tmd-commercial-landing__form-card">
           <?php echo do_shortcode('[contact-form-7 id="' . $form_id . '"]'); ?>
         </div>
@@ -276,6 +293,7 @@ function tmd_commercial_landing_form_unavailable(): string
  */
 function tmd_commercial_landing_related_section($attributes): string
 {
+    $raw_attributes = (array) $attributes;
     $attributes = shortcode_atts([
         'topic' => 'montacargas',
         'eyebrow' => 'Contenido relacionado',
@@ -290,16 +308,23 @@ function tmd_commercial_landing_related_section($attributes): string
     $heading = sanitize_text_field((string) $attributes['heading']);
     $subtitle = sanitize_text_field((string) $attributes['subtitle']);
     $fallback = sanitize_key((string) $attributes['fallback']);
+    $custom_layout = array_key_exists('heading', $raw_attributes)
+        || array_key_exists('subtitle', $raw_attributes)
+        || array_key_exists('fallback', $raw_attributes)
+        || array_key_exists('eyebrow', $raw_attributes);
     $section_class = 'tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--soft';
     if ('rental-v2' === $variant) {
         $section_class .= ' tmd-rental-v2-section tmd-rental-v2__blog';
+    }
+    if ($custom_layout && 'baterias' === $topic) {
+        $section_class .= ' tmd-commercial-landing__section--battery-blog';
     }
 
     ob_start();
     ?>
     <section class="<?php echo esc_attr($section_class); ?>" aria-labelledby="tmd-commercial-related-heading">
       <div class="tmd-commercial-landing__container">
-        <div class="tmd-commercial-landing__section-heading">
+        <div class="tmd-commercial-landing__section-heading<?php echo $custom_layout && 'baterias' === $topic ? ' tmd-commercial-landing__section-heading--split' : ''; ?>">
           <?php if ('' !== $eyebrow) : ?><span class="tmd-commercial-landing__eyebrow"><?php echo esc_html($eyebrow); ?></span><?php endif; ?>
           <h2 id="tmd-commercial-related-heading"><?php echo esc_html($heading); ?></h2>
           <?php if ('' !== $subtitle) : ?>

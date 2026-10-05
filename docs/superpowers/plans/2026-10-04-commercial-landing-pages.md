@@ -107,11 +107,27 @@
 
 ### Iconos del hero de baterías — 2026-10-04 (DEC-10)
 
-- [ ] Añadir en el generador tres SVG inline decorativos de 18 px y trazo azul: marcador para cobertura, bodega para instalación y calendario para alquiler desde un mes. Mantener intactos los tres textos y la fila existente.
-- [ ] Respaldar y actualizar únicamente el bloque HTML de la página publicada `/baterias-para-montacargas/`; verificar que cada SVG y texto aparezcan una sola vez.
-- [ ] Validar sintaxis PHP, diff y presentación pública en escritorio/móvil, incluidos el ajuste de línea y la ausencia de overflow horizontal.
+- [x] Añadir en el generador tres SVG inline decorativos de 18 px y trazo azul: marcador para cobertura, bodega para instalación y calendario para alquiler desde un mes. Mantener intactos los tres textos y la fila existente.
+- [x] Crear un backup privado y verificado, ejecutar dry-run con hash de contenido y actualizar únicamente el bloque HTML de la página publicada `/baterias-para-montacargas/`.
+- [x] Validar sintaxis PHP, diff, purga de caché y HTML público: HTTP 200, tres SVG decorativos, etiquetas únicas y en el orden aprobado.
+- [ ] Obtener captura visual del navegador en escritorio y móvil; no hay una herramienta de navegador disponible en este entorno.
 
-**Validation:** Antes de la escritura, backup completo verificado y copia del contenido de la página. Después, comprobar HTTP, DOM público y render visual en los dos tamaños; no desplegar código del tema en esta operación.
+**Validation:** El backup completo y el snapshot del contenido se verificaron antes de escribir. El dry-run confirmó los tres reemplazos exactos; `wp_update_post()` guardó el contenido esperado y la purga puntual de LiteSpeed se ejecutó. La URL canónica respondió HTTP 200 con los tres SVG y sus textos. `php -l` y `git diff --check` pasan. No se desplegó código del tema. `./scripts/sync-production.sh --check` detectó diferencias en el CSS del tema, snapshots productivos y archivos `.DS_Store`; esas diferencias no se incorporaron ni desplegaron. Falta captura visual de navegador.
+
+### Reemplazo de la maqueta de baterías — 2026-10-05 (DEC-11)
+
+La solicitud vigente sustituye para baterías el hero y el contenido de la versión anterior por el Markdown de nueve secciones. El trabajo de alquiler no forma parte de este ajuste.
+
+- [x] Actualizar el generador, la composición del formulario, el shortcode de relacionados y los estilos para reproducir las nueve secciones y sus encabezados. Preservar el consentimiento exigido por la política de privacidad.
+- [x] Copiar solo las siete fotos de catálogo usadas desde `EQUIPOS SEGUN REFERENCIA/` a `assets/img/commercial-landings/baterias-maqueta/` y crear copias WebP optimizadas para banner, diferencial, ventajas, proceso, galería y formulario; conservar sin cambios las fuentes del catálogo. La galería también usa los activos de batería/monitoreo que ya viven en el child theme.
+- [x] Revisar visualmente los activos de energía ya existentes y corregir el título de la galería: usa imágenes de batería/monitoreo junto a montacargas del catálogo, con texto neutral y sin atribución visual a Barbillon que no se pueda verificar.
+- [x] `php -l` de los archivos PHP modificados, `git diff --check` y las pruebas focalizadas `test-commercial-landing-battery-maqueta.php` y `test-commercial-landing-battery-blog.php` pasan. Cubren orden/estructura, textos de sección y FAQ, los seis valores del correo, consentimiento, CTA, assets, artículos publicados relacionados y estado vacío, dry-run, hashes, snapshot y fallos de rollback/concurrencia con WordPress/CF7 simulados. No hay Stylelint configurado. La revisión de base de datos confirmó locks, hashes, backup y rollback; seguridad, rendimiento y revisión general no reportan hallazgos. El test reviewer está cerrando la revisión de las aserciones añadidas. El CTA `#262E4F`/blanco fue aprobado por el usuario el 2026-10-05.
+- [x] Comparar `./scripts/sync-production.sh --check` contra los archivos productivos: el PHP y CSS vivos coinciden con `HEAD`; la diferencia de esos archivos corresponde al cambio local. Las diferencias de `production-snapshot/` son datos de auditoría, no fuente de código, y los `.DS_Store` locales son ruido. No se usó `--pull` ni se desplegó código.
+- [ ] Crear y verificar backup completo de base de datos y snapshot de página/formulario. Hacer dry-run con hashes de origen y destino para el ID 1559 y CF7 ID 1557; escribir solo tras pasar los controles pendientes.
+- [ ] Desplegar la lista exacta de archivos aprobados, purgar caché de página y comprobar HTML, HTTP, sitemap, metadatos, carga de assets y formulario en producción.
+- [ ] Obtener revisión visual de escritorio/móvil con Playwright después del despliegue.
+
+**Validación local y preflight (2026-10-05):** Siete fotos del catálogo quedaron copiadas y optimizadas como WebP dentro de la carpeta de la maqueta (1,1 MB total); las fuentes no se modificaron. Pasaron los tests focalizados de maqueta y blog, destinatario, render/update rental-v2 y antispam; también los lint PHP y `git diff --check`. No hay configuración de Stylelint. La revisión de imágenes confirmó el uso neutral de batería/monitoreo existente y montacargas del catálogo. Producción y `origin/main` estaban en `08cad501`; el CSS y el PHP activos coinciden con ese SHA. El check detectó solo el delta intencional de baterías en CSS/PHP/assets y snapshots de auditoría desactualizados: páginas 1558/1559 ausentes del snapshot local, contenido de nueve páginas y tres posts actualizado en producción, versiones de terceros más nuevas y cinco entradas productivas más una entrada local con nombres distintos en el listado de plugins. Esas rutas no se incluyen en el deploy; no hubo deriva en plugins propios, Compose ni otros archivos de tema. No se usó `--pull`. Todavía no hay backup ni escritura DEC-11. La URL pública responde HTTP 200 y conserva el contenido anterior. El navegador Playwright está disponible para validar escritorio y móvil tras desplegar.
 
 ## Evidencia consultada
 
@@ -121,6 +137,7 @@
 - Context7, WordPress Functions: `is_email()` devuelve la dirección válida o `false`; valida el override antes de incluirlo en los formularios nuevos.
 - Context7, WP-CLI: `wp eval-file -` acepta el script por STDIN; permite probar el seed desplegable sin copiar archivos a producción.
 - Context7, WordPress Functions: `wp_update_post()` devuelve el ID al actualizar y permite solicitar `WP_Error`; el actualizador aplica `wp_slash()` al contenido para conservarlo al guardar y al restaurar.
+- Context7, LiteSpeed Cache for WordPress: `litespeed_purge_post` ejecuta la invalidación de caché etiquetada para un post concreto; WP-CLI `eval` permitió invocar el hook para el ID 1559.
 - Context7, Rank Math: `rank_math_title` y `rank_math_description` son metadatos reconocidos. El tema ya usa `rank_math/json_ld` y WordPress/Rank Math resuelve canonical y sitemap.
 - Código local: `tmd_inventory_api_items_by_type()` filtra por estado publicable; la clasificación de montacargas separa subcategorías eléctricas y combustión. La nueva página limita el resultado a cinco registros.
 - Código local: el menú de escritorio/móvil está en `template-parts/tmd-header.php`; navegación móvil puede envolver acciones y CSS actual `tmd-mm-panel-footer` ya permite wrap.
