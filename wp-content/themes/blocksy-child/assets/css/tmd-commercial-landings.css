@@ -1,17 +1,31 @@
+/* Oculta el título automático de WordPress/Blocksy y conserva el H1 del hero. */
+body.page-id-1558 .entry-header,
+body.page-id-1558 .ct-entry-header,
+body.page-id-1558 .ct-hero-section,
+body.page-id-1558 .hero-section,
+body.page-id-1558 .wp-block-post-title,
+body.page-id-1558 h1.entry-title,
+body.tmd-commercial-landing-battery .entry-header,
+body.page-id-1558 .page-title,
+body.page-id-1558 .page-title-container,
 body.page-alquiler-montacargas-electricos .entry-header,
-body.page-baterias-para-montacargas .entry-header,
-body.page-alquiler-montacargas-electricos .ct-page-title,
-body.page-baterias-para-montacargas .ct-page-title {
+body.tmd-commercial-landing-battery .page-title,
+body.tmd-commercial-landing-battery .page-title-container,
+body.tmd-commercial-landing-battery .ct-page-title,
+body.page-id-1558 .ct-page-title,
+body.page-alquiler-montacargas-electricos .ct-page-title {
   display: none !important;
 }
 
 body.page-alquiler-montacargas-electricos .entry-content,
-body.page-baterias-para-montacargas .entry-content {
+body.page-id-1558 .entry-content,
+body.tmd-commercial-landing-battery .entry-content {
   margin-top: 0 !important;
 }
 
 body.page-alquiler-montacargas-electricos .site-main,
-body.page-baterias-para-montacargas .site-main {
+body.page-id-1558 .site-main,
+body.tmd-commercial-landing-battery .site-main {
   padding-top: 0 !important;
 }
 
@@ -103,12 +117,21 @@ body.page-baterias-para-montacargas .site-main {
   color: #fff;
 }
 
+.tmd-commercial-landing__hero--rental {
+  min-height: clamp(680px, 54vw, 920px);
+  background: #151515;
+}
+
 .tmd-commercial-landing__hero::after {
   position: absolute;
   z-index: -1;
   background: linear-gradient(90deg, rgba(38, 46, 79, 0.99) 0%, rgba(38, 46, 79, 0.92) 40%, rgba(38, 46, 79, 0.3) 100%);
   content: '';
   inset: 0;
+}
+
+.tmd-commercial-landing__hero--rental::after {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.01) 48%, rgba(0, 0, 0, 0) 72%);
 }
 
 .tmd-commercial-landing__hero--battery {
@@ -151,8 +174,17 @@ body.page-baterias-para-montacargas .site-main {
   padding-block: clamp(82px, 10vw, 128px);
 }
 
+.tmd-commercial-landing__hero--rental .tmd-commercial-landing__hero-content {
+  width: min(1500px, calc(100% - 120px));
+  padding-block: clamp(76px, 8vh, 120px);
+}
+
 .tmd-commercial-landing__hero-copy {
   max-width: 650px;
+}
+
+.tmd-commercial-landing__hero--rental .tmd-commercial-landing__hero-copy {
+  max-width: 790px;
 }
 
 .tmd-commercial-landing__hero h1 {
@@ -160,6 +192,14 @@ body.page-baterias-para-montacargas .site-main {
   margin-bottom: 20px;
   color: #fff;
   font-size: clamp(36px, 4.2vw, 54px);
+}
+
+.tmd-commercial-landing__hero--rental h1 {
+  max-width: 790px;
+  margin-bottom: 26px;
+  font-size: clamp(60px, 6.1vw, 104px);
+  font-weight: 800;
+  line-height: 0.98;
 }
 
 .tmd-commercial-landing__hero--battery h1 {
@@ -177,6 +217,27 @@ body.page-baterias-para-montacargas .site-main {
 
 .tmd-commercial-landing__hero .tmd-commercial-landing__eyebrow {
   color: var(--tmd-landing-yellow);
+}
+
+.tmd-commercial-landing__hero--rental .tmd-commercial-landing__eyebrow {
+  margin-bottom: 22px;
+  font-size: 15px;
+}
+
+.tmd-commercial-landing__hero-subhead {
+  max-width: 790px;
+  margin-bottom: 24px;
+  color: #fff;
+  font-size: clamp(24px, 2.25vw, 36px);
+  font-weight: 700;
+  line-height: 1.24;
+}
+
+.tmd-commercial-landing__hero--rental .tmd-commercial-landing__hero-lead {
+  max-width: 750px;
+  margin-bottom: 30px;
+  font-size: clamp(18px, 1.55vw, 24px);
+  line-height: 1.5;
 }
 
 .tmd-commercial-landing__hero--battery .tmd-commercial-landing__eyebrow {
@@ -919,8 +980,16 @@ body.page-baterias-para-montacargas .site-main {
     align-items: flex-end;
   }
 
+  .tmd-commercial-landing__hero--rental {
+    min-height: 720px;
+  }
+
   .tmd-commercial-landing__hero::after {
     background: linear-gradient(0deg, rgba(38, 46, 79, 0.99) 0%, rgba(38, 46, 79, 0.91) 54%, rgba(38, 46, 79, 0.18) 100%);
+  }
+
+  .tmd-commercial-landing__hero--rental::after {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.96) 0%, rgba(0, 0, 0, 0.78) 58%, rgba(0, 0, 0, 0.08) 100%);
   }
 
   .tmd-commercial-landing__hero--battery::after {
@@ -931,8 +1000,37 @@ body.page-baterias-para-montacargas .site-main {
     padding-block: 220px 48px;
   }
 
+  .tmd-commercial-landing__hero--rental .tmd-commercial-landing__hero-content {
+    width: calc(100% - 40px);
+    padding-block: 210px 44px;
+  }
+
   .tmd-commercial-landing__hero h1 {
     font-size: clamp(34px, 9vw, 42px);
+  }
+
+  .tmd-commercial-landing__hero--rental h1 {
+    margin-bottom: 18px;
+    font-size: clamp(46px, 11vw, 56px);
+  }
+
+  .tmd-commercial-landing__hero--rental .tmd-commercial-landing__eyebrow {
+    margin-bottom: 16px;
+    font-size: 12px;
+  }
+
+  .tmd-commercial-landing__hero-subhead {
+    margin-bottom: 18px;
+    font-size: 22px;
+  }
+
+  .tmd-commercial-landing__hero--rental .tmd-commercial-landing__hero-lead {
+    font-size: 16px;
+  }
+
+  .tmd-commercial-landing__hero--rental .tmd-commercial-landing__hero-meta {
+    flex-direction: column;
+    gap: 6px;
   }
 
   .tmd-commercial-landing__hero-lead {

@@ -282,6 +282,14 @@ function tmd_commercial_landing_related_section($attributes): string
 }
 add_shortcode('tmd_commercial_landing_related_section', 'tmd_commercial_landing_related_section');
 
+add_filter('body_class', static function (array $classes): array {
+    if (is_page('baterias-para-montacargas')) {
+        $classes[] = 'tmd-commercial-landing-battery';
+    }
+
+    return $classes;
+});
+
 add_action('wp_enqueue_scripts', static function (): void {
     if (! is_page(['alquiler-montacargas-electricos', 'baterias-para-montacargas'])) {
         return;

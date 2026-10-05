@@ -6,6 +6,7 @@
  *   wp eval-file scripts/create-commercial-landing-pages.php
  *
  * Ejecución después de validar un backup:
+ *   TMD_COMMERCIAL_LANDINGS_RECIPIENT=correo@dominio.com \
  *   TMD_COMMERCIAL_LANDINGS_EXECUTE=1 \
  *   TMD_VERIFIED_BACKUP_PATH=/ruta/backup-validado \
  *   wp eval-file scripts/create-commercial-landing-pages.php
@@ -117,6 +118,25 @@ function tmd_commercial_landing_script_form_specs(string $recipient, string $loc
     ];
 }
 
+function tmd_commercial_landing_script_resolve_recipient(string $override, string $fallback): string
+{
+    $override = trim($override);
+    if ('' !== $override) {
+        if (! is_string(is_email($override))) {
+            throw new InvalidArgumentException('El destinatario indicado para los nuevos formularios no es válido.');
+        }
+
+        return $override;
+    }
+
+    $fallback = trim($fallback);
+    if ('' === $fallback) {
+        throw new InvalidArgumentException('No hay un destinatario configurado para los nuevos formularios.');
+    }
+
+    return $fallback;
+}
+
 function tmd_commercial_landing_script_page_content(string $type, int $form_id): string
 {
     $asset_root = esc_url_raw(untrailingslashit(get_stylesheet_directory_uri()) . '/assets/img');
@@ -129,8 +149,9 @@ function tmd_commercial_landing_script_page_content(string $type, int $form_id):
   <div class="tmd-commercial-landing__hero-content">
     <div class="tmd-commercial-landing__hero-copy">
       <span class="tmd-commercial-landing__eyebrow">Soluciones para Colombia</span>
-      <h1 id="tmd-rental-heading">Alquiler y venta de <em>montacargas eléctricos</em></h1>
-      <p class="tmd-commercial-landing__hero-lead">Equipos para centros de distribución, bodegas y plantas. Cuéntanos sobre tu operación y recibe asesoría para elegir una alternativa adecuada.</p>
+      <h1 id="tmd-rental-heading">Alquiler de <em>montacargas eléctricos</em></h1>
+      <p class="tmd-commercial-landing__hero-subhead">Equipos propios con mantenimiento en nuestro taller técnico</p>
+      <p class="tmd-commercial-landing__hero-lead">Contrabalanceados, reach, pantógrafos y apiladores para bodegas, centros de distribución y plantas que necesitan más equipos en operación sin comprarlos.</p>
       <a class="tmd-commercial-landing__button" href="#formulario-montacargas">Solicitar cotización</a>
       <div class="tmd-commercial-landing__hero-meta">
         <span>Alquiler mínimo de 1 mes</span>
@@ -141,19 +162,6 @@ function tmd_commercial_landing_script_page_content(string $type, int $form_id):
   </div>
 </section>
 HTML));
-
-        $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
-<section class="tmd-commercial-landing tmd-commercial-landing__section">
-  <div class="tmd-commercial-landing__container">
-    <div class="tmd-commercial-landing__stats">
-      <div class="tmd-commercial-landing__stat"><strong>120</strong><span>equipos en la flota propia</span></div>
-      <div class="tmd-commercial-landing__stat"><strong>Desde 2000</strong><span>servicio técnico</span></div>
-      <div class="tmd-commercial-landing__stat"><strong>1 mes</strong><span>periodo mínimo de alquiler</span></div>
-    </div>
-    <p class="tmd-commercial-landing__brand-note">Experiencia con equipos Yale, Crown, Clark, Jungheinrich y Hyster.</p>
-  </div>
-</section>
-HTML);
 
         $blocks[] = tmd_commercial_landing_script_block(<<<'HTML'
 <section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--soft" aria-labelledby="tmd-rental-needs-heading">
@@ -294,9 +302,9 @@ HTML);
   <div class="tmd-commercial-landing__hero-media"><img src="TMD_ASSETS/commercial-landings/baterias-hero.jpeg" alt="" fetchpriority="high" decoding="async"></div>
   <div class="tmd-commercial-landing__hero-content">
     <div class="tmd-commercial-landing__hero-copy">
-      <span class="tmd-commercial-landing__eyebrow">Barbillon · soluciones para Colombia</span>
+      <span class="tmd-commercial-landing__eyebrow">Representantes de la Marca Barbillon</span>
       <h1 id="tmd-battery-heading">Baterías para <em>montacargas eléctricos</em></h1>
-      <p class="tmd-commercial-landing__hero-lead">Baterías de plomo-ácido, cargadores y monitoreo BMS, con asesoría para las necesidades de tu operación.</p>
+      <p class="tmd-commercial-landing__hero-lead">Venta y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.</p>
       <a class="tmd-commercial-landing__button" href="#formulario-baterias">Cotizar batería</a>
       <div class="tmd-commercial-landing__hero-meta">
         <span>Cobertura nacional en Colombia</span>
@@ -522,6 +530,11 @@ function tmd_commercial_landing_script_existing_forms(array $form_specs): array
             throw new RuntimeException('No fue posible cargar el formulario administrado para ' . $type . '.');
         }
         $properties = $form->get_properties();
+        $existing_recipient = trim((string) ($properties['mail']['recipient'] ?? ''));
+        $expected_recipient = trim((string) ($spec['mail']['recipient'] ?? ''));
+        if ($existing_recipient !== $expected_recipient) {
+            throw new RuntimeException('El destinatario del formulario administrado para ' . $type . ' difiere del configurado. Requiere revisión manual.');
+        }
         $form_markup = (string) ($properties['form'] ?? '');
         $form_markup = (string) preg_replace('/<!--.*?-->/s', '', $form_markup);
         if (! preg_match('/(?<!\[)\[text\s+tmd_website(?=[^\]]*\btabindex:-1\b)(?=[^\]]*\bautocomplete:off\b)[^\]]*\](?!\])/', $form_markup)) {
@@ -672,10 +685,10 @@ try {
         throw new RuntimeException('No existe el formulario Contact Form 7 ID 14 que aporta el destinatario de cotizaciones.');
     }
     $base_properties = $base_form->get_properties();
-    $recipient = trim((string) ($base_properties['mail']['recipient'] ?? ''));
-    if ('' === $recipient) {
-        throw new RuntimeException('El formulario Contact Form 7 ID 14 no tiene destinatario configurado.');
-    }
+    $recipient = tmd_commercial_landing_script_resolve_recipient(
+        (string) getenv('TMD_COMMERCIAL_LANDINGS_RECIPIENT'),
+        (string) ($base_properties['mail']['recipient'] ?? '')
+    );
 
     $form_specs = tmd_commercial_landing_script_form_specs(
         $recipient,

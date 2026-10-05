@@ -219,6 +219,8 @@ El script `scripts/create-commercial-landing-pages.php` exige un recibo verifica
 
 El script de preparación vuelve a comprobar el tamaño mínimo de 64 KiB, el hash SHA-256, una cabecera de dump MySQL/MariaDB con `CREATE TABLE`, el marcador `-- Dump completed on`, los permisos privados (`0700` para el directorio y sin permisos para grupo/otros en los archivos), que la ruta esté fuera de `ABSPATH` y que el manifiesto tenga máximo dos horas. El recibo no reemplaza las comprobaciones de `sha256sum -c` ni la ruta de restauración documentada.
 
+Para crear los formularios de estas páginas, pasar `TMD_COMMERCIAL_LANDINGS_RECIPIENT=info@tmdual.com` al proceso WP-CLI. El valor aplica únicamente a los dos formularios comerciales nuevos; el seed no modifica CF7 ID 14. Ejecutar primero en modo `dry-run`. `execute` guarda los formularios y crea las dos páginas con estado borrador; publicar las páginas es un paso separado.
+
 Para generarlo inmediatamente después de esas comprobaciones:
 
 ```bash

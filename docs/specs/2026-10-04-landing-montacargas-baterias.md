@@ -22,7 +22,7 @@
 
 [Solicitud] Los textos fuente son `pageTMD/01 - Alquiler o venta  de montacargas eléctricos.docx` y `pageTMD/02 - Baterías para montacargas eléctricos.docx`. Las guías visuales son `pageTMD/EQUIPOS VISUALES.docx` y `pageTMD/Sugerencias para referencias visuales.docx`. Las fotografías de referencia están en `pageTMD/EQUIPOS SEGUN REFERENCIA/`.
 
-[Solicitud] El número de 120 equipos corresponde a un dato de flota para texto; no significa que deban publicarse 120 fotografías.
+[Decisión del usuario: 2026-10-04] Omitir de la página de alquiler la franja de tres cifras (120 equipos, servicio técnico desde 2000 y periodo mínimo de 1 mes) y la nota de marcas inmediatamente posterior. El mínimo de alquiler se conserva en el banner y los demás bloques aprobados; la retirada no elimina las secciones de respaldo técnico o preguntas frecuentes.
 
 Mapa de navegación propuesto (jerarquía del menú; las rutas de las páginas nuevas son independientes de esa jerarquía):
 
@@ -70,7 +70,7 @@ En las tablas siguientes, `imageN` identifica un archivo dentro de `word/media/`
 | Bloques de montacargas | Estructura del Word 01 | Referencia de “Sugerencias para referencias visuales” |
 |---|---|---|
 | Banner | Título, apoyo y montacargas en bodega; añadir el CTA ya confirmado. | `image1.jpeg`–`image4.jpeg`: versiones clara/oscura, con y sin texto. |
-| Descripción y cifras | Foto y tres datos: 120 equipos, servicio técnico desde 2000, mínimo 1 mes. El inicio del alquiler en 2013 pertenece al respaldo técnico. | `image9.jpeg`. |
+| Descripción y cifras | Omitir la franja de tres tarjetas y la nota de marcas que seguía debajo, según la decisión del usuario del 2026-10-04. El mínimo mensual permanece en el banner y demás bloques aprobados. | `image9.jpeg` no se usa para crear una sección alternativa de cifras. |
 | Necesidades de operación | Cuatro tarjetas enlazadas: muelle, pasillo angosto, doble profundidad y traslado a nivel de piso. | El bloque 3 está pendiente en la guía visual; usar la composición de `image7.jpg` del Word 01 con la paleta del sitio. |
 | Alquilar o comprar | Foto y tres argumentos del texto aprobado. | `image10.jpeg`–`image11.jpeg`. |
 | Selección de equipos | Carrusel limitado, datos reales y enlace al catálogo. | El bloque 5 está pendiente en la guía visual; `image3.jpg` del Word 01 define la composición. |
@@ -115,11 +115,11 @@ En las tablas siguientes, `imageN` identifica un archivo dentro de `word/media/`
 4. [Evidencia: wp-content/themes/blocksy-child/template-parts/tmd-header.php:228] Añadir en el pie del mega menú de Energía un enlace visible a la nueva página de baterías.
 5. [Evidencia: wp-content/themes/blocksy-child/template-parts/tmd-header.php:323-324] Añadir el acceso de alquiler de montacargas a las acciones del menú móvil de Equipos.
 6. [Evidencia: wp-content/themes/blocksy-child/template-parts/tmd-header.php:356] Añadir el acceso a baterías para montacargas a las acciones del menú móvil de Energía.
-7. [Solicitud] Organizar el contenido de alquiler con las secciones del DOCX correspondiente: banner, datos de flota y servicio, necesidades de operación, compra frente a alquiler, selección de equipos, proceso, sectores, situaciones de alquiler, respaldo técnico, cotización, preguntas frecuentes y artículos relacionados.
-8. [Solicitud] Mostrar en la página de alquiler un periodo mínimo de 1 mes de forma destacada y explicar que la cotización considera la operación y el periodo solicitado. Aplicarlo también a cifras, FAQ, proyectos temporales y textos adaptados de las imágenes; sustituir las menciones de alquiler por semanas o de 15 días presentes en los Word.
+7. [Solicitud] Organizar el contenido de alquiler con las secciones aprobadas del DOCX correspondiente: banner, necesidades de operación, compra frente a alquiler, selección de equipos, proceso, sectores, situaciones de alquiler, respaldo técnico, cotización, preguntas frecuentes y artículos relacionados. Omitir la franja de cifras y la nota de marcas inmediatamente posterior.
+8. [Solicitud] Mostrar en la página de alquiler un periodo mínimo de 1 mes de forma destacada y explicar que la cotización considera la operación y el periodo solicitado. Aplicarlo al banner, FAQ, proyectos temporales y textos adaptados de las imágenes; sustituir las menciones de alquiler por semanas o de 15 días presentes en los Word.
 9. [Solicitud] Incluir en el banner de cada página un botón de cotización que lleve al formulario correspondiente dentro de esa misma página.
 10. [Solicitud] Comunicar que el alquiler y la venta se atienden a nivel nacional en Colombia, y que los equipos de alquiler se entregan sin operador.
-11. [Solicitud] Presentar como datos comerciales de la página de alquiler la flota propia de 120 equipos, las marcas Yale, Crown, Clark, Jungheinrich y Hyster, el inicio del servicio técnico en 2000 y el inicio del alquiler en 2013.
+11. [Solicitud] No mostrar la franja de cifras (120 equipos, servicio técnico desde 2000 y mínimo de 1 mes) ni la nota de marcas que la seguía. Mantener el mínimo de un mes en el banner, proceso, situaciones de alquiler y FAQ, y conservar los datos de respaldo técnico y marcas en sus bloques actuales.
 12. [Regla: docs/domain/BUSINESS_RULES.md:16-20] La venta de montacargas se limita a equipos usados cuya disponibilidad esté confirmada; el contenido no debe prometer equipos nuevos ni existencias no verificadas.
 13. [Regla: docs/domain/INVENTORY.md:5-14] Si la página presenta equipos, modelos o disponibilidad, sus datos deben provenir del Inventario/Firebase. Las fotografías entregadas pueden servir como selección visual, sin sustituir los datos canónicos ni implicar que toda la flota está disponible.
 14. [Solicitud] Usar una selección pequeña y representativa de fotografías; la página no debe publicar las 120 fotografías ni cargar una imagen por cada unidad.
@@ -159,7 +159,6 @@ En las tablas siguientes, `imageN` identifica un archivo dentro de `word/media/`
   "coverage": "Colombia",
   "rentalMinimumMonths": 1,
   "heroQuoteCta": true,
-  "fleetTextCount": 120,
   "batteryServiceLocation": "bodega del cliente",
   "contentSources": [
     "pageTMD/01 - Alquiler o venta  de montacargas eléctricos.docx",
@@ -224,7 +223,7 @@ Campos recibidos en los documentos, manteniendo sus agrupaciones:
 2. [Solicitud] En escritorio, el nuevo enlace aparece en el espacio señalado del pie del mega menú de Equipos y el de baterías en el espacio señalado del pie del mega menú de Energía.
 3. [Solicitud] En móvil, cada enlace aparece en el submenú correspondiente y navega a la página correcta.
 4. [Solicitud] El botón de cada banner desplaza al formulario de cotización de esa página.
-5. [Solicitud] La página de montacargas muestra el mínimo de 1 mes, la cobertura nacional, las condiciones de alquiler sin operador y los datos comerciales confirmados.
+5. [Solicitud] La página de montacargas muestra el mínimo de 1 mes, la cobertura nacional y las condiciones de alquiler sin operador; no incluye la franja de tres cifras ni la nota de marcas que seguía debajo.
 6. [Regla: docs/domain/BUSINESS_RULES.md:16-20] Ningún equipo, modelo, precio o disponibilidad se presenta sin confirmación en la fuente canónica.
 7. [Solicitud] El bloque visual de equipos usa una selección representativa de imágenes y no publica una galería de 120 unidades.
 8. [Solicitud] La página de baterías presenta las soluciones de plomo-ácido, BMS y cargadores aplicables, la cobertura nacional y la atención de instalación y mantenimiento en la bodega del cliente; no menciona litio.
@@ -236,7 +235,7 @@ Campos recibidos en los documentos, manteniendo sus agrupaciones:
 14. [Solicitud] El texto de las referencias es seleccionable y editable en WordPress; los botones y acordeones son controles web, y los banners no contienen un segundo header o logo copiado del montaje de referencia.
 15. [Solicitud] Las dos vistas aplican la dirección visual acordada en DEC-03 y la paleta del sitio. Las capturas rojas de los Word de contenido no introducen un segundo sistema de colores.
 16. [Solicitud] La revisión de contenido no encuentra una oferta de alquiler por semanas o 15 días, una cobertura limitada a Bogotá ni tarjetas de litio o sectores no confirmados añadidos desde las imágenes de ejemplo.
-17. [Solicitud] Se respetan los tres indicadores de montacargas, las cuatro necesidades de operación, las tres soluciones de baterías y los pasos/formularios de cada Word; la selección visual no altera esos contenidos.
+17. [Solicitud] Se omite la franja de cifras de montacargas y su nota de marcas inmediata; se conservan las cuatro necesidades de operación, las tres soluciones de baterías y los demás pasos y formularios aprobados.
 
 ## Validación
 
@@ -244,8 +243,8 @@ Campos recibidos en los documentos, manteniendo sus agrupaciones:
 - Pruebas de integración: Verificar los destinos de enlaces y la integración de cada formulario con el mecanismo existente; validar que los metadatos y schema se generen una sola vez.
 - Validación manual: Revisar ambas páginas y los menús de escritorio y móvil; comprobar orden de secciones, imágenes, formularios, navegación, accesibilidad básica, consola y overflow.
 - Evidencia de análisis del SPEC: los cuatro DOCX se leyeron mediante su XML y se inspeccionaron visualmente sus imágenes incrustadas. Se compararon fuentes canónicas con capturas y estilos calculados de las ocho páginas públicas indicadas en Contexto. Los recursos de análisis están en `.codex-tmp/landing-style-study/` y no son archivos de publicación.
-- Validación visual futura de las nuevas vistas: cotejar cada bloque con las tablas de Contexto y DEC-03; revisar escritorio y móvil, contraste del texto, foco de teclado, imágenes cargadas, títulos largos y que el header no oculte el formulario al usar el CTA. Las capturas actuales son de páginas existentes; todavía no hay vistas nuevas implementadas que validar.
-- Validación productiva: Requiere autorización separada. Consultar runbooks, crear backup verificado, ejecutar `./scripts/sync-production.sh --check`, modificar solo las páginas/archivos aprobados, purgar caché y comprobar HTTP, sitemap, metadatos y navegador.
+- [Verificación productiva: 2026-10-04] Las páginas raíz `/alquiler-montacargas-electricos/` (ID 1558) y `/baterias-para-montacargas/` (ID 1559) están publicadas. La primera conserva el hero anterior; esta iteración prepara el nuevo texto editable y sus estilos. La revisión visual en navegador, escritorio y móvil sigue pendiente.
+- Antes de aplicar el nuevo hero en producción: crear backup verificado, revisar deriva con `./scripts/sync-production.sh --check`, actualizar únicamente los archivos aprobados y el contenido del ID 1558, purgar caché y comprobar HTTP, sitemap, metadatos y navegador. Un HTTP 200 por sí solo no acredita el render ni el flujo.
 
 ## Riesgos
 
@@ -278,3 +277,6 @@ Campos recibidos en los documentos, manteniendo sus agrupaciones:
 - DEC-04: El bloque de equipos de alquiler muestra como máximo cinco registros vigentes de Inventario/Firebase. Solo admite las subcategorías eléctricas conocidas por el clasificador: tomapedidos de alto nivel, eléctricos de 3 y 4 ruedas, pantógrafo sencillo y doble profundidad, estibadores eléctricos, apiladores eléctricos y retráctiles de mástil móvil. Excluye estibadores manuales, combustión, categorías vacías y nuevas categorías hasta verificarlas. La página de baterías presenta las líneas confirmadas y las cinco imágenes de referencia del Word; no usa el shortcode general de baterías porque el consumidor actual no separa allí la tecnología por tipo.
 - DEC-05: Los dos formularios CF7 incorporan un campo honeypot fuera del área visible y controles server-side aplicados únicamente a formularios con el marcador de estas páginas. El límite es de cinco envíos por hora y dirección `REMOTE_ADDR`; la IP se usa solo en una clave hash de transient. Se conservan los controles de User-Agent existentes y el registro anti-spam no guarda valores enviados por el usuario.
 - DEC-06: El seed WP-CLI obtiene un bloqueo exclusivo en el directorio temporal del proceso antes de consultar formularios/páginas y mantiene el bloqueo durante dry-run o ejecución para impedir duplicados por ejecuciones concurrentes.
+- DEC-07: Los formularios nuevos de alquiler y baterías usan `info@tmdual.com` como destinatario. El seed lo recibe mediante `TMD_COMMERCIAL_LANDINGS_RECIPIENT`, valida el override y solo usa como alternativa el destinatario del formulario CF7 ID 14 cuando no se indica override. El formulario 14 permanece de solo lectura y no se altera.
+- DEC-08: Tras revisar la página publicada, el usuario aprobó reconstruir el banner de alquiler a partir de su nueva referencia como composición HTML editable. Se conserva la fotografía limpia existente `alquiler-hero.jpeg`; el H1 pasa a “Alquiler de montacargas eléctricos”, seguido por “Equipos propios con mantenimiento en nuestro taller técnico” y el párrafo sobre contrabalanceados, reach, pantógrafos y apiladores. Se mantiene el CTA, los datos de mínimo mensual, cobertura Colombia y alquiler sin operador, y el logotipo del header global no se duplica dentro del banner.
+- DEC-09: Por solicitud explícita del usuario del 2026-10-04, la página de alquiler no incluye la sección HTML de tres cifras ni la nota de marcas inmediatamente posterior. El periodo mínimo de un mes se conserva en el hero, proceso, situaciones de alquiler y FAQ; las demás secciones permanecen.

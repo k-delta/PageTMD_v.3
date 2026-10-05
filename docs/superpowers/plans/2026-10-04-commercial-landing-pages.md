@@ -57,7 +57,7 @@
 - [x] Ocultar el título duplicado del tema y mantener Work Sans y la paleta aprobada.
 - [x] Extender el schema Rank Math existente por slug, sin añadir metadatos SEO manuales al HTML.
 
-**Validation:** `php -l` para PHP tocado; revisión estática de slugs, clases, destinos, estilos responsive y schema. No ejecutar pruebas automatizadas.
+**Validation:** `php -l` para PHP tocado; revisión estática de slugs, clases, destinos, estilos responsive y schema. No se añadieron pruebas visuales automatizadas.
 
 ### Task 2: Contenido editable y preparación controlada de las páginas
 
@@ -68,31 +68,42 @@
 - WP-CLI `dry-run` (por defecto) describe páginas, campos y formularios sin escrituras.
 - WP-CLI `execute` exige copia de seguridad verificada y crea dos páginas raíz en estado `draft`.
 - Los bloques de página usan secciones HTML editables y shortcodes nativos para CF7, inventario y artículos.
-- Los formularios nuevos conservan el destinatario del formulario CF7 existente; el procedimiento no actualiza el formulario existente. Cada formulario lleva honeypot validado server-side y límite de cinco envíos por hora por IP, ligado por metadata al marcador administrado; la IP se almacena solo como clave hash.
+- Los formularios nuevos usan `TMD_COMMERCIAL_LANDINGS_RECIPIENT` cuando se indica, validan ese override y conservan el destinatario de CF7 ID 14 solo como alternativa. El procedimiento no actualiza el formulario existente. Cada formulario lleva honeypot validado server-side y límite de cinco envíos por hora por IP, ligado por metadata al marcador administrado; la IP se almacena solo como clave hash.
 - El seed toma un bloqueo exclusivo en el directorio temporal antes de revisar formularios y páginas, y lo conserva hasta completar o revertir la operación.
 - La ejecución de escritura exige `TMD_VERIFIED_BACKUP_PATH` con `BACKUP_MANIFEST.json` y `database.sql`: dump MariaDB/MySQL de producción de al menos 64 KiB, hash SHA-256 y tamaño coincidentes con el manifiesto, cabecera SQL y marcador de finalización verificados, permisos privados, ubicación fuera del docroot y antigüedad máxima de dos horas. El manifiesto identifica el método/ruta de restauración. El modo predeterminado solo hace dry-run.
 
-- [x] Construir el contenido de alquiler en el orden del Word: hero/CTA, cifras, necesidades, alquilar o comprar, inventario real, proceso, sectores, usos mensuales, respaldo, cotización, seis FAQ y blog.
+- [x] Construir el contenido de alquiler en el orden acordado: hero/CTA, necesidades, alquilar o comprar, inventario real, proceso, sectores, usos mensuales, respaldo, cotización, seis FAQ y blog. La franja de cifras y la nota de marcas inmediata se omiten por solicitud del usuario del 2026-10-04.
 - [x] Construir el contenido de baterías: hero/CTA, soluciones Barbillon, diagnóstico, rendimiento, proceso con servicio en bodega del cliente, cinco imágenes de referencia, cotización, seis FAQ y blog.
 - [x] Aplicar mínimo de un mes, Colombia, equipos sin operador, venta usada, privacidad enlazada y campos indicados. Excluir condiciones, inventario, precios y modelos no confirmados.
 - [x] Rechazar slugs ocupados y páginas/formularios existentes no reconocidos; no sobreescribir contenido editorial.
 - [x] Configurar title y description mediante metadatos Rank Math; dejar canonical y sitemap al plugin cuando las páginas se publiquen.
+- [x] Permitir un destinatario explícito para los dos formularios nuevos, validar el override y dejar CF7 ID 14 sin cambios.
 
-**Validation:** `php -l scripts/create-commercial-landing-pages.php`; inspección de la salida estática y guardas de escritura. No ejecutar WP-CLI: no hay WordPress local activo; el dry-run y la escritura de contenido en producción son pasos separados.
+**Validation:** `php -l scripts/create-commercial-landing-pages.php`; ejecutar `php tests/test-commercial-landing-recipient.php` para verificar el override, el destinatario de ambos formularios, la validación de correo y que el dry-run no escriba. El dry-run contra WordPress productivo es de solo lectura; la escritura de contenido requiere autorización específica y un backup fresco.
 
 ### Task 3: Revisión final del alcance
 
 - [x] Comparar el diff del checkout principal con el SPEC y excluir los documentos e imágenes fuente de `pageTMD/`.
 - [x] Revisar que no se mencione una oferta descartada, un periodo inferior a un mes, cobertura local limitada, precio ni disponibilidad no confirmada.
-- [x] Registrar brechas de validación: no hay base WordPress local para abrir las páginas, probar envío de correo, estado HTTP, Rank Math sitemap o vista móvil real.
+- [x] Confirmar en producción las páginas publicadas 1558 y 1559. La verificación de lectura identificó el hero anterior en la página 1558 y guardó su hash como precondición para el cambio de contenido.
+- [ ] Completar la actualización del hero después de resolver el control de deriva, preparar el backup verificado y obtener autorización ligada a los archivos y al contenido exactos.
 
-**Validation:** `git diff --check`, `php -l` para todos los PHP modificados y comprobación del checkout principal. El push de código usa el flujo autorizado de despliegue; el seed de páginas queda pendiente de autorización específica.
+**Validation:** La prueba focal `php tests/test-commercial-landing-recipient.php`, `php -l` del seed, del archivo de tema y de la prueba pasan en esta iteración; `git diff --check` pasa. `./scripts/sync-production.sh --check` detectó diferencias: los snapshots locales no incluyen las páginas 1558/1559 que existen en producción, y los archivos CSS/PHP locales contienen los cambios de esta iteración; también encontró `.DS_Store` locales ignorados. No se ejecutó `--pull`. Falta navegador conectado para verificar el render visual; no se ha escrito contenido ni desplegado código en producción.
+
+### Ajuste del hero de alquiler — 2026-10-04
+
+- [x] Reutilizar `alquiler-hero.jpeg` y reconstruir la referencia con texto HTML editable; mantener el header global, el CTA, el mínimo de un mes, la cobertura Colombia y el alquiler sin operador.
+- [x] Ajustar jerarquía tipográfica, posición de la imagen, legibilidad y comportamiento móvil en el CSS de la landing.
+- [x] Actualizar el contenido que generará el seed y cubrirlo con aserciones de la prueba focal.
+- [ ] Aplicar la actualización a la página publicada ID 1558 y verificar escritorio/móvil después de aprobar el manifiesto exacto.
 
 ## Evidencia consultada
 
 - Context7, WordPress Functions: `wp_insert_post()` devuelve ID o `WP_Error` y admite `post_type`, `post_name`, `post_content` y `post_status`.
 - Context7, Contact Form 7: usar `wpcf7_save_contact_form()` para guardar y volver a cargar con API pública; tags de sitio `[_site_title]` y `[_site_admin_email]` permiten un remitente fijo.
 - Context7, Contact Form 7: `WPCF7_Submission::get_contact_form()`, `get_posted_data()` y `add_spam_log()` sustentan el filtro `wpcf7_spam`, restringido por el marcador de los formularios administrados.
+- Context7, WordPress Functions: `is_email()` devuelve la dirección válida o `false`; valida el override antes de incluirlo en los formularios nuevos.
+- Context7, WP-CLI: `wp eval-file -` acepta el script por STDIN; permite probar el seed desplegable sin copiar archivos a producción.
 - Context7, Rank Math: `rank_math_title` y `rank_math_description` son metadatos reconocidos. El tema ya usa `rank_math/json_ld` y WordPress/Rank Math resuelve canonical y sitemap.
 - Código local: `tmd_inventory_api_items_by_type()` filtra por estado publicable; la clasificación de montacargas separa subcategorías eléctricas y combustión. La nueva página limita el resultado a cinco registros.
 - Código local: el menú de escritorio/móvil está en `template-parts/tmd-header.php`; navegación móvil puede envolver acciones y CSS actual `tmd-mm-panel-footer` ya permite wrap.
