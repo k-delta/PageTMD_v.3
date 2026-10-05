@@ -33,8 +33,11 @@ if (! defined('ABSPATH') || ! defined('WP_CLI') || ! WP_CLI) {
     return;
 }
 
-require_once __DIR__ . '/commercial-landing-rental-v2.php';
-require_once __DIR__ . '/update-rental-landing-v2.php';
+$mode = trim((string) getenv('TMD_COMMERCIAL_LANDINGS_MODE'));
+if ('update-battery-maqueta' !== $mode) {
+    require_once __DIR__ . '/commercial-landing-rental-v2.php';
+    require_once __DIR__ . '/update-rental-landing-v2.php';
+}
 
 function tmd_commercial_landing_script_block(string $markup): string
 {
@@ -1109,7 +1112,6 @@ $created_page_ids = [];
 $created_form_ids = [];
 $seed_lock = null;
 
-$mode = trim((string) getenv('TMD_COMMERCIAL_LANDINGS_MODE'));
 if ('update-rental-page' === $mode) {
     try {
         tmd_commercial_landing_script_run_rental_v2_update('1' === getenv('TMD_COMMERCIAL_LANDINGS_EXECUTE'));
