@@ -9,8 +9,9 @@
 ## Alquiler
 
 - Cobertura: Colombia.
-- Modalidad: mensual o contratos de mayor duración.
-- No ofrecer alquiler por horas o días.
+- Modalidad general: mensual o por contratos de mayor duración.
+- En `/alquiler-montacargas-electricos/`, el mínimo es de 15 días y, desde ese mínimo, la cotización fija el periodo por meses.
+- No ofrecer alquiler por horas. En la landing de montacargas eléctricos tampoco ofrecer periodos inferiores a 15 días.
 - Los equipos se entregan sin operador.
 
 ## Venta

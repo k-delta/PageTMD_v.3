@@ -87,7 +87,7 @@ function tm_chatbot_fase1_render() {
 
                 <div class="tm-chat-messages">
                     <div class="tm-msg tm-msg-bot">
-                        Hola, soy el asistente virtual de Tecni Montacargas. Puedo ayudarte con mantenimiento, repuestos, alquiler, venta, garantías, horarios o contacto.
+                        Hola, soy el asistente virtual de Tecni Montacargas. Puedo ayudarte con mantenimiento, alquiler, venta, garantías, horarios o contacto.
                     </div>
                 </div>
 

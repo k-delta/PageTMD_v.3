@@ -4,6 +4,21 @@
 
 - Versión base aprobada — 2026-10-04. La instrucción del usuario «implementa el spec» aprueba las rutas y la dirección visual de la primera versión, con posibilidad de ajustar después textos e imágenes.
 - Enmienda DEC-10 aprobada — 2026-10-04. El usuario aprobó la versión escrita del SPEC para los iconos de los tres textos existentes del hero de baterías.
+- Enmienda DEC-11 aprobada — 2026-10-05. La solicitud «implementa esta maqueta» y la aclaración «los cambios de este markdown son superiores a los anteriores hechos» autorizan que `/Users/lauracatalinapreciadoballen/Downloads/02-baterias-maqueta-9-secciones-tecnimontacargas.md` reemplace la dirección de contenido y diseño anterior de `/baterias-para-montacargas/`. Sustituye para baterías el hero, sus tres apoyos DEC-10, todos los bloques y preguntas frecuentes anteriores, y los requisitos 15–19, 25, 26 y 28 que entren en conflicto. La página de alquiler, la navegación global, los destinos existentes de energía y la capa global del sitio quedan fuera de esta sustitución.
+
+### DEC-11 — Maqueta de nueve secciones para baterías
+
+[Solicitud del usuario: 2026-10-05] Implementar en `/baterias-para-montacargas/` las nueve secciones del Markdown adjunto, en su orden y con sus textos editables: banner sin CTA, meta ni iconos; soluciones de plomo-ácido, cargadores y BMS; diferencial; ventajas con opción A; proceso de tres pasos; galería de cinco imágenes sin leyendas; cotización; seis FAQ cerradas por defecto; y blog con sus dos encabezados y únicamente artículos publicados reales si los hay. No publicar notas de maqueta, placeholders, tarjetas vacías, titulares o enlaces inventados. El contenedor, la paleta y la tipografía siguen las especificaciones del documento. Mantener la cabecera y el pie globales existentes.
+
+[Regla vigente: `scripts/update-privacy-policy-final.php:76-78`] El formulario conserva la autorización requerida por la política actual. La casilla es un control de tratamiento de datos independiente de los seis campos comerciales; el aviso de privacidad del Markdown conserva su texto exacto y el enlace apunta a la política vigente. No cambiar la política ni retirar la autorización como parte de esta maqueta.
+
+[Criterio de implementación] Las seis etiquetas del formulario se mantienen como seis campos visibles y compuestos; selector de compra/alquiler con esas dos opciones. No se añaden placeholders ni valores de ejemplo. La configuración de validación existente se conserva en lo posible. Las afirmaciones comerciales se copian de la maqueta del usuario y no se deducen de imágenes. Los activos publicados deben proceder del catálogo entregado y no pueden llevar texto incrustado de una captura.
+
+[Criterio de publicación pendiente descrito por la maqueta] La guía requiere confirmar procedencia, uso y correspondencia de fotografías reales antes de publicarlas. Resolver ese control con evidencia antes de escribir contenido en producción.
+
+[Decisión aprobada por el usuario: 2026-10-05] El CTA de esta maqueta usa fondo azul oscuro `#262E4F` y texto blanco. La aprobación resuelve el contraste; no cambia la paleta de los demás botones o enlaces.
+
+[Aclaración del usuario: 2026-10-05] Las fotografías de catálogo que se pueden usar están en `EQUIPOS SEGUN REFERENCIA/` en la raíz del proyecto. Copiar al directorio dedicado `wp-content/themes/blocksy-child/assets/img/commercial-landings/baterias-maqueta/` las fotografías usadas por la página y servir copias WebP optimizadas; dejar intactas las fuentes del catálogo.
 
 ## Contexto
 
@@ -251,6 +266,8 @@ Campos recibidos en los documentos, manteniendo sus agrupaciones:
 - [Verificación productiva: 2026-10-04] Las páginas raíz `/alquiler-montacargas-electricos/` (ID 1558) y `/baterias-para-montacargas/` (ID 1559) están publicadas. La primera conserva el hero anterior; esta iteración prepara el nuevo texto editable y sus estilos. La revisión visual en navegador, escritorio y móvil sigue pendiente.
 - Antes de aplicar el nuevo hero en producción: crear backup verificado, revisar deriva con `./scripts/sync-production.sh --check`, actualizar únicamente los archivos aprobados y el contenido del ID 1558, purgar caché y comprobar HTTP, sitemap, metadatos y navegador. Un HTTP 200 por sí solo no acredita el render ni el flujo.
 - Antes de aplicar DEC-10 en producción: verificar la deriva del tema y preparar backup verificado del contenido de la página de baterías. Actualizar únicamente los tres elementos del hero y desplegar solo los archivos aprobados; purgar caché y comprobar la página en escritorio y móvil.
+- [Verificación productiva: 2026-10-05] Se respaldaron y verificaron la base de datos y el contenido previo del ID 1559. El dry-run confirmó el hash de origen y un único bloque objetivo; tras `wp_update_post()`, la página guardó tres SVG decorativos junto a las etiquetas exactas. Se despachó la purga puntual de LiteSpeed. La URL canónica respondió HTTP 200 y su HTML público contiene los tres SVG, sus tres atributos `aria-hidden="true"` y las tres etiquetas en orden. No se obtuvo captura visual de navegador.
+- [Control de sincronización: 2026-10-05] `./scripts/sync-production.sh --check` detectó diferencias en `tmd-commercial-landings.css`, snapshots y archivos `.DS_Store` locales. No se desplegó código del tema en esta operación; esas diferencias quedan pendientes de comparación en su alcance correspondiente.
 
 ## Riesgos
 
