@@ -17,6 +17,11 @@ function tmd_commercial_landing_rental_v2_hash($value): string
     return hash('sha256', $encoded);
 }
 
+function tmd_commercial_landing_rental_v2_source_title(): string
+{
+    return 'Venta o alquiler de montacargas eléctricos';
+}
+
 function tmd_commercial_landing_rental_v2_target_form_properties(array $current): array
 {
     $target = $current;
@@ -144,7 +149,7 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
         $form = wpcf7_contact_form(1556);
         if (! $page instanceof WP_Post || 'page' !== $page->post_type
             || 'alquiler-montacargas-electricos' !== $page->post_name || 'publish' !== $page->post_status
-            || 'Alquiler y venta de montacargas eléctricos' !== $page->post_title) {
+            || tmd_commercial_landing_rental_v2_source_title() !== $page->post_title) {
             throw new RuntimeException('La página 1558 no coincide con ID, slug y estado publicados esperados.');
         }
         if (! $form instanceof WPCF7_ContactForm || 1556 !== (int) $form->id()) {
@@ -264,7 +269,7 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
             if (! is_array($locked_page) || 'page' !== ($locked_page['post_type'] ?? '')
                 || 'alquiler-montacargas-electricos' !== ($locked_page['post_name'] ?? '')
                 || 'publish' !== ($locked_page['post_status'] ?? '')
-                || 'Alquiler y venta de montacargas eléctricos' !== ($locked_page['post_title'] ?? '')
+                || tmd_commercial_landing_rental_v2_source_title() !== ($locked_page['post_title'] ?? '')
                 || ! hash_equals($hashes['page_before'], hash('sha256', (string) ($locked_page['post_content'] ?? '')))) {
                 throw new RuntimeException('La página cambió antes de escribir; la transacción se revertirá.');
             }
@@ -373,7 +378,7 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
                 'rank_math_description' => (string) get_post_meta(1558, 'rank_math_description', true),
             ];
             $source_persisted = $persisted_page instanceof WP_Post
-                && 'Alquiler y venta de montacargas eléctricos' === $persisted_page->post_title
+                && tmd_commercial_landing_rental_v2_source_title() === $persisted_page->post_title
                 && hash_equals($hashes['page_before'], hash('sha256', (string) $persisted_page->post_content))
                 && hash_equals($hashes['form_before'], tmd_commercial_landing_rental_v2_hash($persisted_form_properties))
                 && hash_equals($hashes['meta_before'], tmd_commercial_landing_rental_v2_hash($persisted_meta));

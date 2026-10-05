@@ -135,9 +135,14 @@ render_assert(
 $rental_css = file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/css/tmd-commercial-landing-rental-v2.css');
 $hero_h1_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1') : '';
 $hero_h1_span_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1 span') : '';
+$hero_overlay_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero::after') : '';
 $hero_eyebrow_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow') : '';
 $hero_eyebrow_rule_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow::before') : '';
 $mobile_css = is_string($rental_css) ? render_css_rule_body($rental_css, '@media (max-width: 720px)') : '';
+$description_badge_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__description-badge') : '';
+$description_badge_accent_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__description-badge-accent') : '';
+$mobile_description_badge_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__description-badge');
+$mobile_hero_overlay_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero::after');
 $mobile_hero_h1_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1');
 $mobile_eyebrow_rule_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow::before');
 render_assert(
@@ -156,6 +161,14 @@ render_assert(
 render_assert(
     false !== strpos($content, '<p class="tmd-rental-v2__eyebrow">SOLUCIÓN PARA TU OPERACIÓN</p>')
         && false !== strpos($content, '<h1 id="tmd-rental-v2-heading">Alquiler de <span>montacargas eléctricos</span></h1>')
+        && 1 === preg_match(
+            '/linear-gradient\(90deg,\s*rgba\(38, 46, 79, \.98\) 0%,\s*rgba\(38, 46, 79, \.96\) 32%,\s*rgba\(38, 46, 79, \.82\) 44%,\s*rgba\(38, 46, 79, \.58\) 56%,\s*rgba\(38, 46, 79, \.2\) 72%,\s*rgba\(38, 46, 79, \.05\) 100%\)/',
+            $hero_overlay_css
+        )
+        && 1 === preg_match(
+            '/linear-gradient\(90deg,\s*rgba\(38, 46, 79, \.96\),\s*rgba\(38, 46, 79, \.68\)\)/',
+            $mobile_hero_overlay_css
+        )
         && false !== strpos($hero_h1_css, 'font-size: clamp(48px, 4.8vw, 66px);')
         && false !== strpos($mobile_hero_h1_css, 'font-size: clamp(40px, 10vw, 46px);')
         && false !== strpos($hero_h1_span_css, 'color: #ffc33c;')
@@ -170,5 +183,20 @@ render_assert(
             $rental_css
         ),
     'El hero mantiene el H1 solo de alquiler, el rótulo azul, el acento amarillo y los iconos métricos de 40 px.'
+);
+render_assert(
+    false !== strpos($content, '<div class="tmd-rental-v2__description-badge">')
+        && false !== strpos($content, '<span class="tmd-rental-v2__description-badge-accent" aria-hidden="true">')
+        && false !== strpos($content, 'class="tmd-rental-v2__description-badge-icon"')
+        && false !== strpos($content, '<span>FLOTA DISPONIBLE</span><strong>Equipos listos para tu operación</strong>')
+        && false !== strpos($description_badge_css, 'position: absolute;')
+        && false !== strpos($description_badge_css, 'width: min(420px, calc(100% - 32px));')
+        && false !== strpos($description_badge_css, 'background: #fff;')
+        && false !== strpos($description_badge_accent_css, 'background: #128ceb;')
+        && false !== strpos($mobile_description_badge_css, 'right: 12px;')
+        && false !== strpos($mobile_description_badge_css, 'bottom: 12px;')
+        && false !== strpos($mobile_description_badge_css, 'width: calc(100% - 24px);')
+        && false !== strpos($mobile_description_badge_css, 'grid-template-columns: 3px 44px minmax(0, 1fr);'),
+    'La tarjeta inferior de flota conserva icono, textos, acento azul y ancho adaptable en móvil.'
 );
 fwrite(STDOUT, "OK: DOM rental-v2 con doce secciones, shortcodes reales y máximo de inventario.\n");

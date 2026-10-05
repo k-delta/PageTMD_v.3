@@ -147,7 +147,7 @@ $GLOBALS['test_form'] = [
 ];
 $GLOBALS['test_meta'] = [1558 => ['rank_math_title' => 'Old title', 'rank_math_description' => 'Old description']];
 $GLOBALS['wpdb']->rows = [
-    1558 => ['ID' => 1558, 'post_type' => 'page', 'post_name' => 'alquiler-montacargas-electricos', 'post_status' => 'publish', 'post_title' => 'Alquiler y venta de montacargas eléctricos', 'post_content' => '<!-- previous page -->'],
+    1558 => ['ID' => 1558, 'post_type' => 'page', 'post_name' => 'alquiler-montacargas-electricos', 'post_status' => 'publish', 'post_title' => 'Venta o alquiler de montacargas eléctricos', 'post_content' => '<!-- previous page -->'],
     1556 => ['ID' => 1556, 'post_type' => 'wpcf7_contact_form', 'post_name' => 'alquiler-form', 'post_status' => 'publish', 'post_title' => 'Alquiler CF7', 'post_content' => 'Previous CF7 record'],
 ];
 $GLOBALS['wpdb']->meta_rows = [
@@ -195,6 +195,18 @@ test_assert(
     'El dry-run debe informar hashes sin iniciar una transacción ni escribir.'
 );
 
+$GLOBALS['wpdb']->rows[1558]['post_title'] = 'Título distinto no reconocido';
+clean_post_cache(1558);
+$unexpected_title_rejected = false;
+try { tmd_commercial_landing_script_run_rental_v2_update(false); }
+catch (RuntimeException $exception) { $unexpected_title_rejected = false !== strpos($exception->getMessage(), 'no coincide'); }
+test_assert(
+    $unexpected_title_rejected && 0 === $GLOBALS['test_page_writes'],
+    'Un título de origen no reconocido debe rechazarse antes de cualquier escritura.'
+);
+$GLOBALS['wpdb']->rows[1558]['post_title'] = tmd_commercial_landing_rental_v2_source_title();
+clean_post_cache(1558);
+
 putenv('TMD_RENTAL_V2_EXPECTED_PAGE_SHA256=' . str_repeat('0', 64));
 $stale_rejected = false;
 try { tmd_commercial_landing_script_run_rental_v2_update(true); }
@@ -222,7 +234,7 @@ catch (RuntimeException $exception) { $rollback_rejected = false !== strpos($exc
 $artifact = $backup . '/rental-v2-page-1558-form-1556-before.json';
 test_assert(
     $rollback_rejected
-        && 'Alquiler y venta de montacargas eléctricos' === $GLOBALS['test_page']->post_title
+        && tmd_commercial_landing_rental_v2_source_title() === $GLOBALS['test_page']->post_title
         && '<!-- previous page -->' === $GLOBALS['wpdb']->rows[1558]['post_content']
         && $properties_before === $GLOBALS['test_form']
         && $meta_before === $GLOBALS['test_meta'][1558]
@@ -246,7 +258,7 @@ test_assert(
 unlink($backup . '/rental-v2-page-1558-form-1556-before.json');
 $GLOBALS['wpdb']->rows[1558] = [
     'ID' => 1558, 'post_type' => 'page', 'post_name' => 'alquiler-montacargas-electricos',
-    'post_status' => 'publish', 'post_title' => 'Alquiler y venta de montacargas eléctricos',
+    'post_status' => 'publish', 'post_title' => 'Venta o alquiler de montacargas eléctricos',
     'post_content' => '<!-- previous page -->',
 ];
 $GLOBALS['wpdb']->meta_rows = [
