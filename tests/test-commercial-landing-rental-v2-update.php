@@ -115,6 +115,8 @@ function wpcf7_save_contact_form($data, $context = 'save') {
     foreach (['form', 'mail', 'mail_2', 'messages', 'additional_settings'] as $key) {
         if (array_key_exists($key, $data)) { $GLOBALS['test_form'][$key] = $data[$key]; }
     }
+    // Contact Form 7's wpcf7_sanitize_mail() trims the message body before saving.
+    $GLOBALS['test_form']['mail']['body'] = trim($GLOBALS['test_form']['mail']['body']);
     return new WPCF7_ContactForm();
 }
 function tmd_commercial_landing_script_backup_is_valid(): bool { return ! empty($GLOBALS['test_backup_valid']); }

@@ -25,7 +25,7 @@ function tmd_commercial_landing_rental_v2_target_form_properties(array $current)
     $target['mail']['body'] = "Solicitud de cotización de montacargas\n\n"
         . "Nombre y cargo: [nombre_cargo]\nEmpresa y ciudad: [empresa_ciudad]\n"
         . "Correo o celular: [contacto]\nNecesidad: [necesidad]\n"
-        . "Requerimientos de carga, altura y pasillo: [requerimientos]\n";
+        . "Requerimientos de carga, altura y pasillo: [requerimientos]";
 
     return $target;
 }
@@ -339,12 +339,20 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
                 'rank_math_title' => (string) get_post_meta(1558, 'rank_math_title', true),
                 'rank_math_description' => (string) get_post_meta(1558, 'rank_math_description', true),
             ];
+            $verification_failures = [];
             if (! $verified_page instanceof WP_Post
                 || 'Venta o alquiler de montacargas eléctricos' !== $verified_page->post_title
-                || ! hash_equals($hashes['page_target'], hash('sha256', (string) $verified_page->post_content))
-                || ! hash_equals($hashes['form_target'], tmd_commercial_landing_rental_v2_hash($verified_form_properties))
-                || ! hash_equals($hashes['meta_target'], tmd_commercial_landing_rental_v2_hash($verified_meta))) {
-                throw new RuntimeException('La comprobación posterior del contenido, formulario o metadatos falló.');
+                || ! hash_equals($hashes['page_target'], hash('sha256', (string) $verified_page->post_content))) {
+                $verification_failures[] = 'página 1558';
+            }
+            if (! hash_equals($hashes['form_target'], tmd_commercial_landing_rental_v2_hash($verified_form_properties))) {
+                $verification_failures[] = 'propiedades CF7 1556';
+            }
+            if (! hash_equals($hashes['meta_target'], tmd_commercial_landing_rental_v2_hash($verified_meta))) {
+                $verification_failures[] = 'metadatos Rank Math';
+            }
+            if ([] !== $verification_failures) {
+                throw new RuntimeException('La comprobación posterior falló para: ' . implode(', ', $verification_failures) . '.');
             }
             $commit_attempted = true;
             if (false === $wpdb->query('COMMIT')) {
