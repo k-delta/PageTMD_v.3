@@ -60,8 +60,8 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
         . '</div></div></section>');
 
     $blocks[] = $html_block('<section class="tmd-rental-v2-section tmd-rental-v2__buy" aria-labelledby="tmd-rental-v2-buy-heading">'
-        . '<div class="tmd-rental-v2__container tmd-rental-v2__buy-layout"><div class="tmd-rental-v2__buy-copy"><h2 id="tmd-rental-v2-buy-heading">Alquiler mensual frente a compra de maquinaria</h2>'
-        . '<h3>Capacidad adicional en tu bodega sin sumar un activo a tu balance</h3>'
+        . '<div class="tmd-rental-v2__container tmd-rental-v2__buy-layout"><div class="tmd-rental-v2__buy-copy"><h2 id="tmd-rental-v2-buy-heading">Alquiler mensual frente a <span class="tmd-rental-v2__buy-heading-accent">compra de maquinaria</span></h2>'
+        . '<h3 class="tmd-rental-v2__buy-subtitle">Capacidad adicional en tu bodega sin sumar un activo a tu balance</h3>'
         . '<ul class="tmd-rental-v2__buy-points">'
         . '<li><span class="tmd-rental-v2__buy-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg></span><span><strong>Capital disponible:</strong><p>la tarifa mensual reemplaza la inversión en un equipo nuevo o usado.</p></span></li>'
         . '<li><span class="tmd-rental-v2__buy-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><strong>Tarifa por periodo:</strong><p>la cotización fija el valor del equipo según el tiempo de alquiler.</p></span></li>'
@@ -73,13 +73,14 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
     $blocks[] = $shortcode_block('[tmd_commercial_landing_inventory type="equipment" variant="rental-v2" eyebrow="Inventario real" heading="Contrabalanceados, reach y apiladores en inventario" intro="Compara capacidad y altura de levante antes de pedir la cotización" link_text="Ver todos los equipos" link_url="/equipos/"]');
 
     $blocks[] = $html_block('<section class="tmd-rental-v2-section tmd-rental-v2__process" aria-labelledby="tmd-rental-v2-process-heading">'
-        . '<div class="tmd-rental-v2__container tmd-rental-v2__process-layout"><div><header class="tmd-rental-v2__section-heading">'
-        . '<h2 id="tmd-rental-v2-process-heading">Alquiler de montacargas en cuatro pasos</h2>'
+        . '<div class="tmd-rental-v2__container tmd-rental-v2__process-layout"><div class="tmd-rental-v2__process-copy"><header class="tmd-rental-v2__section-heading">'
+        . '<p class="tmd-rental-v2__eyebrow">CÓMO FUNCIONA</p>'
+        . '<h2 id="tmd-rental-v2-process-heading">Alquiler de montacargas en <span class="tmd-rental-v2__process-heading-accent">cuatro pasos</span></h2>'
         . '<h3>La recomendación técnica del equipo llega antes que la tarifa del alquiler</h3></header>'
-        . '<ol><li><strong>Datos de tu operación:</strong> peso de la carga, altura de las estanterías, ancho de pasillo y ciudad.</li>'
-        . '<li><strong>Recomendación técnica:</strong> un asesor propone el tipo de equipo y la capacidad que requiere tu bodega.</li>'
-        . '<li><strong>Cotización:</strong> recibes la tarifa, el periodo de alquiler y las condiciones de cada equipo.</li>'
-        . '<li><strong>Entrega en tu sede:</strong> coordinamos el traslado del equipo hasta tu bodega en la fecha acordada.</li></ol>'
+        . '<ol><li><strong>Datos de tu operación:</strong><span> peso de la carga, altura de las estanterías, ancho de pasillo y ciudad.</span></li>'
+        . '<li><strong>Recomendación técnica:</strong><span> un asesor propone el tipo de equipo y la capacidad que requiere tu bodega.</span></li>'
+        . '<li><strong>Cotización:</strong><span> recibes la tarifa, el periodo de alquiler y las condiciones de cada equipo.</span></li>'
+        . '<li><strong>Entrega en tu sede:</strong><span> coordinamos el traslado del equipo hasta tu bodega en la fecha acordada.</span></li></ol>'
         . '</div><img src="' . esc_url($asset('process.webp')) . '" alt="Montacargas reach operando dentro de una bodega" loading="lazy" decoding="async">'
         . '</div></section>');
 

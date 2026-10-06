@@ -23,6 +23,7 @@ class WPCF7_ContactForm {
 class TestWpdb {
     public $posts = 'wp_posts'; public $postmeta = 'wp_postmeta'; public $last_error = ''; public $engine = 'InnoDB';
     public $rows = []; public $meta_rows = []; public $queries = []; public $snapshot = null; public $in_transaction = false;
+    public $title_before_transaction = null;
     public function prepare($query, ...$args) {
         return preg_replace_callback('/%[ds]/', static function ($match) use (&$args) {
             $value = array_shift($args);
@@ -48,6 +49,10 @@ class TestWpdb {
     public function query($query) {
         $this->queries[] = $query;
         if ('START TRANSACTION' === $query) {
+            if (is_string($this->title_before_transaction)) {
+                $this->rows[1558]['post_title'] = $this->title_before_transaction;
+                $this->title_before_transaction = null;
+            }
             $this->snapshot = [
                 'rows' => $this->rows, 'meta_rows' => $this->meta_rows,
                 'meta' => $GLOBALS['test_meta'], 'form' => $GLOBALS['test_form'],
@@ -95,9 +100,11 @@ function wp_update_post($data, $wp_error = false) {
             $GLOBALS['wpdb']->rows[1558][$key] = 'post_content' === $key ? stripslashes((string) $data[$key]) : $data[$key];
         }
     }
+    if (! empty($GLOBALS['test_fail_page_update_after_write'])) { return new WP_Error(); }
     return 1558;
 }
 function update_post_meta($id, $key, $value) {
+    ++$GLOBALS['test_meta_writes'];
     $GLOBALS['test_meta'][(int) $id][$key] = $value;
     foreach ($GLOBALS['wpdb']->meta_rows[(int) $id] as &$row) {
         if ($key === $row['meta_key']) { $row['meta_value'] = $value; return true; }
@@ -133,12 +140,20 @@ function test_remove_tree($path) {
     if (is_dir($path)) { rmdir($path); }
 }
 
+test_assert(
+    tmd_commercial_landing_rental_v2_is_expected_source_title('Venta o alquiler de montacargas eléctricos')
+        && tmd_commercial_landing_rental_v2_is_expected_source_title('Alquiler de montacargas eléctricos')
+        && ! tmd_commercial_landing_rental_v2_is_expected_source_title('Título no reconocido'),
+    'El updater acepta los dos títulos canónicos observados y rechaza títulos ajenos.'
+);
+
 $temp = sys_get_temp_dir() . '/tmd-rental-v2-' . bin2hex(random_bytes(6));
 $backup = $temp . '/backup';
 mkdir($temp, 0700); mkdir($backup, 0700);
 $GLOBALS['test_temp'] = $temp;
-$GLOBALS['test_page_writes'] = 0; $GLOBALS['test_form_writes'] = 0; $GLOBALS['test_cache_clears'] = 0;
+$GLOBALS['test_page_writes'] = 0; $GLOBALS['test_form_writes'] = 0; $GLOBALS['test_meta_writes'] = 0; $GLOBALS['test_cache_clears'] = 0;
 $GLOBALS['test_backup_valid'] = false; $GLOBALS['test_fail_form_save'] = false; $GLOBALS['test_ambiguous_commit'] = false;
+$GLOBALS['test_fail_page_update_after_write'] = false;
 $GLOBALS['wpdb'] = new TestWpdb();
 $GLOBALS['test_form'] = [
     'form' => '[text tmd_website tabindex:-1 autocomplete:off]',
@@ -285,4 +300,91 @@ test_assert(
         && 'ROLLBACK' === end($GLOBALS['wpdb']->queries),
     'Si COMMIT devuelve estado ambiguo pero el destino persistió, el runner debe conciliarlo por hashes.'
 );
+
+unlink($backup . '/rental-v2-page-1558-form-1556-before.json');
+$current_page_content = '<!-- versión publicada previa con título final -->';
+$GLOBALS['wpdb']->rows[1558] = [
+    'ID' => 1558,
+    'post_type' => 'page',
+    'post_name' => 'alquiler-montacargas-electricos',
+    'post_status' => 'publish',
+    'post_title' => 'Alquiler de montacargas eléctricos',
+    'post_content' => $current_page_content,
+];
+$GLOBALS['wpdb']->meta_rows[1558] = [
+    ['meta_id' => 1, 'meta_key' => 'rank_math_title', 'meta_value' => $meta_after['rank_math_title']],
+    ['meta_id' => 2, 'meta_key' => 'rank_math_description', 'meta_value' => $meta_after['rank_math_description']],
+];
+$GLOBALS['test_meta'] = [1558 => $meta_after];
+$GLOBALS['test_form'] = $properties_after;
+$GLOBALS['test_page'] = new WP_Post($GLOBALS['wpdb']->rows[1558]);
+$GLOBALS['wpdb']->queries = [];
+$GLOBALS['test_ambiguous_commit'] = false;
+$GLOBALS['test_cache_clears'] = 0;
+$published_target_state = [
+    'TMD_RENTAL_V2_EXPECTED_PAGE_SHA256' => hash('sha256', $current_page_content),
+    'TMD_RENTAL_V2_TARGET_PAGE_SHA256' => hash('sha256', $content_after),
+    'TMD_RENTAL_V2_EXPECTED_FORM_SHA256' => tmd_commercial_landing_rental_v2_hash($properties_after),
+    'TMD_RENTAL_V2_TARGET_FORM_SHA256' => tmd_commercial_landing_rental_v2_hash($properties_after),
+    'TMD_RENTAL_V2_EXPECTED_META_SHA256' => tmd_commercial_landing_rental_v2_hash($meta_after),
+    'TMD_RENTAL_V2_TARGET_META_SHA256' => tmd_commercial_landing_rental_v2_hash($meta_after),
+    'TMD_RENTAL_V2_EXPECTED_META_STORAGE_SHA256' => tmd_commercial_landing_rental_v2_hash($GLOBALS['wpdb']->meta_rows[1558]),
+    'TMD_RENTAL_V2_EXPECTED_FORM_STORAGE_SHA256' => tmd_commercial_landing_rental_v2_hash([
+        'post' => $GLOBALS['wpdb']->rows[1556],
+        'meta' => $GLOBALS['wpdb']->meta_rows[1556],
+    ]),
+];
+foreach ($published_target_state as $name => $value) { putenv($name . '=' . $value); }
+$meta_rows_before_content_only_update = $GLOBALS['wpdb']->meta_rows[1558];
+$meta_writes_before_content_only_update = $GLOBALS['test_meta_writes'];
+$form_writes_before_content_only_update = $GLOBALS['test_form_writes'];
+tmd_commercial_landing_script_run_rental_v2_update(false);
+tmd_commercial_landing_script_run_rental_v2_update(true);
+$content_only_success_message = end(WP_CLI::$messages);
+test_assert(
+    'Alquiler de montacargas eléctricos' === $GLOBALS['test_page']->post_title
+        && hash_equals($published_target_state['TMD_RENTAL_V2_TARGET_PAGE_SHA256'], hash('sha256', $GLOBALS['test_page']->post_content))
+        && $meta_rows_before_content_only_update === $GLOBALS['wpdb']->meta_rows[1558]
+        && $meta_writes_before_content_only_update === $GLOBALS['test_meta_writes']
+        && $form_writes_before_content_only_update === $GLOBALS['test_form_writes']
+        && is_array($content_only_success_message)
+        && false !== strpos($content_only_success_message[1], 'Rank Math ya coincidía con el destino')
+        && false !== strpos($content_only_success_message[1], 'CF7 ya coincidía con el destino')
+        && 'COMMIT' === end($GLOBALS['wpdb']->queries),
+    'Con título, Rank Math y CF7 ya en destino, actualiza solo el contenido y conserva intactas esas filas.'
+);
+unlink($backup . '/rental-v2-page-1558-form-1556-before.json');
+
+$GLOBALS['wpdb']->rows[1558]['post_content'] = $current_page_content;
+$GLOBALS['test_page'] = new WP_Post($GLOBALS['wpdb']->rows[1558]);
+$GLOBALS['wpdb']->queries = [];
+$GLOBALS['test_fail_page_update_after_write'] = true;
+$final_title_rollback_message = '';
+try { tmd_commercial_landing_script_run_rental_v2_update(true); }
+catch (RuntimeException $exception) { $final_title_rollback_message = $exception->getMessage(); }
+test_assert(
+    false !== strpos($final_title_rollback_message, 'estado original')
+        && 'Alquiler de montacargas eléctricos' === $GLOBALS['test_page']->post_title
+        && $current_page_content === $GLOBALS['test_page']->post_content
+        && 'ROLLBACK' === end($GLOBALS['wpdb']->queries),
+    'Si falla la escritura con el título final ya publicado, el rollback debe reconocer y conservar el estado de origen.'
+);
+unlink($backup . '/rental-v2-page-1558-form-1556-before.json');
+
+$GLOBALS['wpdb']->rows[1558]['post_title'] = tmd_commercial_landing_rental_v2_source_title();
+$GLOBALS['test_page'] = new WP_Post($GLOBALS['wpdb']->rows[1558]);
+$GLOBALS['wpdb']->title_before_transaction = 'Alquiler de montacargas eléctricos';
+$GLOBALS['wpdb']->queries = [];
+$locked_title_rollback_message = '';
+try { tmd_commercial_landing_script_run_rental_v2_update(true); }
+catch (RuntimeException $exception) { $locked_title_rollback_message = $exception->getMessage(); }
+test_assert(
+    false !== strpos($locked_title_rollback_message, 'estado original')
+        && 'Alquiler de montacargas eléctricos' === $GLOBALS['test_page']->post_title
+        && $current_page_content === $GLOBALS['test_page']->post_content
+        && 'ROLLBACK' === end($GLOBALS['wpdb']->queries),
+    'La conciliación de rollback usa el título leído bajo bloqueo si cambia entre la lectura inicial y la transacción.'
+);
+unlink($backup . '/rental-v2-page-1558-form-1556-before.json');
+$GLOBALS['test_fail_page_update_after_write'] = false;
 fwrite(STDOUT, "OK: updater rental-v2: dry-run, hash, gates, rollback y commit.\n");

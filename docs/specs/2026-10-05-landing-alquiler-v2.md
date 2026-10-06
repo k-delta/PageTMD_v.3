@@ -19,6 +19,8 @@
 - Enmienda DEC-20 aprobada por instrucción directa vigente del usuario — 2026-10-05. En el hero, las tres métricas se mantienen en fila en escritorio, alineadas con el inicio del texto y limitadas a 680 px, el mismo ancho máximo del párrafo descriptivo. En pantallas angostas conservan el apilado existente. Este ajuste aplica solo al hero; las métricas del bloque descriptivo no cambian.
 - Enmienda DEC-21 aprobada por instrucción directa vigente del usuario — 2026-10-05. El rótulo “SOLUCIÓN PARA TU OPERACIÓN” se retira del hero y aparece al inicio del bloque descriptivo, antes de su H2. Conserva el azul de marca y la línea horizontal corta.
 - Enmienda DEC-22 aprobada por instrucción directa vigente del usuario — 2026-10-05. El encabezado del bloque de necesidades se alinea a la izquierda. Encima del H2 se agrega el rótulo “NUESTRA FLOTA” con una línea horizontal corta, ambos en el azul de la página `#128CEB`.
+- Enmienda DEC-23 aprobada por instrucción directa del usuario — 2026-10-05. Ajustes del bloque 04 “Alquiler o compra”; los criterios detallados viven en `docs/specs/2026-10-05-landing-comparacion-v2.md`.
+- Enmienda DEC-24 aprobada por instrucción directa del usuario — 2026-10-05. Presentación del bloque 06 “Cómo funciona”; los criterios detallados viven en `docs/specs/2026-10-05-landing-proceso-v2.md`.
 
 ## Objetivo
 
@@ -62,6 +64,6 @@ Implementar en la página publicada 1558 la estructura, textos, composición vis
 ## Límites y rollback
 
 - Antes de escribir contenido: backup completo MariaDB reciente y verificado, snapshot privado del contenido/metadatos del ID 1558 y del formulario 1556, hashes de origen y resultado aprobados.
-- El actualizador acepta solo IDs, slugs, estado y hashes esperados; en `execute` también exige `TMD_RENTAL_V2_COMMERCIAL_CLAIMS_CONFIRMED=yes` y `TMD_RENTAL_V2_CONTRAST_APPROVED=yes`. Fija hashes del formulario y metadatos, bloquea y vuelve a comprobar sus filas dentro de la transacción, y reconstruye CF7 después de limpiar caché. Ante error, concilia el estado persistido con los hashes de origen/destino; un estado mixto detiene nuevos writes y conserva el artefacto privado para restauración controlada. El modo `dry-run` informa esos gates y no escribe.
+- El actualizador acepta solo IDs, slugs, estado, los títulos canónicos previo y actual, y hashes esperados; en `execute` también exige `TMD_RENTAL_V2_COMMERCIAL_CLAIMS_CONFIRMED=yes` y `TMD_RENTAL_V2_CONTRAST_APPROVED=yes`. Fija hashes del formulario y metadatos, bloquea y vuelve a comprobar sus filas dentro de la transacción, y solo guarda Rank Math o CF7 si sus valores difieren del destino. Ante error, concilia el estado persistido con los hashes de origen/destino; un estado mixto detiene nuevos writes y conserva el artefacto privado para restauración controlada. El modo `dry-run` informa esos gates y no escribe.
 - Código se despliega solo por el flujo GitHub Actions de `main`, limitado al manifiesto. Contenido y multimedia tienen gates separados; los assets se despliegan como archivos versionados del child theme.
 - Producción no se usa para investigar mediante escritura. No se ejecutan migraciones ni modificaciones de infraestructura.

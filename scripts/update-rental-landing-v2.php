@@ -22,6 +22,14 @@ function tmd_commercial_landing_rental_v2_source_title(): string
     return 'Venta o alquiler de montacargas eléctricos';
 }
 
+function tmd_commercial_landing_rental_v2_is_expected_source_title(string $title): bool
+{
+    return in_array($title, [
+        tmd_commercial_landing_rental_v2_source_title(),
+        'Alquiler de montacargas eléctricos',
+    ], true);
+}
+
 function tmd_commercial_landing_rental_v2_target_form_properties(array $current): array
 {
     $target = $current;
@@ -149,7 +157,7 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
         $form = wpcf7_contact_form(1556);
         if (! $page instanceof WP_Post || 'page' !== $page->post_type
             || 'alquiler-montacargas-electricos' !== $page->post_name || 'publish' !== $page->post_status
-            || tmd_commercial_landing_rental_v2_source_title() !== $page->post_title) {
+            || ! tmd_commercial_landing_rental_v2_is_expected_source_title((string) $page->post_title)) {
             throw new RuntimeException('La página 1558 no coincide con ID, slug y estado publicados esperados.');
         }
         if (! $form instanceof WPCF7_ContactForm || 1556 !== (int) $form->id()) {
@@ -160,6 +168,8 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
             'rank_math_title' => (string) get_post_meta(1558, 'rank_math_title', true),
             'rank_math_description' => (string) get_post_meta(1558, 'rank_math_description', true),
         ];
+        $source_page_title = (string) $page->post_title;
+        $rollback_source_page_title = $source_page_title;
         $page_meta_storage_before = tmd_commercial_landing_rental_v2_meta_records(
             1558,
             ['rank_math_title', 'rank_math_description']
@@ -269,10 +279,11 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
             if (! is_array($locked_page) || 'page' !== ($locked_page['post_type'] ?? '')
                 || 'alquiler-montacargas-electricos' !== ($locked_page['post_name'] ?? '')
                 || 'publish' !== ($locked_page['post_status'] ?? '')
-                || tmd_commercial_landing_rental_v2_source_title() !== ($locked_page['post_title'] ?? '')
+                || ! tmd_commercial_landing_rental_v2_is_expected_source_title((string) ($locked_page['post_title'] ?? ''))
                 || ! hash_equals($hashes['page_before'], hash('sha256', (string) ($locked_page['post_content'] ?? '')))) {
                 throw new RuntimeException('La página cambió antes de escribir; la transacción se revertirá.');
             }
+            $rollback_source_page_title = (string) $locked_page['post_title'];
 
             $locked_page_meta = tmd_commercial_landing_rental_v2_meta_records(
                 1558,
@@ -318,22 +329,26 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
             if (is_wp_error($page_result) || 1558 !== (int) $page_result) {
                 throw new RuntimeException('WordPress no confirmó la actualización de la página 1558.');
             }
-            foreach ($target_meta as $meta_key => $meta_value) {
-                update_post_meta(1558, $meta_key, $meta_value);
+            if (! hash_equals($hashes['meta_before'], $hashes['meta_target'])) {
+                foreach ($target_meta as $meta_key => $meta_value) {
+                    update_post_meta(1558, $meta_key, $meta_value);
+                }
             }
 
-            $saved_form = wpcf7_save_contact_form([
-                'id' => 1556,
-                'title' => (string) get_post_field('post_title', 1556),
-                'locale' => (string) $form->locale(),
-                'form' => $target_form_properties['form'],
-                'mail' => $target_form_properties['mail'],
-                'mail_2' => $target_form_properties['mail_2'] ?? [],
-                'messages' => $target_form_properties['messages'] ?? [],
-                'additional_settings' => $target_form_properties['additional_settings'] ?? '',
-            ], 'save');
-            if (! $saved_form instanceof WPCF7_ContactForm || 1556 !== (int) $saved_form->id()) {
-                throw new RuntimeException('Contact Form 7 no confirmó el guardado del formulario 1556.');
+            if (! hash_equals($hashes['form_before'], $hashes['form_target'])) {
+                $saved_form = wpcf7_save_contact_form([
+                    'id' => 1556,
+                    'title' => (string) get_post_field('post_title', 1556),
+                    'locale' => (string) $form->locale(),
+                    'form' => $target_form_properties['form'],
+                    'mail' => $target_form_properties['mail'],
+                    'mail_2' => $target_form_properties['mail_2'] ?? [],
+                    'messages' => $target_form_properties['messages'] ?? [],
+                    'additional_settings' => $target_form_properties['additional_settings'] ?? '',
+                ], 'save');
+                if (! $saved_form instanceof WPCF7_ContactForm || 1556 !== (int) $saved_form->id()) {
+                    throw new RuntimeException('Contact Form 7 no confirmó el guardado del formulario 1556.');
+                }
             }
 
             clean_post_cache(1558);
@@ -378,7 +393,7 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
                 'rank_math_description' => (string) get_post_meta(1558, 'rank_math_description', true),
             ];
             $source_persisted = $persisted_page instanceof WP_Post
-                && tmd_commercial_landing_rental_v2_source_title() === $persisted_page->post_title
+                && $rollback_source_page_title === $persisted_page->post_title
                 && hash_equals($hashes['page_before'], hash('sha256', (string) $persisted_page->post_content))
                 && hash_equals($hashes['form_before'], tmd_commercial_landing_rental_v2_hash($persisted_form_properties))
                 && hash_equals($hashes['meta_before'], tmd_commercial_landing_rental_v2_hash($persisted_meta));
@@ -416,7 +431,13 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
             do_action('litespeed_purge_post', 1558);
         }
         WP_CLI::line('Artefacto de restauración privado verificado: ' . basename($artifact) . '.');
-        WP_CLI::success('La página 1558, sus metadatos y el formulario 1556 se actualizaron y verificaron.');
+        $meta_result = hash_equals($hashes['meta_before'], $hashes['meta_target'])
+            ? 'Rank Math ya coincidía con el destino'
+            : 'Rank Math se actualizó al destino';
+        $form_result = hash_equals($hashes['form_before'], $hashes['form_target'])
+            ? 'CF7 ya coincidía con el destino'
+            : 'CF7 se actualizó al destino';
+        WP_CLI::success('La página 1558 se actualizó y verificó; ' . $meta_result . ' y ' . $form_result . '.');
     } finally {
         flock($lock, LOCK_UN);
         fclose($lock);

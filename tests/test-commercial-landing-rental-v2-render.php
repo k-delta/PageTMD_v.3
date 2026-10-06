@@ -52,18 +52,60 @@ require_once dirname(__DIR__) . '/wp-content/themes/blocksy-child/inc/tmd-commer
 function render_assert($condition, $message) {
     if (! $condition) { fwrite(STDERR, 'FAIL: ' . $message . "\n"); exit(1); }
 }
-function render_css_rule_body(string $css, string $selector): string {
-    $selector_start = strpos($css, $selector);
-    if (false === $selector_start) { return ''; }
-    $open_brace = strpos($css, '{', $selector_start);
-    if (false === $open_brace) { return ''; }
-    $depth = 0;
-    for ($index = $open_brace; $index < strlen($css); $index++) {
-        if ('{' === $css[$index]) { $depth++; }
-        if ('}' === $css[$index]) { $depth--; }
-        if (0 === $depth) { return substr($css, $open_brace + 1, $index - $open_brace - 1); }
+function render_css_rule_bodies(string $css, string $selector): array {
+    $without_comments = preg_replace('~/\*.*?\*/~s', '', $css);
+    if (is_string($without_comments)) { $css = $without_comments; }
+
+    $normalize = static function (string $value): string {
+        $normalized = preg_replace('/\s+/', ' ', trim($value));
+        return is_string($normalized) ? $normalized : trim($value);
+    };
+    $requested = $normalize($selector);
+    $matches = [];
+    $rule_start = 0;
+    $css_length = strlen($css);
+
+    for ($open_brace = 0; $open_brace < $css_length; $open_brace++) {
+        if (';' === $css[$open_brace] || '}' === $css[$open_brace]) {
+            $rule_start = $open_brace + 1;
+            continue;
+        }
+        if ('{' !== $css[$open_brace]) { continue; }
+
+        $prelude = trim(substr($css, $rule_start, $open_brace - $rule_start));
+        $normalized_prelude = $normalize($prelude);
+        $is_match = false;
+        if ('' !== $normalized_prelude && '@' === $normalized_prelude[0]) {
+            $is_match = $normalized_prelude === $requested;
+        } elseif ('' !== $normalized_prelude) {
+            foreach (explode(',', $prelude) as $candidate) {
+                if ($normalize($candidate) === $requested) {
+                    $is_match = true;
+                    break;
+                }
+            }
+        }
+
+        if ($is_match) {
+            $depth = 1;
+            for ($close_brace = $open_brace + 1; $close_brace < $css_length; $close_brace++) {
+                if ('{' === $css[$close_brace]) { $depth++; }
+                if ('}' === $css[$close_brace]) { $depth--; }
+                if (0 === $depth) {
+                    $matches[] = substr($css, $open_brace + 1, $close_brace - $open_brace - 1);
+                    break;
+                }
+            }
+        }
+        $rule_start = $open_brace + 1;
     }
-    return '';
+
+    return $matches;
+}
+function render_css_rule_body(string $css, string $selector, bool $last = false): string {
+    $matches = render_css_rule_bodies($css, $selector);
+    if ([] === $matches) { return ''; }
+    return $last ? $matches[count($matches) - 1] : $matches[0];
 }
 $GLOBALS['published_posts'] = [
     (object) ['post_title' => 'Mantenimiento de montacargas', 'post_excerpt' => 'Bodega y operación', 'post_content' => 'Mantenimiento preventivo', 'url' => '/blog/mantenimiento', 'thumbnail' => '/uploads/mantenimiento.webp'],
@@ -74,6 +116,16 @@ $GLOBALS['published_posts'] = [
 $content = tmd_commercial_landing_script_rental_v2_content(
     1556,
     'https://example.test/wp-content/themes/blocksy-child/assets/img'
+);
+render_assert(
+    false !== strpos(
+        render_css_rule_body(
+            '/* body.test .target { color: red; } */ body.test .target-extra { color: red; } body.test .target { color: blue; }',
+            'body.test .target'
+        ),
+        'color: blue;'
+    ),
+    'La extracción CSS ignora reglas comentadas y exige una coincidencia completa del selector.'
 );
 $inventory_html = tmd_commercial_landing_inventory([
     'type' => 'equipment', 'variant' => 'rental-v2', 'eyebrow' => 'Inventario real',
@@ -136,15 +188,64 @@ $rental_css = file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-c
 $hero_h1_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1') : '';
 $hero_h1_span_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1 span') : '';
 $hero_overlay_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero::after') : '';
-$hero_eyebrow_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow') : '';
-$hero_eyebrow_rule_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow::before') : '';
+$hero_eyebrow_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2-section .tmd-rental-v2__eyebrow') : '';
+$hero_eyebrow_rule_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2-section .tmd-rental-v2__eyebrow::before') : '';
 $mobile_css = is_string($rental_css) ? render_css_rule_body($rental_css, '@media (max-width: 720px)') : '';
 $description_badge_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__description-badge') : '';
 $description_badge_accent_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__description-badge-accent') : '';
 $mobile_description_badge_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__description-badge');
 $mobile_hero_overlay_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero::after');
 $mobile_hero_h1_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1');
-$mobile_eyebrow_rule_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__eyebrow::before');
+$mobile_eyebrow_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2-section .tmd-rental-v2__eyebrow');
+$mobile_eyebrow_rule_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2-section .tmd-rental-v2__eyebrow::before');
+$buy_heading_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__buy h2#tmd-rental-v2-buy-heading') : '';
+$buy_heading_accent_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__buy-heading-accent') : '';
+$buy_subtitle_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__buy .tmd-rental-v2__buy-subtitle') : '';
+$buy_image_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__buy-layout > img') : '';
+$process_layout_rules = is_string($rental_css) ? render_css_rule_bodies($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-layout') : [];
+$process_layout_css = implode("\n", $process_layout_rules);
+$process_copy_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-copy') : '';
+$process_image_rules = is_string($rental_css) ? render_css_rule_bodies($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-layout > img') : [];
+$process_image_css = implode("\n", $process_image_rules);
+$process_steps_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process ol') : '';
+$process_step_number_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process li::before') : '';
+$process_step_heading_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process li > strong') : '';
+$process_step_description_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process li > span') : '';
+$process_heading_accent_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-heading-accent') : '';
+$tablet_process_css = is_string($rental_css) ? render_css_rule_body($rental_css, '@media (min-width: 761px) and (max-width: 1199px)') : '';
+$tablet_process_steps_css = render_css_rule_body($tablet_process_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process ol');
+$mobile_process_css = is_string($rental_css) ? render_css_rule_body($rental_css, '@media (max-width: 760px)') : '';
+$mobile_process_layout_css = render_css_rule_body($mobile_process_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-layout');
+$mobile_process_copy_css = render_css_rule_body($mobile_process_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-copy');
+$mobile_process_image_css = render_css_rule_body($mobile_process_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-layout > img');
+$mobile_process_steps_css = render_css_rule_body($mobile_process_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process ol');
+$mobile_buy_heading_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__buy h2#tmd-rental-v2-buy-heading');
+$mobile_buy_image_rules = render_css_rule_bodies($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__buy-layout > img');
+$mobile_buy_image_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__buy-layout > img', true);
+$mobile_buy_image_rules_css = implode("\n", $mobile_buy_image_rules);
+$mobile_buy_grid_columns = [];
+$mobile_buy_grid_rows = [];
+preg_match_all('/(?:^|;)\s*grid-column\s*:\s*([^;]+);/i', $mobile_buy_image_rules_css, $mobile_buy_grid_columns);
+preg_match_all('/(?:^|;)\s*grid-row\s*:\s*([^;]+);/i', $mobile_buy_image_rules_css, $mobile_buy_grid_rows);
+$buy_section_start = strpos($content, '<section class="tmd-rental-v2-section tmd-rental-v2__buy"');
+$buy_section_end = false === $buy_section_start ? false : strpos($content, '</section>', $buy_section_start);
+$buy_section_html = false === $buy_section_end ? '' : substr($content, $buy_section_start, $buy_section_end - $buy_section_start);
+preg_match_all('/<li\b[^>]*>(.*?)<\/li>/s', $buy_section_html, $buy_card_matches);
+$process_section_start = strpos($content, '<section class="tmd-rental-v2-section tmd-rental-v2__process"');
+$process_section_end = false === $process_section_start ? false : strpos($content, '</section>', $process_section_start);
+$process_section_html = false === $process_section_end ? '' : substr($content, $process_section_start, $process_section_end - $process_section_start);
+$process_copy_position = strpos($process_section_html, '<div class="tmd-rental-v2__process-copy">');
+$process_eyebrow_position = strpos($process_section_html, '<p class="tmd-rental-v2__eyebrow">CÓMO FUNCIONA</p>');
+$process_heading_position = strpos($process_section_html, '<h2 id="tmd-rental-v2-process-heading">');
+$process_image_position = strpos($process_section_html, 'src="https://example.test/wp-content/themes/blocksy-child/assets/img/commercial-landings-v2/process.webp"');
+preg_match_all('/<li\b[^>]*>(.*?)<\/li>/s', $process_section_html, $process_step_matches);
+$process_step_texts = array_map(
+    static function (string $step): string {
+        $text = preg_replace('/\s+/', ' ', trim(strip_tags($step)));
+        return is_string($text) ? $text : '';
+    },
+    $process_step_matches[1] ?? []
+);
 render_assert(
     is_string($rental_css)
         && false === strpos($rental_css, 'body.tmd-rental-layout-v2 #header')
@@ -198,5 +299,99 @@ render_assert(
         && false !== strpos($mobile_description_badge_css, 'width: calc(100% - 24px);')
         && false !== strpos($mobile_description_badge_css, 'grid-template-columns: 3px 44px minmax(0, 1fr);'),
     'La tarjeta inferior de flota conserva icono, textos, acento azul y ancho adaptable en móvil.'
+);
+render_assert(
+    false !== strpos(
+        $buy_section_html,
+        '<h2 id="tmd-rental-v2-buy-heading">Alquiler mensual frente a <span class="tmd-rental-v2__buy-heading-accent">compra de maquinaria</span></h2>'
+    )
+        && 1 === substr_count($content, 'compra de maquinaria')
+        && false !== strpos(
+            $buy_section_html,
+            '<h3 class="tmd-rental-v2__buy-subtitle">Capacidad adicional en tu bodega sin sumar un activo a tu balance</h3>'
+        )
+        && false !== strpos($buy_section_html, 'src="https://example.test/wp-content/themes/blocksy-child/assets/img/commercial-landings-v2/rental-vs-buy.webp"')
+        && 3 === count($buy_card_matches[1])
+        && false !== strpos($buy_card_matches[1][0], '<strong>Capital disponible:</strong>')
+        && false !== strpos($buy_card_matches[1][0], 'la tarifa mensual reemplaza la inversión en un equipo nuevo o usado.')
+        && false !== strpos($buy_card_matches[1][1], '<strong>Tarifa por periodo:</strong>')
+        && false !== strpos($buy_card_matches[1][1], 'la cotización fija el valor del equipo según el tiempo de alquiler.')
+        && false !== strpos($buy_card_matches[1][2], '<strong>Sin reventa ni bodegaje:</strong>')
+        && false !== strpos($buy_card_matches[1][2], 'al terminar, el equipo vuelve a nuestra flota y no ocupa espacio en tu bodega.'),
+    'El bloque 04 conserva el texto completo, destaca solo la frase solicitada y mantiene foto y tarjetas.'
+);
+render_assert(
+    false !== strpos($buy_heading_css, 'font-size: clamp(38px, 4vw, 50px);')
+        && false !== strpos($buy_heading_accent_css, 'color: #ffc33c;')
+        && false !== strpos($buy_subtitle_css, 'color: #e6e6e6;')
+        && false !== strpos($mobile_buy_heading_css, 'font-size: clamp(30px, 7vw, 36px);')
+        && false !== strpos($buy_image_css, 'grid-column: 2;')
+        && false !== strpos($buy_image_css, 'grid-row: 1;')
+        && false !== strpos($buy_image_css, 'aspect-ratio: 4 / 3;')
+        && false !== strpos($buy_image_css, 'object-fit: cover;')
+        && false !== strpos($buy_image_css, 'clip-path: polygon(26% 0, 100% 0, 100% 100%, 26% 100%, 0 83%, 0 34%);')
+        && false === strpos($buy_image_css, 'border-radius:')
+        && [] !== $mobile_buy_image_rules
+        && ['1'] === array_values(array_unique(array_map('trim', $mobile_buy_grid_columns[1] ?? [])))
+        && ['auto'] === array_values(array_unique(array_map('trim', $mobile_buy_grid_rows[1] ?? [])))
+        && false !== strpos($mobile_buy_image_css, 'min-height: 0;')
+        && 0 === preg_match('/(?:^|;)\s*(?:aspect-ratio|object-fit|border-radius)\s*:/i', $mobile_buy_image_rules_css)
+        && false !== strpos($mobile_buy_image_rules_css, 'clip-path: polygon(26% 0, 100% 0, 100% 100%, 26% 100%, 0 83%, 0 34%);')
+        && false !== strpos(
+            render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__support-layout > img', true),
+            'border-radius: 10px;'
+        ),
+    'El bloque 04 mantiene la imagen a la derecha y el recorte poligonal con proporción intacta en escritorio y móvil.'
+);
+render_assert(
+    false !== $process_eyebrow_position
+        && false !== $process_heading_position
+        && $process_eyebrow_position < $process_heading_position
+        && false !== strpos($process_section_html, '<p class="tmd-rental-v2__eyebrow">CÓMO FUNCIONA</p>')
+        && false !== strpos(
+            $process_section_html,
+            '<h2 id="tmd-rental-v2-process-heading">Alquiler de montacargas en <span class="tmd-rental-v2__process-heading-accent">cuatro pasos</span></h2>'
+        )
+        && false !== strpos($process_section_html, '<h3>La recomendación técnica del equipo llega antes que la tarifa del alquiler</h3>')
+        && 4 === count($process_step_texts)
+        && [
+            'Datos de tu operación: peso de la carga, altura de las estanterías, ancho de pasillo y ciudad.',
+            'Recomendación técnica: un asesor propone el tipo de equipo y la capacidad que requiere tu bodega.',
+            'Cotización: recibes la tarifa, el periodo de alquiler y las condiciones de cada equipo.',
+            'Entrega en tu sede: coordinamos el traslado del equipo hasta tu bodega en la fecha acordada.',
+        ] === $process_step_texts
+        && false !== strpos($process_section_html, 'src="https://example.test/wp-content/themes/blocksy-child/assets/img/commercial-landings-v2/process.webp"')
+        && false !== strpos($process_section_html, 'alt="Montacargas reach operando dentro de una bodega"')
+        && false !== $process_copy_position
+        && false !== $process_image_position
+        && $process_copy_position < $process_image_position,
+    'El bloque 06 agrega el rótulo y acento, conserva subtítulo, textos de los cuatro pasos y foto con alt original.'
+);
+render_assert(
+    false !== strpos($hero_eyebrow_css, 'color: #128ceb;')
+        && false !== strpos($hero_eyebrow_css, 'font-size: 19px;')
+        && false !== strpos($hero_eyebrow_rule_css, 'background: currentColor;')
+        && false !== strpos($mobile_eyebrow_css, 'font-size: 19px;')
+        && false !== strpos($process_heading_accent_css, 'color: #ffc33c;')
+        && false !== strpos($process_heading_accent_css, 'background-color: #262e4f;')
+        && false !== strpos($process_heading_accent_css, 'white-space: nowrap;')
+        && false !== strpos($process_layout_css, 'grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);')
+        && false !== strpos($process_copy_css, 'grid-column: 2;')
+        && false !== strpos($process_copy_css, 'grid-row: 1;')
+        && false !== strpos($process_image_css, 'grid-column: 1;')
+        && false !== strpos($process_image_css, 'grid-row: 1;')
+        && false !== strpos($process_steps_css, 'grid-template-columns: repeat(4, minmax(0, 1fr));')
+        && false !== strpos($process_step_number_css, 'counter(rental-step, decimal-leading-zero)')
+        && false !== strpos($process_step_number_css, 'display: block;')
+        && false !== strpos($process_step_heading_css, 'display: block;')
+        && false !== strpos($process_step_description_css, 'display: block;')
+        && false !== strpos($tablet_process_steps_css, 'grid-template-columns: repeat(2, minmax(0, 1fr));')
+        && false !== strpos($mobile_process_layout_css, 'grid-template-columns: minmax(0, 1fr);')
+        && false !== strpos($mobile_process_copy_css, 'grid-column: 1;')
+        && false !== strpos($mobile_process_copy_css, 'grid-row: auto;')
+        && false !== strpos($mobile_process_image_css, 'grid-column: 1;')
+        && false !== strpos($mobile_process_image_css, 'grid-row: auto;')
+        && false !== strpos($mobile_process_steps_css, 'grid-template-columns: minmax(0, 1fr);'),
+    'El bloque 06 conserva imagen a la izquierda en escritorio, pasos en 4/2/1 columnas por breakpoint y orden textual en móvil.'
 );
 fwrite(STDOUT, "OK: DOM rental-v2 con doce secciones, shortcodes reales y máximo de inventario.\n");
