@@ -37,6 +37,9 @@ El SPEC fija los requisitos. Esta hoja registra su implementación. La hoja espe
 19. [x] Aplicar DEC-19: superponer en la parte inferior de la imagen descriptiva una tarjeta blanca con icono de montacargas, textos de flota y acento azul de marca, adaptable a móvil.
 20. [ ] Tras cerrar todos los gates para el manifiesto y la operación de contenido nuevos, desplegar los archivos autorizados vía `main`; escribir el contenido/formulario/meta autorizados con el actualizador y purgar la página 1558.
 21. [ ] Verificar código/HTTP/HTML/formulario, hashes del código y sync final. Playwright Chromium ya está disponible fuera del repositorio; capturar y revisar escritorio/móvil después de publicar.
+22. [x] Aplicar DEC-20: limitar la fila de métricas del hero a 680 px y alinearla con el párrafo, manteniendo tres columnas en escritorio y apilado en móvil. `git diff --check` pasó; la captura visual de navegador sigue pendiente para la verificación productiva planificada.
+23. [x] Aplicar DEC-21: retirar “SOLUCIÓN PARA TU OPERACIÓN” del hero y ubicarlo al inicio del bloque descriptivo, antes del H2, conservando el azul y la línea corta.
+24. [x] Aplicar DEC-22: alinear a la izquierda el encabezado del bloque de necesidades y agregar encima el rótulo “NUESTRA FLOTA” con línea corta en azul de marca.
 
 ## Evidencia ya obtenida
 

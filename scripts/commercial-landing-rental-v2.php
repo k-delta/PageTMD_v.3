@@ -27,7 +27,6 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
     $blocks[] = $html_block('<section class="tmd-rental-v2-section tmd-rental-v2__hero" aria-labelledby="tmd-rental-v2-heading">'
         . '<img class="tmd-rental-v2__hero-image" src="' . esc_url($asset('hero-dark.webp')) . '" alt="" fetchpriority="high" decoding="async">'
         . '<div class="tmd-rental-v2__container tmd-rental-v2__hero-content">'
-        . '<p class="tmd-rental-v2__eyebrow">SOLUCIÓN PARA TU OPERACIÓN</p>'
         . '<h1 id="tmd-rental-v2-heading">Alquiler de <span>montacargas eléctricos</span></h1>'
         . '<h2>Equipos propios con mantenimiento en nuestro taller técnico</h2>'
         . '<p>Contrabalanceados, reach, pantógrafos y apiladores para bodegas, centros de distribución y plantas que necesitan más equipos en operación sin comprarlos.</p>'
@@ -36,6 +35,7 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
 
     $blocks[] = $html_block('<section class="tmd-rental-v2-section tmd-rental-v2__description" aria-labelledby="tmd-rental-v2-description-heading">'
         . '<div class="tmd-rental-v2__container tmd-rental-v2__description-layout"><div>'
+        . '<p class="tmd-rental-v2__eyebrow">SOLUCIÓN PARA TU OPERACIÓN</p>'
         . '<h2 id="tmd-rental-v2-description-heading">Montacargas eléctricos para operación continua en bodega</h2>'
         . '<h3>' . esc_html($brand_heading) . '</h3>'
         . $metrics
@@ -49,6 +49,7 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
 
     $blocks[] = $html_block('<section class="tmd-rental-v2-section tmd-rental-v2__needs" aria-labelledby="tmd-rental-v2-needs-heading">'
         . '<div class="tmd-rental-v2__container"><header class="tmd-rental-v2__section-heading">'
+        . '<p class="tmd-rental-v2__eyebrow">NUESTRA FLOTA</p>'
         . '<h2 id="tmd-rental-v2-needs-heading">Equipos para muelle, pasillo angosto y doble profundidad</h2>'
         . '<h3>El ancho del pasillo y la altura de la estiba definen la configuración</h3></header>'
         . '<div class="tmd-rental-v2__needs-grid">'
