@@ -190,6 +190,8 @@ $hero_h1_span_css = is_string($rental_css) ? render_css_rule_body($rental_css, '
 $hero_overlay_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero::after') : '';
 $hero_eyebrow_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2-section .tmd-rental-v2__eyebrow') : '';
 $hero_eyebrow_rule_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2-section .tmd-rental-v2__eyebrow::before') : '';
+$metrics_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__metrics') : '';
+$hero_metrics_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__metrics') : '';
 $mobile_css = is_string($rental_css) ? render_css_rule_body($rental_css, '@media (max-width: 720px)') : '';
 $description_badge_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__description-badge') : '';
 $description_badge_accent_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__description-badge-accent') : '';
@@ -198,6 +200,7 @@ $mobile_hero_overlay_css = render_css_rule_body($mobile_css, 'body.tmd-rental-la
 $mobile_hero_h1_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1');
 $mobile_eyebrow_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2-section .tmd-rental-v2__eyebrow');
 $mobile_eyebrow_rule_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2-section .tmd-rental-v2__eyebrow::before');
+$mobile_hero_metrics_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__metrics');
 $buy_heading_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__buy h2#tmd-rental-v2-buy-heading') : '';
 $buy_heading_accent_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__buy-heading-accent') : '';
 $buy_subtitle_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__buy .tmd-rental-v2__buy-subtitle') : '';
@@ -284,6 +287,14 @@ render_assert(
             $rental_css
         ),
     'El hero mantiene el H1 solo de alquiler, el rótulo azul, el acento amarillo y los iconos métricos de 40 px.'
+);
+render_assert(
+    false !== strpos($metrics_css, 'grid-template-columns: repeat(3, minmax(0, 1fr));')
+        && false !== strpos($hero_metrics_css, 'width: min(100%, 680px);')
+        && false !== strpos($hero_metrics_css, 'margin-left: 0;')
+        && false !== strpos($hero_metrics_css, 'margin-right: auto;')
+        && false !== strpos($mobile_hero_metrics_css, 'grid-template-columns: minmax(0, 1fr);'),
+    'Las métricas del hero se alinean a la izquierda en tres columnas de máximo 680 px y se apilan en móvil.'
 );
 render_assert(
     false !== strpos($content, '<div class="tmd-rental-v2__description-badge">')

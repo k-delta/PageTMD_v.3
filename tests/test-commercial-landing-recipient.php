@@ -372,6 +372,20 @@ $hero_end = false === $hero_heading_position ? false : strpos($rental_content, '
 $rental_hero = false === $hero_start || false === $hero_end
     ? ''
     : substr($rental_content, $hero_start, $hero_end - $hero_start);
+$description_start = strpos($rental_content, '<section class="tmd-rental-v2-section tmd-rental-v2__description"');
+$description_end = false === $description_start ? false : strpos($rental_content, '</section>', $description_start);
+$rental_description = false === $description_end
+    ? ''
+    : substr($rental_content, $description_start, $description_end - $description_start);
+$description_eyebrow_position = strpos($rental_description, '<p class="tmd-rental-v2__eyebrow">SOLUCIÓN PARA TU OPERACIÓN</p>');
+$description_heading_position = strpos($rental_description, '<h2 id="tmd-rental-v2-description-heading">');
+$needs_start = strpos($rental_content, '<section class="tmd-rental-v2-section tmd-rental-v2__needs"');
+$needs_end = false === $needs_start ? false : strpos($rental_content, '</section>', $needs_start);
+$rental_needs = false === $needs_end
+    ? ''
+    : substr($rental_content, $needs_start, $needs_end - $needs_start);
+$needs_eyebrow_position = strpos($rental_needs, '<p class="tmd-rental-v2__eyebrow">NUESTRA FLOTA</p>');
+$needs_heading_position = strpos($rental_needs, '<h2 id="tmd-rental-v2-needs-heading">');
 $hero_block_start = false === $hero_heading_position
     ? false
     : strrpos(substr($rental_content, 0, $hero_heading_position), '<!-- wp:html -->');
@@ -386,9 +400,17 @@ tmd_commercial_landing_recipient_assert(
 tmd_commercial_landing_recipient_assert(
     false !== $hero_start
         && false !== $hero_end
-        && false !== strpos($rental_hero, 'class="tmd-rental-v2__eyebrow">SOLUCIÓN PARA TU OPERACIÓN</p>')
-        && strpos($rental_hero, 'tmd-rental-v2__eyebrow') < strpos($rental_hero, '<h1 id="tmd-rental-v2-heading">'),
-    'El rótulo de operación debe aparecer antes del H1 en el hero.'
+        && false === strpos($rental_hero, 'SOLUCIÓN PARA TU OPERACIÓN'),
+    'El rótulo de operación debe haberse retirado del hero.'
+);
+tmd_commercial_landing_recipient_assert(
+    false !== $description_eyebrow_position
+        && false !== $description_heading_position
+        && $description_eyebrow_position < $description_heading_position
+        && false !== $needs_eyebrow_position
+        && false !== $needs_heading_position
+        && $needs_eyebrow_position < $needs_heading_position,
+    'Los rótulos de operación y flota deben aparecer encima de sus H2 en las secciones descriptiva y de necesidades.'
 );
 tmd_commercial_landing_recipient_assert(
     false !== $hero_block_start
