@@ -433,9 +433,13 @@ try {
     $hero_image_css = [];
     tmd_battery_test_assert(
         1 === preg_match('/\.tmd-commercial-landing__hero--battery-maqueta \.tmd-commercial-landing__hero-media img\s*\{([^}]*)\}/s', $css, $hero_image_css)
-            && (bool) preg_match('/\bwidth:\s*112%\s*;/i', $hero_image_css[1])
-            && (bool) preg_match('/\bmax-width:\s*none\s*;/i', $hero_image_css[1]),
-        'el encuadre de escritorio debe ampliar solo la imagen del hero de baterías al 112%'
+            && (bool) preg_match('/\bwidth:\s*90%\s*;/i', $hero_image_css[1])
+            && (bool) preg_match('/\bmax-width:\s*none\s*;/i', $hero_image_css[1])
+            && (bool) preg_match('/\bobject-fit:\s*contain\s*;/i', $hero_image_css[1])
+            && (bool) preg_match('/\bobject-position:\s*right\s+center\s*;/i', $hero_image_css[1])
+            && (bool) preg_match('/\bmargin-left:\s*auto\s*;/i', $hero_image_css[1])
+            && (bool) preg_match('/\btransform:\s*none\s*;/i', $hero_image_css[1]),
+        'el encuadre de escritorio debe alejar la imagen y mostrarla completa alineada a la derecha'
     );
     $hero_support_css = [];
     tmd_battery_test_assert(
@@ -459,8 +463,10 @@ try {
     $hero_mobile_image_css = [];
     tmd_battery_test_assert(
         1 === preg_match('/@media\s*\(max-width:\s*760px\)[\s\S]*?\.tmd-commercial-landing__hero--battery-maqueta \.tmd-commercial-landing__hero-media img\s*\{([^}]*)\}/s', $css, $hero_mobile_image_css)
-            && (bool) preg_match('/\bwidth:\s*100%\s*;/i', $hero_mobile_image_css[1]),
-        'en móvil la imagen del hero de baterías debe volver a 100%'
+            && (bool) preg_match('/\bwidth:\s*100%\s*;/i', $hero_mobile_image_css[1])
+            && (bool) preg_match('/\bobject-fit:\s*contain\s*;/i', $hero_mobile_image_css[1])
+            && (bool) preg_match('/\bobject-position:\s*right\s+top\s*;/i', $hero_mobile_image_css[1]),
+        'en móvil la imagen del hero debe verse completa arriba y usar el ancho disponible'
     );
     $hero_mobile_support_css = [];
     tmd_battery_test_assert(

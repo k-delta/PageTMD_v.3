@@ -126,10 +126,13 @@ tmd_battery_visual_assert(
 $hero_image_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-media img');
 tmd_battery_visual_assert(
     isset($hero_image_css[1])
-        && (bool) preg_match('/\\bwidth:\\s*112%\\s*;/i', $hero_image_css[1])
+        && (bool) preg_match('/\\bwidth:\\s*90%\\s*;/i', $hero_image_css[1])
         && (bool) preg_match('/\\bmax-width:\\s*none\\s*;/i', $hero_image_css[1])
-        && (bool) preg_match('/\\btransform:\\s*translateX\\(8%\\)\\s*;/i', $hero_image_css[1]),
-    'la imagen debe ampliarse y correrse a la derecha solo en el hero de baterías'
+        && (bool) preg_match('/\\bobject-fit:\\s*contain\\s*;/i', $hero_image_css[1])
+        && (bool) preg_match('/\\bobject-position:\\s*right\\s+center\\s*;/i', $hero_image_css[1])
+        && (bool) preg_match('/\\bmargin-left:\\s*auto\\s*;/i', $hero_image_css[1])
+        && (bool) preg_match('/\\btransform:\\s*none\\s*;/i', $hero_image_css[1]),
+    'la imagen debe alejarse, mostrar el encuadre completo y quedar alineada a la derecha solo en el hero de baterías'
 );
 $supports_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-supports');
 tmd_battery_visual_assert(isset($supports_css[1]) && (bool) preg_match('/grid-template-columns:\\s*repeat\\(3,\\s*minmax\\(0,\\s*1fr\\)\\)/i', $supports_css[1]), 'los tres apoyos deben formar columnas en escritorio');
@@ -145,6 +148,7 @@ tmd_battery_visual_assert(
 );
 $mobile_image_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-media img', true);
 tmd_battery_visual_assert(isset($mobile_image_css[1]) && (bool) preg_match('/\\bwidth:\\s*100%\\s*;/i', $mobile_image_css[1]) && (bool) preg_match('/\\btransform:\\s*none\\s*;/i', $mobile_image_css[1]), 'en móvil la imagen debe recuperar ancho completo y posición normal');
+tmd_battery_visual_assert(isset($mobile_image_css[1]) && (bool) preg_match('/\\bobject-fit:\\s*contain\\s*;/i', $mobile_image_css[1]) && (bool) preg_match('/\\bobject-position:\\s*right\\s+top\\s*;/i', $mobile_image_css[1]), 'en móvil se debe ver la imagen completa en la parte superior');
 $mobile_copy_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-copy', true);
 tmd_battery_visual_assert(isset($mobile_copy_css[1]) && (bool) preg_match('/\\bwidth:\\s*100%\\s*;/i', $mobile_copy_css[1]) && (bool) preg_match('/\\bmin-width:\\s*0\\s*;/i', $mobile_copy_css[1]), 'el bloque de texto del hero debe caber en la pantalla móvil');
 $mobile_lead_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-lead', true);

@@ -1048,10 +1048,12 @@ body.tmd-commercial-landing-battery .site-main {
 }
 
 .tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-media img {
-  width: 112%;
+  width: 90%;
   max-width: none;
-  object-position: 72% center;
-  transform: translateX(8%);
+  margin-left: auto;
+  object-fit: contain;
+  object-position: right center;
+  transform: none;
 }
 
 .tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-content {
@@ -1755,6 +1757,8 @@ body.tmd-commercial-landing-battery .site-main {
   .tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-media img {
     width: 100%;
     max-width: 100%;
+    object-fit: contain;
+    object-position: right top;
     transform: none;
   }
 
