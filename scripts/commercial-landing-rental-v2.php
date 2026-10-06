@@ -17,7 +17,7 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
     $html_block = static fn (string $markup): string => "<!-- wp:html -->\n" . trim($markup) . "\n<!-- /wp:html -->";
     $shortcode_block = static fn (string $shortcode): string => "<!-- wp:shortcode -->\n" . trim($shortcode) . "\n<!-- /wp:shortcode -->";
 
-    $brand_heading = 'Yale, Crown, Clark, Jungheinrich y Hyster en la flota disponible';
+    $brand_heading = 'Jungheinrich, Crown, Yale, Clark y Hyster en la flota disponible';
     $metrics_items = '<p><span class="tmd-rental-v2__metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h11V5H4v12Zm11-7h4l3 4v3h-7v-7Z"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/><path d="M6 8h5M6 11h5M14 14h3"/></svg></span><strong>120 equipos en flota propia</strong></p>';
     $metrics_items .= '<p><span class="tmd-rental-v2__metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m14.7 6.3 3-3a4.5 4.5 0 0 0-5.9 5.9l-7.5 7.5a2.1 2.1 0 0 0 3 3l7.5-7.5a4.5 4.5 0 0 0 5.9-5.9l-3 3-4-1-1-4Z"/></svg></span><strong>Desde el año 2000 en servicio técnico</strong></p>';
     $metrics_items .= '<p><span class="tmd-rental-v2__metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18M8 15h.01M12 15h.01M16 15h.01"/></svg></span><strong>15 días de alquiler mínimo</strong></p>';

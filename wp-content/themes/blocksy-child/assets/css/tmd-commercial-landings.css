@@ -1048,7 +1048,10 @@ body.tmd-commercial-landing-battery .site-main {
 }
 
 .tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-media img {
+  width: 112%;
+  max-width: none;
   object-position: 72% center;
+  transform: translateX(8%);
 }
 
 .tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-content {
@@ -1090,6 +1093,48 @@ body.tmd-commercial-landing-battery .site-main {
   line-height: 1.6;
 }
 
+.tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-supports {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-support {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-support-icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1.5px solid #f04d2d;
+  border-radius: 50%;
+  color: #f04d2d;
+}
+
+.tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-support-icon svg {
+  display: block;
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
 .tmd-commercial-landing__section--battery-solutions,
 .tmd-commercial-landing__section--battery-benefits,
 .tmd-commercial-landing__section--battery-process,
@@ -1113,6 +1158,14 @@ body.tmd-commercial-landing-battery .site-main {
 .tmd-commercial-landing__section--battery-gallery,
 .tmd-commercial-landing__section--battery-faq {
   background: #fff;
+}
+
+.tmd-commercial-landing__section--battery-solutions .tmd-commercial-landing__section-heading {
+  text-align: left;
+}
+
+.tmd-commercial-landing__section--battery-solutions .tmd-commercial-landing__solutions-title-accent {
+  color: var(--tmd-landing-blue);
 }
 
 .tmd-commercial-landing__section-heading--split {
@@ -1699,12 +1752,35 @@ body.tmd-commercial-landing-battery .site-main {
     padding-block: 220px 48px;
   }
 
+  .tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-media img {
+    width: 100%;
+    max-width: 100%;
+    transform: none;
+  }
+
+  .tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-copy {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-lead {
+    width: 100%;
+    max-width: 100%;
+  }
+
   .tmd-commercial-landing__hero--battery-maqueta h1 {
     font-size: clamp(36px, 9vw, 52px);
   }
 
   .tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-subhead {
     font-size: clamp(25px, 6vw, 34px);
+  }
+
+  .tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-supports {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
   }
 
   .tmd-commercial-landing__section-heading--split,

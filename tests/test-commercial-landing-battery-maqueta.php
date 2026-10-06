@@ -384,10 +384,112 @@ try {
     $details_count = preg_match_all('/<details\b/', $page_content);
     tmd_battery_test_assert(7 === $section_count, 'la maqueta debe tener siete secciones HTML, además del formulario y el blog');
     tmd_battery_test_assert(6 === $details_count && ! preg_match('/<details\b[^>]*\bopen\b/i', $page_content), 'las seis FAQ deben quedar cerradas por defecto');
+    $battery_hero_match = [];
+    tmd_battery_test_assert(
+        1 === preg_match('/<section\b[^>]*tmd-commercial-landing__hero--battery-maqueta[^>]*>[\s\S]*?<\/section>/', $page_content, $battery_hero_match),
+        'el hero de batería de la maqueta debe existir'
+    );
+    $battery_hero = $battery_hero_match[0];
+    tmd_battery_test_assert(false !== strpos($battery_hero, 'Baterías para montacargas <em>eléctricos</em>'), 'el hero debe conservar el H1 aprobado');
+    tmd_battery_test_assert(false !== strpos($battery_hero, 'Representantes de la marca francesa Barbillon'), 'el hero debe conservar el subtítulo aprobado');
+    tmd_battery_test_assert(false !== strpos($battery_hero, 'Venta y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.'), 'el hero debe conservar el párrafo aprobado');
+    tmd_battery_test_assert(
+        false !== strpos($battery_hero, 'commercial-landings/baterias-referencias/banner-bateria-barbillon.webp')
+            && (bool) preg_match('/<img\b(?=[^>]*alt="")[^>]*commercial-landings\/baterias-referencias\/banner-bateria-barbillon\.webp[^>]*>/', $battery_hero),
+        'el hero debe conservar la imagen y su alternativa vacía'
+    );
+    $battery_support_match = [];
+    tmd_battery_test_assert(
+        1 === preg_match('/<ul\b[^>]*class="[^"]*tmd-commercial-landing__hero-supports[^"]*"[^>]*>([\s\S]*?)<\/ul>/', $battery_hero, $battery_support_match),
+        'el hero debe incluir una lista semántica de apoyos'
+    );
+    $battery_supports = $battery_support_match[1];
+    $support_specs = [
+        'performance' => 'Alto rendimiento para jornadas exigentes',
+        'durability' => 'Equipos confiables y de larga vida útil',
+        'advisory' => 'Asesoría especializada según tu operación',
+    ];
+    $support_items = [];
+    tmd_battery_test_assert(
+        3 === preg_match_all('/<li\b[^>]*tmd-commercial-landing__hero-support--(performance|durability|advisory)[^>]*>[\s\S]*?<\/li>/', $battery_supports, $support_items),
+        'el hero debe mostrar exactamente tres apoyos tipados'
+    );
+    $previous_support_position = -1;
+    foreach ($support_specs as $support_type => $support_copy) {
+        $support_position = strpos($battery_supports, $support_copy);
+        tmd_battery_test_assert(false !== $support_position && $support_position > $previous_support_position, 'los apoyos deben conservar el orden aprobado: ' . $support_copy);
+        $support_item_pattern = '/<li\b[^>]*tmd-commercial-landing__hero-support--' . preg_quote($support_type, '/') . '[^>]*>([\s\S]*?)<\/li>/';
+        $support_item_match = [];
+        tmd_battery_test_assert(1 === preg_match($support_item_pattern, $battery_supports, $support_item_match), 'el icono debe corresponder al apoyo ' . $support_type);
+        tmd_battery_test_assert(false !== strpos($support_item_match[1], 'tmd-commercial-landing__hero-support-icon--' . $support_type), 'el apoyo ' . $support_type . ' debe tener su icono correspondiente');
+        tmd_battery_test_assert(false !== strpos($support_item_match[1], $support_copy), 'el apoyo ' . $support_type . ' debe conservar su frase');
+        tmd_battery_test_assert((bool) preg_match('/<svg\b[^>]*aria-hidden="true"[^>]*>/', $support_item_match[1]), 'el SVG de ' . $support_type . ' debe ser decorativo');
+        $previous_support_position = $support_position;
+    }
+    tmd_battery_test_assert(false !== strpos($battery_hero, '</p>') && strpos($battery_hero, '</p>') < strpos($battery_hero, '<ul class="tmd-commercial-landing__hero-supports"'), 'los apoyos deben aparecer inmediatamente después del párrafo');
+    $css = (string) file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/css/tmd-commercial-landings.css');
+    tmd_battery_test_assert((bool) preg_match('/--tmd-landing-navy:\s*#262e4f\s*;/i', $css), 'el azul marino aprobado debe ser #262E4F');
+    tmd_battery_test_assert((bool) preg_match('/\.tmd-commercial-landing__form-layout--battery-maqueta \.wpcf7-submit\s*\{[^}]*background:\s*var\(--tmd-landing-navy\);[^}]*color:\s*#fff;/s', $css), 'el CTA debe usar fondo aprobado y texto blanco');
+    $hero_image_css = [];
+    tmd_battery_test_assert(
+        1 === preg_match('/\.tmd-commercial-landing__hero--battery-maqueta \.tmd-commercial-landing__hero-media img\s*\{([^}]*)\}/s', $css, $hero_image_css)
+            && (bool) preg_match('/\bwidth:\s*112%\s*;/i', $hero_image_css[1])
+            && (bool) preg_match('/\bmax-width:\s*none\s*;/i', $hero_image_css[1]),
+        'el encuadre de escritorio debe ampliar solo la imagen del hero de baterías al 112%'
+    );
+    $hero_support_css = [];
+    tmd_battery_test_assert(
+        1 === preg_match('/\.tmd-commercial-landing__hero--battery-maqueta \.tmd-commercial-landing__hero-supports\s*\{([^}]*)\}/s', $css, $hero_support_css)
+            && (bool) preg_match('/\bgrid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)\s*;/i', $hero_support_css[1]),
+        'los apoyos deben tener tres columnas de escritorio dentro del selector exclusivo de baterías'
+    );
+    $hero_support_item_css = [];
+    tmd_battery_test_assert(
+        1 === preg_match('/\.tmd-commercial-landing__hero--battery-maqueta \.tmd-commercial-landing__hero-support\s*\{([^}]*)\}/s', $css, $hero_support_item_css)
+            && (bool) preg_match('/\bgrid-template-columns:\s*40px\s+minmax\(0,\s*1fr\)\s*;/i', $hero_support_item_css[1]),
+        'cada apoyo debe conservar el icono a la izquierda de su texto'
+    );
+    $hero_support_icon_css = [];
+    tmd_battery_test_assert(
+        1 === preg_match('/\.tmd-commercial-landing__hero--battery-maqueta \.tmd-commercial-landing__hero-support-icon\s*\{([^}]*)\}/s', $css, $hero_support_icon_css)
+            && (bool) preg_match('/\bcolor:\s*#f04d2d\s*;/i', $hero_support_icon_css[1])
+            && (bool) preg_match('/\bborder-radius:\s*50%\s*;/i', $hero_support_icon_css[1]),
+        'cada icono debe tener un contorno circular rojo anaranjado'
+    );
+    $hero_mobile_image_css = [];
+    tmd_battery_test_assert(
+        1 === preg_match('/@media\s*\(max-width:\s*760px\)[\s\S]*?\.tmd-commercial-landing__hero--battery-maqueta \.tmd-commercial-landing__hero-media img\s*\{([^}]*)\}/s', $css, $hero_mobile_image_css)
+            && (bool) preg_match('/\bwidth:\s*100%\s*;/i', $hero_mobile_image_css[1]),
+        'en móvil la imagen del hero de baterías debe volver a 100%'
+    );
+    $hero_mobile_support_css = [];
+    tmd_battery_test_assert(
+        1 === preg_match('/@media\s*\(max-width:\s*760px\)[\s\S]*?\.tmd-commercial-landing__hero--battery-maqueta \.tmd-commercial-landing__hero-supports\s*\{([^}]*)\}/s', $css, $hero_mobile_support_css)
+            && (bool) preg_match('/\bgrid-template-columns:\s*minmax\(0,\s*1fr\)\s*;/i', $hero_mobile_support_css[1]),
+        'en móvil los apoyos deben apilarse en una columna dentro del selector exclusivo de baterías'
+    );
     tmd_battery_test_assert(5 === preg_match_all('/<figure\b/', substr($page_content, strpos($page_content, 'tmd-commercial-landing__battery-gallery'), strpos($page_content, '</section>', strpos($page_content, 'tmd-commercial-landing__battery-gallery')) - strpos($page_content, 'tmd-commercial-landing__battery-gallery'))), 'la galería debe mostrar cinco imágenes sin leyendas');
     tmd_battery_test_assert(false === strpos($page_content, '<figcaption') && false === strpos($page_content, 'TMD_ASSETS'), 'el contenido no debe dejar leyendas ni rutas temporales');
     $gallery_content = substr($page_content, strpos($page_content, 'tmd-commercial-landing__battery-gallery'), strpos($page_content, '</section>', strpos($page_content, 'tmd-commercial-landing__battery-gallery')) - strpos($page_content, 'tmd-commercial-landing__battery-gallery'));
-    tmd_battery_test_assert(false !== strpos($page_content, 'Baterías y equipos eléctricos en operación') && false === strpos($gallery_content, 'Barbillon'), 'la galería debe describir las imágenes sin atribuirles una marca no verificada');
+    $gallery_images = [];
+    preg_match_all('/<figure>\s*<img\b[^>]*src="([^"]+)"[^>]*alt="([^"]*)"[^>]*>\s*<\/figure>/', $gallery_content, $gallery_images, PREG_SET_ORDER);
+    $verified_brand_gallery_assets = [
+        'commercial-landings/baterias-referencias/galeria-bateria-celdas-barbillon.webp',
+        'commercial-landings/baterias-referencias/galeria-bateria-traccion-barbillon.webp',
+    ];
+    $gallery_branding_is_verified = false !== strpos($page_content, 'Baterías y equipos eléctricos en operación')
+        && 5 === count($gallery_images);
+    foreach ($gallery_images as $gallery_image) {
+        if (false !== strpos($gallery_image[2], 'Barbillon')) {
+            $has_verified_brand_source = false;
+            foreach ($verified_brand_gallery_assets as $verified_brand_gallery_asset) {
+                $has_verified_brand_source = $has_verified_brand_source
+                    || false !== strpos($gallery_image[1], $verified_brand_gallery_asset);
+            }
+            $gallery_branding_is_verified = $gallery_branding_is_verified && $has_verified_brand_source;
+        }
+    }
+    tmd_battery_test_assert($gallery_branding_is_verified, 'la galería solo debe atribuir Barbillon a las imágenes de batería identificadas con esa marca');
     tmd_battery_test_assert(false !== strpos($gallery_content, 'commercial-landings/baterias-hero.jpeg') && false !== strpos($gallery_content, 'mega-menu/energy-baterias-plomo.webp') && false !== strpos($gallery_content, 'mega-menu/energy-bms.webp'), 'la galería debe incluir imágenes existentes de batería y monitoreo');
 
     $ordered_parts = [
@@ -441,7 +543,7 @@ try {
         'Baterías para montacargas <em>eléctricos</em>',
         'Representantes de la marca francesa Barbillon',
         'Venta y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.',
-        'Baterías de tracción, cargadores y monitoreo BMS',
+        '<span class="tmd-commercial-landing__solutions-title-accent">Baterías de tracción</span>, cargadores y monitoreo BMS',
         'Compatibles con retráctiles, apiladores, estibadores, tomapedidos y equipos de pasillo angosto',
         'Baterías de tracción plomo-ácido:',
         'seleccionadas por voltaje, amperios hora y dimensiones del compartimiento.',
@@ -490,10 +592,6 @@ try {
         $copy_source = 'Cotiza baterías para montacargas' === $copy ? $theme_inc : $page_content;
         tmd_battery_test_assert(false !== strpos($copy_source, $copy), 'falta el texto aprobado de DEC-11: ' . $copy);
     }
-
-    $css = (string) file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/css/tmd-commercial-landings.css');
-    tmd_battery_test_assert((bool) preg_match('/--tmd-landing-navy:\s*#262e4f\s*;/i', $css), 'el azul marino aprobado debe ser #262E4F');
-    tmd_battery_test_assert((bool) preg_match('/\.tmd-commercial-landing__form-layout--battery-maqueta \.wpcf7-submit\s*\{[^}]*background:\s*var\(--tmd-landing-navy\);[^}]*color:\s*#fff;/s', $css), 'el CTA debe usar fondo aprobado y texto blanco');
 
     $asset_directory = dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/img/commercial-landings/baterias-referencias';
     $catalog_assets = [

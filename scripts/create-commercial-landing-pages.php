@@ -349,6 +349,20 @@ function tmd_commercial_landing_script_battery_content(string $asset_root, int $
       <h1 id="tmd-battery-heading">Baterías para montacargas <em>eléctricos</em></h1>
       <h2 class="tmd-commercial-landing__hero-subhead">Representantes de la marca francesa Barbillon</h2>
       <p class="tmd-commercial-landing__hero-lead">Venta y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.</p>
+      <ul class="tmd-commercial-landing__hero-supports">
+        <li class="tmd-commercial-landing__hero-support tmd-commercial-landing__hero-support--performance">
+          <span class="tmd-commercial-landing__hero-support-icon tmd-commercial-landing__hero-support-icon--performance"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M27 5 13 26h10l-2 17 14-23H25z"/></svg></span>
+          <span>Alto rendimiento para jornadas exigentes</span>
+        </li>
+        <li class="tmd-commercial-landing__hero-support tmd-commercial-landing__hero-support--durability">
+          <span class="tmd-commercial-landing__hero-support-icon tmd-commercial-landing__hero-support-icon--durability"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M20 5h8l1 4.3a15 15 0 0 1 3.5 1.5l4.1-1.4 4 7-3.1 3.2a15 15 0 0 1 0 4l3.1 3.2-4 7-4.1-1.4a15 15 0 0 1-3.5 1.5L28 43h-8l-1-4.3a15 15 0 0 1-3.5-1.5l-4.1 1.4-4-7 3.1-3.2a15 15 0 0 1 0-4l-3.1-3.2 4-7 4.1 1.4a15 15 0 0 1 3.5-1.5z"/><circle cx="24" cy="24" r="5"/></svg></span>
+          <span>Equipos confiables y de larga vida útil</span>
+        </li>
+        <li class="tmd-commercial-landing__hero-support tmd-commercial-landing__hero-support--advisory">
+          <span class="tmd-commercial-landing__hero-support-icon tmd-commercial-landing__hero-support-icon--advisory"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><circle cx="24" cy="24" r="17"/><path d="M24 14v11l8 5"/></svg></span>
+          <span>Asesoría especializada según tu operación</span>
+        </li>
+      </ul>
     </div>
   </div>
 </section>
@@ -358,7 +372,7 @@ HTML));
 <section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--battery-solutions" aria-labelledby="tmd-battery-solutions-heading">
   <div class="tmd-commercial-landing__container">
     <div class="tmd-commercial-landing__section-heading tmd-commercial-landing__section-heading--split">
-      <h2 id="tmd-battery-solutions-heading">Baterías de tracción, cargadores y monitoreo BMS</h2>
+      <h2 id="tmd-battery-solutions-heading"><span class="tmd-commercial-landing__solutions-title-accent">Baterías de tracción</span>, cargadores y monitoreo BMS</h2>
       <h3>Compatibles con retráctiles, apiladores, estibadores, tomapedidos y equipos de pasillo angosto</h3>
     </div>
     <div class="tmd-commercial-landing__solution-grid">
