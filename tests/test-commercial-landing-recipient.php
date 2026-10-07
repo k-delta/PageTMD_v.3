@@ -393,9 +393,9 @@ $hero_block_end = false === $hero_heading_position
     ? false
     : strpos($rental_content, '<!-- /wp:html -->', $hero_heading_position);
 tmd_commercial_landing_recipient_assert(
-    false !== strpos($rental_content, '<h1 id="tmd-rental-v2-heading">Alquiler de <span>montacargas eléctricos</span></h1>')
-        && false === strpos($rental_content, 'Venta o alquiler de montacargas'),
-    'El hero debe anunciar únicamente alquiler y resaltar “montacargas eléctricos” como HTML editable.'
+    false !== strpos($rental_content, '<h1 id="tmd-rental-v2-heading">Venta o alquiler de <span>montacargas eléctricos</span></h1>')
+        && false === strpos($rental_content, '<h1 id="tmd-rental-v2-heading">Alquiler de <span>montacargas eléctricos</span></h1>'),
+    'El hero debe anunciar venta o alquiler y resaltar “montacargas eléctricos” como HTML editable.'
 );
 tmd_commercial_landing_recipient_assert(
     false !== $hero_start

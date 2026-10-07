@@ -27,7 +27,7 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
     $blocks[] = $html_block('<section class="tmd-rental-v2-section tmd-rental-v2__hero" aria-labelledby="tmd-rental-v2-heading">'
         . '<img class="tmd-rental-v2__hero-image" src="' . esc_url($asset('hero-dark.webp')) . '" alt="" fetchpriority="high" decoding="async">'
         . '<div class="tmd-rental-v2__container tmd-rental-v2__hero-content">'
-        . '<h1 id="tmd-rental-v2-heading">Alquiler de <span>montacargas eléctricos</span></h1>'
+        . '<h1 id="tmd-rental-v2-heading">Venta o alquiler de <span>montacargas eléctricos</span></h1>'
         . '<h2>Equipos propios con mantenimiento en nuestro taller técnico</h2>'
         . '<p>Contrabalanceados, reach, pantógrafos y apiladores para bodegas, centros de distribución y plantas que necesitan más equipos en operación sin comprarlos.</p>'
         . $metrics

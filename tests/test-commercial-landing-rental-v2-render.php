@@ -293,7 +293,7 @@ render_assert(
 );
 render_assert(
     false !== strpos($content, '<p class="tmd-rental-v2__eyebrow">SOLUCIÓN PARA TU OPERACIÓN</p>')
-        && false !== strpos($content, '<h1 id="tmd-rental-v2-heading">Alquiler de <span>montacargas eléctricos</span></h1>')
+        && false !== strpos($content, '<h1 id="tmd-rental-v2-heading">Venta o alquiler de <span>montacargas eléctricos</span></h1>')
         && 1 === preg_match(
             '/linear-gradient\(90deg,\s*rgba\(38, 46, 79, \.98\) 0%,\s*rgba\(38, 46, 79, \.96\) 32%,\s*rgba\(38, 46, 79, \.82\) 44%,\s*rgba\(38, 46, 79, \.58\) 56%,\s*rgba\(38, 46, 79, \.2\) 72%,\s*rgba\(38, 46, 79, \.05\) 100%\)/',
             $hero_overlay_css
@@ -315,7 +315,7 @@ render_assert(
             '/body\.tmd-rental-layout-v2 \.tmd-rental-v2__metric-icon svg\s*\{\s*display: block;\s*width: 40px;\s*height: 40px;\s*\}/',
             $rental_css
         ),
-    'El hero mantiene el H1 solo de alquiler, el rótulo azul, el acento amarillo y los iconos métricos de 40 px.'
+    'El hero mantiene el H1 “Venta o alquiler”, el rótulo azul, el acento amarillo y los iconos métricos de 40 px.'
 );
 render_assert(
     false !== strpos($metrics_css, 'grid-template-columns: repeat(3, minmax(0, 1fr));')
