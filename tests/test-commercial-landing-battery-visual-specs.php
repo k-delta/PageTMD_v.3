@@ -57,9 +57,36 @@ function tmd_battery_visual_assert(bool $condition, string $message): void
 
 function tmd_battery_visual_rule(string $css, string $selector, bool $mobile = false): array
 {
-    $scope = $mobile ? '@media\\s*\\(max-width:\\s*760px\\)[\\s\\S]*?' : '';
+    if ($mobile) {
+        $media_start = strpos($css, '@media (max-width: 760px)');
+        $block_start = false === $media_start ? false : strpos($css, '{', $media_start);
+        if (false === $block_start) {
+            return [];
+        }
+
+        $depth = 0;
+        $block_end = false;
+        for ($index = $block_start, $length = strlen($css); $index < $length; $index++) {
+            if ('{' === $css[$index]) {
+                $depth++;
+            } elseif ('}' === $css[$index]) {
+                $depth--;
+                if (0 === $depth) {
+                    $block_end = $index;
+                    break;
+                }
+            }
+        }
+
+        if (false === $block_end) {
+            return [];
+        }
+
+        $css = substr($css, $block_start + 1, $block_end - $block_start - 1);
+    }
+
     $matches = [];
-    preg_match('/' . $scope . '(?:^|\\n)[ \\t]*' . preg_quote($selector, '/') . '\\s*\\{([^}]*)\\}/s', $css, $matches);
+    preg_match('/(?:^|\\n)[ \\t]*' . preg_quote($selector, '/') . '\\s*\\{([^}]*)\\}/s', $css, $matches);
     return $matches;
 }
 
