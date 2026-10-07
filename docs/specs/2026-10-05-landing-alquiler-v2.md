@@ -78,3 +78,10 @@ Implementar en la página publicada 1558 la estructura, textos, composición vis
 - Las hojas CSS y la imagen del proceso respondieron HTTP 200; el CSS del contenedor productivo coincide con el archivo local por SHA-256. Las pruebas focales de render, actualizador y destinatario, PHP lint de los archivos PHP del release `fd53197`, `git diff --check` y la revisión final no reportaron fallos.
 - Una imagen dinámica de inventario (`MaquinasImg%2F45.png`) recibió `net::ERR_BLOCKED_BY_ORB` en Chromium. Pertenece al shortcode dinámico de inventario, no a los assets versionados de esta entrega; se registra como limitación observada y no se cambió su fuente.
 - `sync-production.sh --check` terminó con código 1 antes y después por deriva preexistente en `.DS_Store`, snapshots y lista de plugins; los árboles del tema y plugins propios compararon iguales y no apareció deriva nueva del runtime. No se ejecutó `--pull`.
+
+## Ajuste editorial productivo — 2026-10-07
+
+- En la página publicada 1558 se reemplazó únicamente “Yale, Crown, Clark, Jungheinrich y Hyster en la flota disponible” por “Jungheinrich, Crown, Yale, Clark y Hyster en la flota disponible”. El contenido persistido quedó en SHA-256 `e1f0f6c57c82fe45b097057152c41b449ad36d457df2ae070b7fdbfc02b85275`; CF7 1556 y los metadatos Rank Math conservaron sus hashes previos.
+- Antes de escribir se verificó un backup completo MariaDB de 16,534,101 bytes, SHA-256 `2dcf6ce53c4da9a7d8740562cec5c55ea56af890ab0e96624adf67e7595b5891`, y se guardó un artefacto privado de rollback de la página, formulario y metadatos. La actualización usó bloqueo, transacción, verificación posterior y purga puntual de caché de LiteSpeed.
+- WP-CLI confirmó el hash persistido. La URL pública respondió HTTP 200 y su HTML contiene la frase nueva una vez y la anterior ninguna. No se desplegó código ni se verificó visualmente en navegador.
+- `sync-production.sh --check` continúa con código 1 por `.DS_Store` locales y snapshots/listas versionados desactualizados; los archivos de renderer, actualizador y CSS revisados coinciden por hash entre el repositorio y producción. No se ejecutó `--pull`.
