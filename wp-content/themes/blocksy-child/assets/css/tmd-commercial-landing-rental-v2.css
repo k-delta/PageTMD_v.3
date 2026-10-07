@@ -586,11 +586,14 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__process li {
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__process-icon {
-  display: block;
-  width: 28px;
-  height: 28px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
   margin: 0 0 8px;
-  color: #262e4f;
+  border-radius: 4px;
+  background: #262e4f;
+  color: #ffc33c;
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__process-icon svg {
@@ -600,9 +603,12 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__process-icon svg {
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__process-number::before {
-  display: block;
+  display: inline-block;
   margin-bottom: 14px;
-  color: #262e4f;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #262e4f;
+  color: #ffc33c;
   content: counter(rental-step, decimal-leading-zero);
   font-size: 20px;
   font-weight: 700;

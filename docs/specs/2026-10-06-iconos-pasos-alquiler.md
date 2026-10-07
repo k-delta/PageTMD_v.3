@@ -78,4 +78,5 @@ No aplica; el bloque no expone datos ni interacciones nuevas.
 
 ## Decisiones pendientes
 
-- DEC-01 resuelto el 2026-10-06: usar cuatro SVG lineales inline, decorativos, en azul oscuro `#262E4F`, con metáforas de registro de datos, orientación técnica, cotización y entrega. El usuario aprobó esta propuesta junto con el SPEC.
+- DEC-01 resuelto el 2026-10-06: usar cuatro SVG lineales inline, decorativos, con metáforas de registro de datos, orientación técnica, cotización y entrega. El usuario aprobó esta propuesta junto con el SPEC.
+- DEC-02 solicitado el 2026-10-07: mostrar iconos y números en amarillo de marca `#FFC33C`. Como ajuste de presentación, añadirles una base azul oscuro `#262E4F`, siguiendo el resaltado “cuatro pasos” y manteniendo contraste sobre el fondo claro.
