@@ -9,41 +9,6 @@ body.tmd-rental-layout-v2 .entry-header {
   display: none !important;
 }
 
-body.tmd-rental-layout-v2 .tmd-rental-whatsapp-float {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 901;
-  display: inline-flex;
-  width: 60px;
-  height: 60px;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  background: #25d366;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, .24);
-  color: #fff;
-  text-decoration: none;
-  transition: transform .2s ease, box-shadow .2s ease;
-}
-
-body.tmd-rental-layout-v2 .tmd-rental-whatsapp-float:hover {
-  color: #fff;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, .3);
-  transform: translateY(-2px);
-}
-
-body.tmd-rental-layout-v2 .tmd-rental-whatsapp-float:focus-visible {
-  outline: 3px solid #262e4f;
-  outline-offset: 3px;
-}
-
-body.tmd-rental-layout-v2 .tmd-rental-whatsapp-float > i {
-  font-size: 30px;
-  line-height: 1;
-}
-
 body.tmd-rental-layout-v2 #main-container,
 body.tmd-rental-layout-v2 .site-content,
 body.tmd-rental-layout-v2 .content-area,

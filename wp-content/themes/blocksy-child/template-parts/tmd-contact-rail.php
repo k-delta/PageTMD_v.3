@@ -81,3 +81,11 @@ if (is_page(57)) {
     <span class="tmd-contact-rail__label" aria-hidden="true">LinkedIn</span>
   </a>
 </nav>
+
+<a
+  class="tmd-whatsapp-float"
+  href="https://wa.me/573244298326"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Contactar por WhatsApp"
+><i class="ti ti-brand-whatsapp" aria-hidden="true"></i></a>
