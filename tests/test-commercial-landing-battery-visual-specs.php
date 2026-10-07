@@ -59,7 +59,7 @@ function tmd_battery_visual_rule(string $css, string $selector, bool $mobile = f
 {
     $scope = $mobile ? '@media\\s*\\(max-width:\\s*760px\\)[\\s\\S]*?' : '';
     $matches = [];
-    preg_match('/' . $scope . preg_quote($selector, '/') . '\\s*\\{([^}]*)\\}/s', $css, $matches);
+    preg_match('/' . $scope . '(?:^|\\n)[ \\t]*' . preg_quote($selector, '/') . '\\s*\\{([^}]*)\\}/s', $css, $matches);
     return $matches;
 }
 
@@ -207,9 +207,19 @@ tmd_battery_visual_assert(
 $process_heading_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__section-heading--battery-process-heading');
 tmd_battery_visual_assert(
     isset($process_heading_css[1])
-        && (bool) preg_match('/grid-template-columns:\\s*minmax\\(0,\\s*1fr\\)\\s*;/i', $process_heading_css[1])
+        && (bool) preg_match('/grid-template-columns:\\s*minmax\\(0,\\s*1\\.1fr\\)\\s+minmax\\(280px,\\s*0\\.9fr\\)\\s*;/i', $process_heading_css[1])
         && (bool) preg_match('/text-align:\\s*left\\s*;/i', $process_heading_css[1]),
-    'el título y el subtítulo del proceso deben apilarse y alinearse a la izquierda'
+    'el título y el subtítulo del proceso deben distribuirse en dos columnas y alinearse a la izquierda en escritorio'
+);
+$process_subtitle_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__section--battery-process .tmd-commercial-landing__section-heading--battery-process-heading h3');
+tmd_battery_visual_assert(
+    isset($process_subtitle_css[1]) && (bool) preg_match('/text-align:\\s*justify\\s*;/i', $process_subtitle_css[1]),
+    'el texto secundario del proceso debe justificarse'
+);
+$process_heading_mobile_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__section-heading--battery-process-heading', true);
+tmd_battery_visual_assert(
+    isset($process_heading_mobile_css[1]) && (bool) preg_match('/grid-template-columns:\\s*minmax\\(0,\\s*1fr\\)\\s*;/i', $process_heading_mobile_css[1]),
+    'el encabezado del proceso debe apilarse en móvil'
 );
 $process_eyebrow_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__battery-process-eyebrow');
 tmd_battery_visual_assert(
