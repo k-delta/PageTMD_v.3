@@ -1044,7 +1044,7 @@ body.tmd-commercial-landing-battery .site-main {
 }
 
 .tmd-commercial-landing__hero--battery-maqueta::after {
-  background: linear-gradient(90deg, rgba(38, 46, 79, 0.97) 0%, rgba(38, 46, 79, 0.88) 42%, rgba(38, 46, 79, 0.54) 68%, rgba(38, 46, 79, 0.14) 100%);
+  background: linear-gradient(90deg, rgba(38, 46, 79, 0.97) 0%, rgba(38, 46, 79, 0.96) 50%, rgba(38, 46, 79, 0.54) 72%, rgba(38, 46, 79, 0.14) 100%);
 }
 
 .tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-media img {
@@ -1357,10 +1357,11 @@ body.tmd-commercial-landing-battery .site-main {
 
 .tmd-commercial-landing__section-heading--benefits {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.62fr);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.9fr);
   gap: 40px;
   align-items: center;
   margin-bottom: 36px;
+  text-align: left;
 }
 
 .tmd-commercial-landing__section-heading--benefits h2 {
@@ -1369,6 +1370,10 @@ body.tmd-commercial-landing-battery .site-main {
 
 .tmd-commercial-landing__section-heading--benefits h3 {
   max-width: 720px;
+}
+
+.tmd-commercial-landing__section--battery-benefits .tmd-commercial-landing__battery-benefits-title-accent {
+  color: var(--tmd-landing-blue);
 }
 
 .tmd-commercial-landing__section-heading--benefits > img {
@@ -1452,6 +1457,40 @@ body.tmd-commercial-landing-battery .site-main {
 .tmd-commercial-landing__section--battery-process .tmd-commercial-landing__section-heading--split h2,
 .tmd-commercial-landing__section--battery-process .tmd-commercial-landing__section-heading--split h3 {
   color: #fff;
+}
+
+.tmd-commercial-landing__section-heading--battery-process-heading {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  max-width: 900px;
+  align-items: start;
+  justify-items: start;
+  text-align: left;
+}
+
+.tmd-commercial-landing__battery-process-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 0;
+  color: var(--tmd-landing-yellow);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.tmd-commercial-landing__battery-process-eyebrow::before {
+  flex: 0 0 64px;
+  height: 3px;
+  border-radius: 999px;
+  background: currentColor;
+  content: '';
+}
+
+.tmd-commercial-landing__section--battery-process .tmd-commercial-landing__battery-process-title-accent {
+  color: var(--tmd-landing-yellow);
 }
 
 .tmd-commercial-landing__battery-process-grid {

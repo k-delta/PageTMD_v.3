@@ -421,7 +421,7 @@ HTML));
   <div class="tmd-commercial-landing__container">
     <div class="tmd-commercial-landing__section-heading tmd-commercial-landing__section-heading--benefits">
       <div>
-        <h2 id="tmd-battery-benefits-heading">Rendimiento de la batería de tracción por turno</h2>
+        <h2 id="tmd-battery-benefits-heading"><span class="tmd-commercial-landing__battery-benefits-title-accent">Rendimiento</span> de la batería de tracción por turno</h2>
         <h3>Descargas profundas y cargas incompletas acortan la vida de las celdas</h3>
       </div>
       <img src="TMD_ASSETS/commercial-landings/baterias-referencias/ventajas-bateria-barbillon.webp" alt="Batería industrial de tracción Barbillon" loading="lazy" decoding="async">
@@ -448,8 +448,9 @@ HTML));
 <section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--dark tmd-commercial-landing__section--battery-process" aria-labelledby="tmd-battery-process-heading">
   <div class="tmd-commercial-landing__battery-process-media" aria-hidden="true"><img src="TMD_ASSETS/commercial-landings/baterias-referencias/proceso-cambio-bateria-barbillon.webp" alt="" loading="lazy" decoding="async"></div>
   <div class="tmd-commercial-landing__container">
-    <div class="tmd-commercial-landing__section-heading tmd-commercial-landing__section-heading--split">
-      <h2 id="tmd-battery-process-heading">Cambio de acumulador paso a paso</h2>
+    <div class="tmd-commercial-landing__section-heading tmd-commercial-landing__section-heading--split tmd-commercial-landing__section-heading--battery-process-heading">
+      <p class="tmd-commercial-landing__battery-process-eyebrow">Nuestro proceso</p>
+      <h2 id="tmd-battery-process-heading">Cambio de acumulador <span class="tmd-commercial-landing__battery-process-title-accent">paso a paso</span></h2>
       <h3>Marca, modelo y ficha de la batería actual definen la referencia compatible</h3>
     </div>
     <div class="tmd-commercial-landing__battery-process-grid">

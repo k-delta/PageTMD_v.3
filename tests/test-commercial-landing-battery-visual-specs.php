@@ -164,7 +164,67 @@ tmd_battery_visual_assert(
         && (bool) preg_match('/text-align-last:\\s*left\\s*;/i', $solution_text_css[1]),
     'el título y el texto de compatibilidad deben justificarse y conservar la última línea a la izquierda'
 );
+$benefits = [];
+tmd_battery_visual_assert(
+    1 === preg_match('/<section\\b[^>]*tmd-commercial-landing__section--battery-benefits[^>]*>([\\s\\S]*?)<\\/section>/', $page_content, $benefits),
+    'debe existir la sección de rendimiento de baterías'
+);
+tmd_battery_visual_assert(
+    false !== strpos($benefits[1], '<span class="tmd-commercial-landing__battery-benefits-title-accent">Rendimiento</span> de la batería de tracción por turno'),
+    'solo Rendimiento debe destacarse en el H2 de batería'
+);
+$benefits_heading_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__section-heading--benefits');
+tmd_battery_visual_assert(
+    isset($benefits_heading_css[1])
+        && (bool) preg_match('/grid-template-columns:\\s*minmax\\(0,\\s*1fr\\)\\s+minmax\\(260px,\\s*0\\.9fr\\)/i', $benefits_heading_css[1])
+        && (bool) preg_match('/text-align:\\s*left\\s*;/i', $benefits_heading_css[1]),
+    'el encabezado de rendimiento debe alinear sus textos a la izquierda y dar más ancho a la imagen'
+);
+$benefits_accent_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__section--battery-benefits .tmd-commercial-landing__battery-benefits-title-accent');
+tmd_battery_visual_assert(isset($benefits_accent_css[1]) && (bool) preg_match('/color:\\s*var\\(--tmd-landing-blue\\)\\s*;/i', $benefits_accent_css[1]), 'Rendimiento debe usar el azul de marca');
+
+$process = [];
+tmd_battery_visual_assert(
+    1 === preg_match('/<section\\b[^>]*tmd-commercial-landing__section--battery-process[^>]*>([\\s\\S]*?)<\\/section>/', $page_content, $process),
+    'debe existir la sección de proceso de baterías'
+);
+tmd_battery_visual_assert(
+    false !== strpos($process[1], '<p class="tmd-commercial-landing__battery-process-eyebrow">Nuestro proceso</p>'),
+    'el proceso debe mostrar la etiqueta Nuestro proceso'
+);
+tmd_battery_visual_assert(
+    false !== strpos($process[1], 'Cambio de acumulador <span class="tmd-commercial-landing__battery-process-title-accent">paso a paso</span>'),
+    'solo paso a paso debe destacarse en el H2 del proceso'
+);
+tmd_battery_visual_assert(
+    false !== strpos($process[1], '<h3>Marca, modelo y ficha de la batería actual definen la referencia compatible</h3>'),
+    'el texto secundario del proceso debe conservarse'
+);
+tmd_battery_visual_assert(
+    strpos($process[1], 'battery-process-eyebrow') < strpos($process[1], 'id="tmd-battery-process-heading"')
+        && strpos($process[1], 'id="tmd-battery-process-heading"') < strpos($process[1], '<h3>'),
+    'la etiqueta, el título y el subtítulo deben aparecer en ese orden'
+);
+$process_heading_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__section-heading--battery-process-heading');
+tmd_battery_visual_assert(
+    isset($process_heading_css[1])
+        && (bool) preg_match('/grid-template-columns:\\s*minmax\\(0,\\s*1fr\\)\\s*;/i', $process_heading_css[1])
+        && (bool) preg_match('/text-align:\\s*left\\s*;/i', $process_heading_css[1]),
+    'el título y el subtítulo del proceso deben apilarse y alinearse a la izquierda'
+);
+$process_eyebrow_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__battery-process-eyebrow');
+tmd_battery_visual_assert(
+    isset($process_eyebrow_css[1])
+        && (bool) preg_match('/color:\\s*var\\(--tmd-landing-yellow\\)\\s*;/i', $process_eyebrow_css[1])
+        && (bool) preg_match('/text-transform:\\s*uppercase\\s*;/i', $process_eyebrow_css[1]),
+    'Nuestro proceso debe mostrarse en mayúsculas y amarillo de marca'
+);
+$process_eyebrow_line_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__battery-process-eyebrow::before');
+tmd_battery_visual_assert(isset($process_eyebrow_line_css[1]) && (bool) preg_match('/background:\\s*currentColor\\s*;/i', $process_eyebrow_line_css[1]), 'la línea decorativa debe tomar el amarillo del rótulo');
+$process_accent_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__section--battery-process .tmd-commercial-landing__battery-process-title-accent');
+tmd_battery_visual_assert(isset($process_accent_css[1]) && (bool) preg_match('/color:\\s*var\\(--tmd-landing-yellow\\)\\s*;/i', $process_accent_css[1]), 'paso a paso debe usar el amarillo de marca');
+
 $accent_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__section--battery-solutions .tmd-commercial-landing__solutions-title-accent');
 tmd_battery_visual_assert(isset($accent_css[1]) && (bool) preg_match('/color:\\s*var\\(--tmd-landing-blue\\)\\s*;/i', $accent_css[1]), 'el acento debe usar el azul de marca por contraste');
 
-echo "OK: contratos visuales locales de hero y encabezado de soluciones de baterías.\n";
+echo "OK: contratos visuales locales de hero y secciones de baterías.\n";
