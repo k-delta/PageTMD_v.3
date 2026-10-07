@@ -2,7 +2,8 @@
 
 ## Estado
 
-- DEC-23 aprobado para implementación local el 2026-10-05. La solicitud directa posterior del usuario autoriza commit, push y despliegue de este alcance una vez superados los gates de revisión y producción.
+- Terminado el 2026-10-06. DEC-23 se implementó y el bloque 04 se verificó en la página pública 1558 en escritorio, tablet y móvil.
+- La instrucción directa del usuario autorizó la publicación de este alcance, limitada a la página 1558.
 - Complementa únicamente el bloque 04 del SPEC aprobado `2026-10-05-landing-alquiler-v2.md`.
 
 ## Contexto
@@ -70,7 +71,12 @@ No aplica; no cambian datos, interacciones ni interfaces. El bloque conserva el 
 
 - Implementación y prueba focal completadas. `php -l` pasó para el renderer y la prueba; `php tests/test-commercial-landing-rental-v2-render.php` pasó; `git diff --check` no reportó errores.
 - La revisión local con Chromium confirmó ausencia de overflow en escritorio (1440×900) y móvil (390×844); la imagen conserva proporción 4:3, `object-fit: cover` y el recorte indicado. Se usó un fixture aislado, no la página completa.
-- La validación productiva queda pendiente hasta ejecutar el despliegue.
+- El CSS de runtime productivo coincide por SHA-256 con el archivo local aprobado.
+
+## Resultado productivo — 2026-10-06
+
+- Las capturas públicas de escritorio (1440 px), tablet (1024 px) y móvil (390 px) muestran el H2 con “compra de maquinaria” resaltado, el subtítulo atenuado y la fotografía a la derecha con el contorno poligonal solicitado. Chromium confirmó HTTP 200, sin errores JavaScript ni overflow horizontal.
+- El CSS entregado con el commit `fd53197dbe2d9f9a2bacf17e65aa81f1d2dd4ba5` está presente en producción; su SHA-256 coincide con el archivo local revisado. La prueba focal del renderer y PHP lint pasaron.
 
 ## Riesgos
 
@@ -78,4 +84,4 @@ No aplica; no cambian datos, interacciones ni interfaces. El bloque conserva el 
 
 ## Decisiones pendientes
 
-- No hay decisiones de diseño abiertas. La publicación sigue sujeta a los gates del runbook.
+- No hay decisiones de diseño ni gates de publicación pendientes para este bloque.

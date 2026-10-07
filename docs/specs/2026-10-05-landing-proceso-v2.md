@@ -2,7 +2,8 @@
 
 ## Estado
 
-- DEC-24 aprobado para implementación el 2026-10-05. La solicitud directa posterior del usuario autoriza commit, push y despliegue de este alcance una vez superados los gates de revisión y producción.
+- Terminado el 2026-10-06. DEC-24 se implementó y el bloque 06 se verificó en la página pública 1558 en escritorio, tablet y móvil.
+- La instrucción directa del usuario autorizó la publicación de este alcance, limitada a la página 1558.
 - Complementa únicamente el bloque 06 del SPEC aprobado `2026-10-05-landing-alquiler-v2.md`.
 
 ## Contexto
@@ -71,7 +72,12 @@ No aplica; no cambian datos ni interacciones. Se conservan los textos y el orden
 
 - Implementación local y prueba focal completadas. `php -l` pasó para renderer y prueba; `php tests/test-commercial-landing-rental-v2-render.php` pasó; `git diff --check` no reportó errores.
 - La revisión local en Chromium de un fixture aislado confirmó escritorio (1440 px, cuatro columnas), tablet (1024 px, dos columnas) y móvil (390 px, una columna); rótulo azul `#128CEB` de 19 px, acento `#FFC33C` sobre `#262E4F` (8.27:1), imagen a la izquierda en anchos ≥761 px, debajo del texto en móvil y sin overflow horizontal.
-- La validación productiva queda pendiente hasta ejecutar el despliegue.
+- El CSS de runtime productivo coincide por SHA-256 con el archivo local aprobado.
+
+## Resultado productivo — 2026-10-06
+
+- Chromium público en 1440, 1024 y 390 px confirmó las grillas 4/2/1, la fotografía a la izquierda en escritorio/tablet y debajo del texto en móvil, y la ausencia de overflow horizontal. El asset `process.webp` respondió HTTP 200.
+- Las capturas públicas de escritorio, tablet y móvil se guardaron en `.codex-tmp/rental-v2-prod-*-20261006.png`. La prueba focal del renderer y PHP lint pasaron; el CSS servido coincide por SHA-256 con el archivo local aprobado.
 
 ## Riesgos
 
@@ -79,4 +85,4 @@ No aplica; no cambian datos ni interacciones. Se conservan los textos y el orden
 
 ## Decisiones pendientes
 
-- No hay decisiones de diseño abiertas. La publicación sigue sujeta a los gates del runbook.
+- No hay decisiones de diseño ni gates de publicación pendientes para este bloque.
