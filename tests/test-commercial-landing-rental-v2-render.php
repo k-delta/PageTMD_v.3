@@ -211,7 +211,9 @@ $process_copy_css = is_string($rental_css) ? render_css_rule_body($rental_css, '
 $process_image_rules = is_string($rental_css) ? render_css_rule_bodies($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-layout > img') : [];
 $process_image_css = implode("\n", $process_image_rules);
 $process_steps_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process ol') : '';
-$process_step_number_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process li::before') : '';
+$process_step_icon_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-icon') : '';
+$process_step_icon_svg_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-icon svg') : '';
+$process_step_number_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-number::before') : '';
 $process_step_heading_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process li > strong') : '';
 $process_step_description_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process li > span') : '';
 $process_heading_accent_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-heading-accent') : '';
@@ -249,6 +251,25 @@ $process_step_texts = array_map(
     },
     $process_step_matches[1] ?? []
 );
+$process_step_icon_names = [];
+$process_step_icons_are_decorative = [];
+$process_step_icons_precede_numbers = [];
+foreach ($process_step_matches[1] ?? [] as $process_step_match) {
+    $process_icon_match = [];
+    $has_process_icon = 1 === preg_match(
+        '/<span class="tmd-rental-v2__process-icon tmd-rental-v2__process-icon--(operation|recommendation|quote|delivery)" aria-hidden="true"><svg\b(?=[^>]*focusable="false")[^>]*>.*?<\/svg><\/span>/s',
+        $process_step_match,
+        $process_icon_match
+    );
+    $process_step_icon_names[] = $has_process_icon ? $process_icon_match[1] : '';
+    $process_step_icons_are_decorative[] = $has_process_icon;
+
+    $process_icon_position = strpos($process_step_match, 'class="tmd-rental-v2__process-icon ');
+    $process_number_position = strpos($process_step_match, '<span class="tmd-rental-v2__process-number" aria-hidden="true"></span>');
+    $process_step_icons_precede_numbers[] = false !== $process_icon_position
+        && false !== $process_number_position
+        && $process_icon_position < $process_number_position;
+}
 render_assert(
     is_string($rental_css)
         && false === strpos($rental_css, 'body.tmd-rental-layout-v2 #header')
@@ -371,12 +392,15 @@ render_assert(
             'Cotización: recibes la tarifa, el periodo de alquiler y las condiciones de cada equipo.',
             'Entrega en tu sede: coordinamos el traslado del equipo hasta tu bodega en la fecha acordada.',
         ] === $process_step_texts
+        && ['operation', 'recommendation', 'quote', 'delivery'] === $process_step_icon_names
+        && 4 === count(array_filter($process_step_icons_are_decorative))
+        && 4 === count(array_filter($process_step_icons_precede_numbers))
         && false !== strpos($process_section_html, 'src="https://example.test/wp-content/themes/blocksy-child/assets/img/commercial-landings-v2/process.webp"')
         && false !== strpos($process_section_html, 'alt="Montacargas reach operando dentro de una bodega"')
         && false !== $process_copy_position
         && false !== $process_image_position
         && $process_copy_position < $process_image_position,
-    'El bloque 06 agrega el rótulo y acento, conserva subtítulo, textos de los cuatro pasos y foto con alt original.'
+    'El bloque 06 conserva rótulo, acento, textos y foto, y muestra los cuatro SVG decorativos antes de sus números.'
 );
 render_assert(
     false !== strpos($hero_eyebrow_css, 'color: #128ceb;')
@@ -392,6 +416,11 @@ render_assert(
         && false !== strpos($process_image_css, 'grid-column: 1;')
         && false !== strpos($process_image_css, 'grid-row: 1;')
         && false !== strpos($process_steps_css, 'grid-template-columns: repeat(4, minmax(0, 1fr));')
+        && false !== strpos($process_step_icon_css, 'width: 28px;')
+        && false !== strpos($process_step_icon_css, 'height: 28px;')
+        && false !== strpos($process_step_icon_css, 'color: #262e4f;')
+        && false !== strpos($process_step_icon_svg_css, 'width: 100%;')
+        && false !== strpos($process_step_icon_svg_css, 'height: 100%;')
         && false !== strpos($process_step_number_css, 'counter(rental-step, decimal-leading-zero)')
         && false !== strpos($process_step_number_css, 'display: block;')
         && false !== strpos($process_step_heading_css, 'display: block;')
