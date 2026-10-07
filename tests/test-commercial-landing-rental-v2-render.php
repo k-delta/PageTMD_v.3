@@ -208,8 +208,9 @@ $buy_image_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'bod
 $process_layout_rules = is_string($rental_css) ? render_css_rule_bodies($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-layout') : [];
 $process_layout_css = implode("\n", $process_layout_rules);
 $process_copy_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-copy') : '';
-$process_image_rules = is_string($rental_css) ? render_css_rule_bodies($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-layout > img') : [];
-$process_image_css = implode("\n", $process_image_rules);
+$process_image_frame_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-frame') : '';
+$process_image_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-frame > img') : '';
+$process_image_accent_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-accent') : '';
 $process_steps_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process ol') : '';
 $process_step_icon_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-icon') : '';
 $process_step_icon_svg_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-icon svg') : '';
@@ -222,7 +223,7 @@ $tablet_process_steps_css = render_css_rule_body($tablet_process_css, 'body.tmd-
 $mobile_process_css = is_string($rental_css) ? render_css_rule_body($rental_css, '@media (max-width: 760px)') : '';
 $mobile_process_layout_css = render_css_rule_body($mobile_process_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-layout');
 $mobile_process_copy_css = render_css_rule_body($mobile_process_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-copy');
-$mobile_process_image_css = render_css_rule_body($mobile_process_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-layout > img');
+$mobile_process_image_css = render_css_rule_body($mobile_process_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-frame');
 $mobile_process_steps_css = render_css_rule_body($mobile_process_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process ol');
 $mobile_buy_heading_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__buy h2#tmd-rental-v2-buy-heading');
 $mobile_buy_image_rules = render_css_rule_bodies($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__buy-layout > img');
@@ -397,6 +398,11 @@ render_assert(
         && 4 === count(array_filter($process_step_icons_precede_numbers))
         && false !== strpos($process_section_html, 'src="https://example.test/wp-content/themes/blocksy-child/assets/img/commercial-landings-v2/process.webp"')
         && false !== strpos($process_section_html, 'alt="Montacargas reach operando dentro de una bodega"')
+        && false !== strpos($process_section_html, '<div class="tmd-rental-v2__process-image-frame"><img')
+        && false !== strpos($process_section_html, '<svg class="tmd-rental-v2__process-image-accent"')
+        && false !== strpos($process_section_html, 'aria-hidden="true" focusable="false"><path d="M70 0 L100 50"')
+        && false !== strpos($process_section_html, 'stroke="#e9272e"')
+        && false !== strpos($process_section_html, 'stroke-width="7"')
         && false !== $process_copy_position
         && false !== $process_image_position
         && $process_copy_position < $process_image_position,
@@ -413,8 +419,13 @@ render_assert(
         && false !== strpos($process_layout_css, 'grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);')
         && false !== strpos($process_copy_css, 'grid-column: 2;')
         && false !== strpos($process_copy_css, 'grid-row: 1;')
-        && false !== strpos($process_image_css, 'grid-column: 1;')
-        && false !== strpos($process_image_css, 'grid-row: 1;')
+        && false !== strpos($process_image_frame_css, 'grid-column: 1;')
+        && false !== strpos($process_image_frame_css, 'grid-row: 1;')
+        && false !== strpos($process_image_frame_css, 'aspect-ratio: 4 / 3;')
+        && false !== strpos($process_image_css, 'object-fit: cover;')
+        && false !== strpos($process_image_css, 'clip-path: polygon(0 0, 70% 0, 100% 50%, 70% 100%, 0 100%);')
+        && false !== strpos($process_image_accent_css, 'position: absolute;')
+        && false !== strpos($process_image_accent_css, 'pointer-events: none;')
         && false !== strpos($process_steps_css, 'grid-template-columns: repeat(4, minmax(0, 1fr));')
         && false !== strpos($process_step_icon_css, 'width: 36px;')
         && false !== strpos($process_step_icon_css, 'height: 36px;')
