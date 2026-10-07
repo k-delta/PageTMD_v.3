@@ -2,7 +2,7 @@
 
 ## Estado
 
-- Borrador
+- Aprobado
 
 ## Contexto
 
@@ -18,6 +18,11 @@
 ## Objetivo
 
 - [Solicitud] Definir dos páginas de agradecimiento distintas y relacionar cada formulario con el destino de su categoría: baterías o montacargas.
+
+## Aprobación de implementación
+
+- [Solicitud: aprobada por el usuario el 2026-10-07] El usuario indicó “pues implementa el spec para las paginas de agradecimiento” y después confirmó “si continua” al revisar el plan. Esto autorizó inicialmente la implementación local descrita aquí.
+- [Solicitud de producción: 2026-10-07] El usuario pidió “haz el deploy”. Esta instrucción posterior autoriza publicar este cambio y crear las dos páginas persistidas, una vez satisfechos los gates de producción, backup, revisión, deriva y rollback de los runbooks.
 
 ## Fuera del alcance
 
@@ -88,9 +93,13 @@
 - La indexación de páginas de confirmación puede generar URLs de bajo valor en resultados de búsqueda.
 - Un redirect prematuro podría ocultar errores de validación o antispam y comunicar falsamente que la solicitud fue recibida.
 
+## Decisiones
+
+- DEC-01: Usar los slugs `/gracias-baterias/` y `/gracias-montacargas/`.
+- DEC-02: Mostrar los títulos “Gracias por tu solicitud de baterías” y “Gracias por tu solicitud de montacargas”, con el mensaje compartido “Hemos recibido tu solicitud. Gracias por contactar a Tecnimontacargas.”
+- DEC-03: Guardar robots Rank Math `noindex, follow`; las páginas no deben aparecer en el sitemap.
+- DEC-04: No añadir CTA. Conservar el header y footer globales y ocultar únicamente el título duplicado de la plantilla.
+
 ## Decisiones pendientes
 
-- DEC-01: Confirmar los slugs exactos. Propuesta: /gracias-baterias/ y /gracias-montacargas/. El usuario mencionó “graciasmontacargas” como ejemplo, sin confirmar separadores.
-- DEC-02: Confirmar los títulos y el mensaje visible de cada página. Los nombres iniciales recibidos son “gracias baterías” y “graciasmontacargas”; el texto restante no se ha definido.
-- DEC-03: Confirmar si las páginas deben ser noindex y excluirse del sitemap; se recomienda hacerlo por tratarse de confirmaciones de envío.
-- DEC-04: Definir si cada página necesita un CTA de regreso o de contacto y cuál será su destino.
+- Ninguna. Decisiones resueltas según el plan aprobado por el usuario el 2026-10-07.

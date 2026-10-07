@@ -1,0 +1,36 @@
+body.tmd-commercial-thank-you-page .entry-header,
+body.tmd-commercial-thank-you-page .page-title,
+body.tmd-commercial-thank-you-page .page-title-container,
+body.tmd-commercial-thank-you-page .ct-page-title {
+  display: none !important;
+}
+
+.tmd-commercial-thank-you {
+  box-sizing: border-box;
+  width: min(840px, calc(100% - 40px));
+  margin: clamp(72px, 12vh, 144px) auto;
+  padding: clamp(32px, 6vw, 72px);
+  border: 1px solid #e6e6e6;
+  border-radius: 20px;
+  background: #f6f8fb;
+  color: #3c3c3c;
+  font-family: 'Work Sans', sans-serif;
+  text-align: center;
+}
+
+.tmd-commercial-thank-you h1 {
+  margin: 0 0 18px;
+  color: #262e4f;
+  font-size: clamp(30px, 4vw, 46px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.tmd-commercial-thank-you p {
+  margin: 0;
+  color: #5e748b;
+  font-size: clamp(17px, 2.1vw, 21px);
+  line-height: 1.6;
+}
