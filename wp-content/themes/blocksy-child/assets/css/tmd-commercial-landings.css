@@ -1121,9 +1121,9 @@ body.tmd-commercial-landing-battery .site-main {
   width: 40px;
   height: 40px;
   place-items: center;
-  border: 1.5px solid #f04d2d;
+  border: 1.5px solid var(--tmd-landing-yellow);
   border-radius: 50%;
-  color: #f04d2d;
+  color: var(--tmd-landing-yellow);
 }
 
 .tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-support-icon svg {
@@ -1164,6 +1164,12 @@ body.tmd-commercial-landing-battery .site-main {
 
 .tmd-commercial-landing__section--battery-solutions .tmd-commercial-landing__section-heading {
   text-align: left;
+}
+
+.tmd-commercial-landing__section--battery-solutions .tmd-commercial-landing__section-heading h2,
+.tmd-commercial-landing__section--battery-solutions .tmd-commercial-landing__section-heading h3 {
+  text-align: justify;
+  text-align-last: left;
 }
 
 .tmd-commercial-landing__section--battery-solutions .tmd-commercial-landing__solutions-title-accent {

@@ -555,7 +555,7 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-frame > img {
   display: block;
   width: 100%;
   height: 100%;
-  clip-path: polygon(0 0, 70% 0, 100% 50%, 70% 100%, 0 100%);
+  clip-path: polygon(0 0, 51.5% 0, 100% 57.5%, 56.5% 100%, 0 100%);
   object-fit: cover;
 }
 
@@ -566,7 +566,18 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-accent {
   width: 100%;
   height: 100%;
   overflow: visible;
+  color: var(--tm-blue-empresarial, #128CEB);
   pointer-events: none;
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-accent path {
+  stroke: var(--tm-blue-empresarial, #128CEB);
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-accent path[d="M70 0 L100 50"] {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transform: translate(-4%, 17.2%) scaleY(.712);
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__process-copy {

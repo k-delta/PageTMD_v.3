@@ -142,9 +142,9 @@ $support_icon_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__hero
 tmd_battery_visual_assert(
     isset($support_icon_css[1])
         && (bool) preg_match('/border-radius:\\s*50%\\s*;/i', $support_icon_css[1])
-        && (bool) preg_match('/border:\\s*1\\.5px\\s+solid\\s+#f04d2d\\s*;/i', $support_icon_css[1])
-        && (bool) preg_match('/color:\\s*#f04d2d\\s*;/i', $support_icon_css[1]),
-    'los iconos deben ser circulares y tener el trazo rojo anaranjado de la referencia'
+        && (bool) preg_match('/border:\\s*1\\.5px\\s+solid\\s+var[(]--tmd-landing-yellow[)]\\s*;/i', $support_icon_css[1])
+        && (bool) preg_match('/color:\\s*var[(]--tmd-landing-yellow[)]\\s*;/i', $support_icon_css[1]),
+    'los iconos deben ser circulares y usar el amarillo de marca'
 );
 $mobile_image_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__hero--battery-maqueta .tmd-commercial-landing__hero-media img', true);
 tmd_battery_visual_assert(isset($mobile_image_css[1]) && (bool) preg_match('/\\bwidth:\\s*100%\\s*;/i', $mobile_image_css[1]) && (bool) preg_match('/\\btransform:\\s*none\\s*;/i', $mobile_image_css[1]), 'en móvil la imagen debe recuperar ancho completo y posición normal');
@@ -157,6 +157,13 @@ $mobile_supports_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__h
 tmd_battery_visual_assert(isset($mobile_supports_css[1]) && (bool) preg_match('/grid-template-columns:\\s*minmax\\(0,\\s*1fr\\)/i', $mobile_supports_css[1]), 'los apoyos deben apilarse en móvil');
 $heading_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__section--battery-solutions .tmd-commercial-landing__section-heading');
 tmd_battery_visual_assert(isset($heading_css[1]) && (bool) preg_match('/text-align:\\s*left\\s*;/i', $heading_css[1]), 'H2 y H3 deben alinearse a la izquierda solo en soluciones de baterías');
+$solution_text_css = [];
+tmd_battery_visual_assert(
+    1 === preg_match('/\\.tmd-commercial-landing__section--battery-solutions \\.tmd-commercial-landing__section-heading h2,\\s*\\.tmd-commercial-landing__section--battery-solutions \\.tmd-commercial-landing__section-heading h3\\s*\\{([^}]*)\\}/s', $css, $solution_text_css)
+        && (bool) preg_match('/text-align:\\s*justify\\s*;/i', $solution_text_css[1])
+        && (bool) preg_match('/text-align-last:\\s*left\\s*;/i', $solution_text_css[1]),
+    'el título y el texto de compatibilidad deben justificarse y conservar la última línea a la izquierda'
+);
 $accent_css = tmd_battery_visual_rule($css, '.tmd-commercial-landing__section--battery-solutions .tmd-commercial-landing__solutions-title-accent');
 tmd_battery_visual_assert(isset($accent_css[1]) && (bool) preg_match('/color:\\s*var\\(--tmd-landing-blue\\)\\s*;/i', $accent_css[1]), 'el acento debe usar el azul de marca por contraste');
 

@@ -211,6 +211,8 @@ $process_copy_css = is_string($rental_css) ? render_css_rule_body($rental_css, '
 $process_image_frame_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-frame') : '';
 $process_image_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-frame > img') : '';
 $process_image_accent_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-accent') : '';
+$process_image_accent_path_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-accent path') : '';
+$process_image_accent_legacy_path_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-image-accent path[d="M70 0 L100 50"]') : '';
 $process_steps_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process ol') : '';
 $process_step_icon_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-icon') : '';
 $process_step_icon_svg_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-icon svg') : '';
@@ -240,6 +242,10 @@ preg_match_all('/<li\b[^>]*>(.*?)<\/li>/s', $buy_section_html, $buy_card_matches
 $process_section_start = strpos($content, '<section class="tmd-rental-v2-section tmd-rental-v2__process"');
 $process_section_end = false === $process_section_start ? false : strpos($content, '</section>', $process_section_start);
 $process_section_html = false === $process_section_end ? '' : substr($content, $process_section_start, $process_section_end - $process_section_start);
+$process_image_accent_svg = '';
+if (preg_match('/<svg class="tmd-rental-v2__process-image-accent"[^>]*>.*?<\/svg>/s', $process_section_html, $process_image_accent_matches)) {
+    $process_image_accent_svg = $process_image_accent_matches[0];
+}
 $process_copy_position = strpos($process_section_html, '<div class="tmd-rental-v2__process-copy">');
 $process_eyebrow_position = strpos($process_section_html, '<p class="tmd-rental-v2__eyebrow">CÓMO FUNCIONA</p>');
 $process_heading_position = strpos($process_section_html, '<h2 id="tmd-rental-v2-process-heading">');
@@ -399,10 +405,9 @@ render_assert(
         && false !== strpos($process_section_html, 'src="https://example.test/wp-content/themes/blocksy-child/assets/img/commercial-landings-v2/process.webp"')
         && false !== strpos($process_section_html, 'alt="Montacargas reach operando dentro de una bodega"')
         && false !== strpos($process_section_html, '<div class="tmd-rental-v2__process-image-frame"><img')
-        && false !== strpos($process_section_html, '<svg class="tmd-rental-v2__process-image-accent"')
-        && false !== strpos($process_section_html, 'aria-hidden="true" focusable="false"><path d="M70 0 L100 50"')
-        && false !== strpos($process_section_html, 'stroke="#e9272e"')
-        && false !== strpos($process_section_html, 'stroke-width="7"')
+        && false !== strpos($process_image_accent_svg, 'aria-hidden="true" focusable="false"><path d="M66 17.2 L96 52.8"')
+        && false !== strpos($process_image_accent_svg, 'stroke="currentColor"')
+        && false !== strpos($process_image_accent_svg, 'stroke-width="7"')
         && false !== $process_copy_position
         && false !== $process_image_position
         && $process_copy_position < $process_image_position,
@@ -423,9 +428,14 @@ render_assert(
         && false !== strpos($process_image_frame_css, 'grid-row: 1;')
         && false !== strpos($process_image_frame_css, 'aspect-ratio: 4 / 3;')
         && false !== strpos($process_image_css, 'object-fit: cover;')
-        && false !== strpos($process_image_css, 'clip-path: polygon(0 0, 70% 0, 100% 50%, 70% 100%, 0 100%);')
+        && false !== strpos($process_image_css, 'clip-path: polygon(0 0, 51.5% 0, 100% 57.5%, 56.5% 100%, 0 100%);')
         && false !== strpos($process_image_accent_css, 'position: absolute;')
+        && false !== strpos($process_image_accent_css, 'color: var(--tm-blue-empresarial, #128CEB);')
         && false !== strpos($process_image_accent_css, 'pointer-events: none;')
+        && false !== strpos($process_image_accent_path_css, 'stroke: var(--tm-blue-empresarial, #128CEB);')
+        && false !== strpos($process_image_accent_legacy_path_css, 'transform-box: view-box;')
+        && false !== strpos($process_image_accent_legacy_path_css, 'transform-origin: 0 0;')
+        && false !== strpos($process_image_accent_legacy_path_css, 'transform: translate(-4%, 17.2%) scaleY(.712);')
         && false !== strpos($process_steps_css, 'grid-template-columns: repeat(4, minmax(0, 1fr));')
         && false !== strpos($process_step_icon_css, 'width: 36px;')
         && false !== strpos($process_step_icon_css, 'height: 36px;')
