@@ -58,6 +58,7 @@ class TMD_Thank_You_Test_WPDB
     public $queries = [];
     public $snapshot = null;
     public $in_transaction = false;
+    public $ambiguous_commit = false;
 
     public function prepare(string $query, ...$args): string
     {
@@ -80,11 +81,12 @@ class TMD_Thank_You_Test_WPDB
 
     public function get_row(string $query, $output = null)
     {
-        if (! preg_match("/WHERE post_type = '([^']+)' AND post_name = '([^']+)'/", $query, $matches)) {
+        if (! preg_match("/WHERE post_type = '([^']+)' AND post_name = '([^']+)' AND post_parent = (\\d+)/", $query, $matches)) {
             return null;
         }
         foreach ($GLOBALS['tmd_thank_you_pages'] as $page) {
-            if ($matches[1] === $page->post_type && $matches[2] === $page->post_name) {
+            if ($matches[1] === $page->post_type && $matches[2] === $page->post_name
+                && (int) $matches[3] === (int) $page->post_parent) {
                 return get_object_vars($page);
             }
         }
@@ -103,6 +105,10 @@ class TMD_Thank_You_Test_WPDB
         } elseif ('COMMIT' === $query) {
             $this->snapshot = null;
             $this->in_transaction = false;
+            if ($this->ambiguous_commit) {
+                $this->ambiguous_commit = false;
+                return false;
+            }
         } elseif ('ROLLBACK' === $query && is_array($this->snapshot)) {
             $GLOBALS['tmd_thank_you_pages'] = $this->snapshot['pages'];
             $GLOBALS['tmd_thank_you_meta'] = $this->snapshot['meta'];
@@ -137,7 +143,7 @@ function get_post(int $post_id)
 function get_page_by_path(string $slug, $output = OBJECT, string $post_type = 'page')
 {
     foreach ($GLOBALS['tmd_thank_you_pages'] as $page) {
-        if ($post_type === $page->post_type && $slug === $page->post_name) {
+        if ($post_type === $page->post_type && $slug === $page->post_name && 0 === (int) $page->post_parent) {
             return $page;
         }
     }
@@ -214,6 +220,15 @@ register_shutdown_function(static function () use ($test_root): void {
 $GLOBALS['wpdb'] = new TMD_Thank_You_Test_WPDB();
 $GLOBALS['tmd_thank_you_test_temp'] = $test_root . '/wordpress/tmp';
 mkdir($GLOBALS['tmd_thank_you_test_temp'], 0700);
+$GLOBALS['tmd_thank_you_pages'][90] = new WP_Post([
+    'ID' => 90,
+    'post_type' => 'page',
+    'post_name' => 'gracias-baterias',
+    'post_title' => 'Página anidada ajena',
+    'post_content' => 'Contenido preservado',
+    'post_status' => 'publish',
+    'post_parent' => 12,
+]);
 putenv('TMD_COMMERCIAL_THANK_YOU_PAGES_EXECUTE');
 putenv('TMD_VERIFIED_BACKUP_PATH');
 
@@ -225,6 +240,7 @@ if (is_file($creator_path)) {
 tmd_thank_you_update_assert(function_exists('tmd_commercial_thank_you_pages_run'), 'el WP-CLI debe definir el creador protegido de páginas');
 
 tmd_thank_you_update_assert(0 === $GLOBALS['tmd_thank_you_insert_calls'], 'el dry-run inicial no debe insertar páginas');
+tmd_thank_you_update_assert(1 === count($GLOBALS['tmd_thank_you_pages']), 'el dry-run debe conservar una página anidada con slug coincidente');
 tmd_thank_you_update_assert([] === $GLOBALS['wpdb']->queries, 'el dry-run inicial no debe abrir una transacción');
 tmd_thank_you_update_assert(
     false !== stripos(implode("\n", array_column(WP_CLI::$messages, 1)), 'dry-run sin escrituras'),
@@ -235,7 +251,11 @@ tmd_thank_you_update_expect_error(
     static fn () => tmd_commercial_thank_you_pages_run(true),
     'backup completo, reciente y verificado'
 );
-tmd_thank_you_update_assert([] === $GLOBALS['tmd_thank_you_pages'], 'sin backup válido no debe haber páginas');
+tmd_thank_you_update_assert(
+    1 === count($GLOBALS['tmd_thank_you_pages'])
+        && 'Contenido preservado' === $GLOBALS['tmd_thank_you_pages'][90]->post_content,
+    'sin backup válido no deben crearse páginas y la página anidada debe quedar intacta'
+);
 
 $backup_path = $test_root . '/private-backup';
 mkdir($backup_path, 0700);
@@ -261,9 +281,16 @@ file_put_contents($backup_path . '/BACKUP_MANIFEST.json', json_encode($manifest)
 chmod($backup_path . '/BACKUP_MANIFEST.json', 0600);
 putenv('TMD_VERIFIED_BACKUP_PATH=' . $backup_path);
 
+$GLOBALS['wpdb']->ambiguous_commit = true;
 tmd_commercial_thank_you_pages_run(true);
+$messages = implode("\n", array_column(WP_CLI::$messages, 1));
+tmd_thank_you_update_assert(
+    false !== strpos($messages, 'COMMIT informó un resultado ambiguo')
+        && false !== strpos($messages, 'las dos páginas coinciden con el estado destino persistido'),
+    'un COMMIT ambiguo debe aceptarse solo después de verificar el contenido persistido'
+);
 $specs = tmd_commercial_thank_you_page_specs();
-tmd_thank_you_update_assert(2 === count($GLOBALS['tmd_thank_you_pages']), 'la ejecución debe crear exactamente dos páginas publicadas');
+tmd_thank_you_update_assert(3 === count($GLOBALS['tmd_thank_you_pages']), 'la ejecución debe crear dos páginas raíz y conservar la página anidada');
 foreach ($specs as $type => $spec) {
     $page = get_page_by_path($spec['slug'], OBJECT, 'page');
     tmd_thank_you_update_assert($page instanceof WP_Post && 'publish' === $page->post_status, $type . ' debe quedar publicada');

@@ -266,8 +266,10 @@ function tmd_home_battery_cta_run(bool $execute): void
             || ! hash_equals(hash('sha256', $result['content']), hash('sha256', $saved_content))) {
             throw new RuntimeException('El contenido guardado no coincide con el destino previsto.');
         }
-        if (false === $wpdb->query('COMMIT') || false !== tmd_home_battery_cta_transaction_state()) {
-            throw new RuntimeException('No se pudo confirmar la transacción de la portada.');
+        $commit_result = $wpdb->query('COMMIT');
+        $transaction_active = tmd_home_battery_cta_transaction_state();
+        if (true === $transaction_active || null === $transaction_active) {
+            throw new RuntimeException('No se pudo confirmar el cierre de la transacción de la portada.');
         }
         clean_post_cache($spec['page_id']);
         $committed_content = $wpdb->get_var($wpdb->prepare(
@@ -277,6 +279,9 @@ function tmd_home_battery_cta_run(bool $execute): void
         if (! is_string($committed_content)
             || ! hash_equals(hash('sha256', $result['content']), hash('sha256', $committed_content))) {
             throw new RuntimeException('La comprobación posterior al commit no coincide con el destino aprobado.');
+        }
+        if (false === $commit_result) {
+            WP_CLI::warning('COMMIT informó un resultado ambiguo, pero se verificó el destino persistido de la portada.');
         }
         WP_CLI::success('Destino corregido y comprobado. Snapshot privado: ' . basename($snapshot_path));
     } catch (Throwable $error) {
@@ -386,8 +391,10 @@ function tmd_home_battery_cta_rollback(): void
         if (! is_string($restored) || ! hash_equals((string) $snapshot['before_sha256'], hash('sha256', $restored))) {
             throw new RuntimeException('El contenido restaurado no coincide con el hash del snapshot.');
         }
-        if (false === $wpdb->query('COMMIT') || false !== tmd_home_battery_cta_transaction_state()) {
-            throw new RuntimeException('No se pudo confirmar la transacción de rollback.');
+        $commit_result = $wpdb->query('COMMIT');
+        $transaction_active = tmd_home_battery_cta_transaction_state();
+        if (true === $transaction_active || null === $transaction_active) {
+            throw new RuntimeException('No se pudo confirmar el cierre de la transacción de rollback.');
         }
         clean_post_cache($spec['page_id']);
         $committed = $wpdb->get_var($wpdb->prepare(
@@ -396,6 +403,9 @@ function tmd_home_battery_cta_rollback(): void
         ));
         if (! is_string($committed) || ! hash_equals((string) $snapshot['before_sha256'], hash('sha256', $committed))) {
             throw new RuntimeException('La comprobación posterior al commit no coincide con el hash anterior.');
+        }
+        if (false === $commit_result) {
+            WP_CLI::warning('COMMIT informó un resultado ambiguo, pero se verificó el contenido restaurado de la portada.');
         }
         WP_CLI::success('Rollback focalizado verificado; la página volvió al hash anterior.');
     } catch (Throwable $error) {

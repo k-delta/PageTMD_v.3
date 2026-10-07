@@ -179,7 +179,10 @@ function tmd_commercial_thank_you_pages_run(bool $execute): void
     $lock = null;
     if ($execute) {
         $temp_directory = realpath(get_temp_dir());
-        $effective_uid = function_exists('posix_geteuid') ? posix_geteuid() : getmyuid();
+        if (! function_exists('posix_geteuid')) {
+            throw new RuntimeException('Se requiere posix_geteuid para verificar la propiedad del bloqueo exclusivo.');
+        }
+        $effective_uid = posix_geteuid();
         if (! is_string($temp_directory) || ! is_dir($temp_directory)) {
             throw new RuntimeException('No se pudo resolver el directorio temporal privado para el bloqueo.');
         }
@@ -191,7 +194,7 @@ function tmd_commercial_thank_you_pages_run(bool $execute): void
         if (is_link($lock_directory) || false === $directory_stat
             || (($directory_stat['mode'] & 0170000) !== 0040000)
             || 0 !== ($directory_stat['mode'] & 0077)
-            || (function_exists('posix_geteuid') && $effective_uid !== (int) $directory_stat['uid'])) {
+            || $effective_uid !== (int) $directory_stat['uid']) {
             throw new RuntimeException('El directorio del bloqueo no es privado o no pertenece al usuario de WP-CLI.');
         }
 
@@ -212,7 +215,7 @@ function tmd_commercial_thank_you_pages_run(bool $execute): void
             || $file_stat['dev'] !== $path_stat['dev']
             || $file_stat['ino'] !== $path_stat['ino']
             || 0 !== ($file_stat['mode'] & 0077)
-            || (function_exists('posix_geteuid') && $effective_uid !== (int) $file_stat['uid'])
+            || $effective_uid !== (int) $file_stat['uid']
             || ! flock($lock, LOCK_EX | LOCK_NB)) {
             fclose($lock);
             $lock = null;

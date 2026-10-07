@@ -17,6 +17,7 @@ class WP_CLI
     public static $messages = [];
     public static function line(string $message): void { self::$messages[] = ['line', $message]; }
     public static function success(string $message): void { self::$messages[] = ['success', $message]; }
+    public static function warning(string $message): void { self::$messages[] = ['warning', $message]; }
     public static function error(string $message): void { throw new RuntimeException($message); }
 }
 
@@ -26,7 +27,11 @@ class TMD_Home_Battery_CTA_Test_WPDB
     public $last_error = '';
     public $in_transaction = false;
     public $transaction_content = null;
+    public $snapshot_content = null;
+    public $committed_content = '';
     public $engine = 'InnoDB';
+    public $ambiguous_commit = false;
+    public $drop_commit_write = false;
 
     public function prepare(string $query, ...$args): string
     {
@@ -45,7 +50,7 @@ class TMD_Home_Battery_CTA_Test_WPDB
             return $this->in_transaction ? '1' : '0';
         }
         if (false !== strpos($query, 'SELECT post_content FROM wp_posts WHERE ID = 47')) {
-            return $GLOBALS['tmd_home_battery_cta_test_page']['post_content'];
+            return $this->in_transaction ? $this->transaction_content : $this->committed_content;
         }
         return null;
     }
@@ -58,21 +63,35 @@ class TMD_Home_Battery_CTA_Test_WPDB
         return [
             'ID' => 47,
             'post_type' => $GLOBALS['tmd_home_battery_cta_test_page']['post_type'],
-            'post_content' => $GLOBALS['tmd_home_battery_cta_test_page']['post_content'],
+            'post_content' => $this->in_transaction
+                ? $this->transaction_content
+                : $this->committed_content,
         ];
     }
 
     public function query(string $query)
     {
         if ('START TRANSACTION' === $query) {
-            $this->transaction_content = $GLOBALS['tmd_home_battery_cta_test_page']['post_content'];
+            $this->snapshot_content = $this->committed_content;
+            $this->transaction_content = $this->committed_content;
             $this->in_transaction = true;
         } elseif ('COMMIT' === $query) {
+            if (! $this->drop_commit_write) {
+                $this->committed_content = $this->transaction_content;
+            }
             $this->transaction_content = null;
+            $this->snapshot_content = null;
             $this->in_transaction = false;
+            if ($this->ambiguous_commit || $this->drop_commit_write) {
+                $this->ambiguous_commit = false;
+                $this->drop_commit_write = false;
+                return false;
+            }
         } elseif ('ROLLBACK' === $query && $this->in_transaction) {
-            $GLOBALS['tmd_home_battery_cta_test_page']['post_content'] = $this->transaction_content;
+            $GLOBALS['tmd_home_battery_cta_test_page']['post_content'] = $this->snapshot_content;
+            $this->committed_content = $this->snapshot_content;
             $this->transaction_content = null;
+            $this->snapshot_content = null;
             $this->in_transaction = false;
         }
         return 0;
@@ -93,6 +112,9 @@ function wp_update_post(array $data, bool $wp_error = false)
         return new WP_Error();
     }
     $GLOBALS['tmd_home_battery_cta_test_page']['post_content'] = stripslashes((string) $data['post_content']);
+    if ($GLOBALS['wpdb']->in_transaction) {
+        $GLOBALS['wpdb']->transaction_content = $GLOBALS['tmd_home_battery_cta_test_page']['post_content'];
+    }
     return 47;
 }
 function wp_slash(string $value): string { return addslashes($value); }
@@ -160,6 +182,7 @@ $GLOBALS['tmd_home_battery_cta_test_root'] = $test_root;
 $fixture = (string) file_get_contents(__DIR__ . '/fixtures/home-battery-cta-content.html');
 $GLOBALS['tmd_home_battery_cta_test_page'] = ['post_type' => 'page', 'post_content' => $fixture];
 $GLOBALS['wpdb'] = new TMD_Home_Battery_CTA_Test_WPDB();
+$GLOBALS['wpdb']->committed_content = $fixture;
 
 $args = ['dry-run'];
 require dirname(__DIR__) . '/scripts/update-home-battery-cta.php';
@@ -170,10 +193,15 @@ tmd_home_battery_cta_transaction_assert([] === $transformed['errors'], 'el fixtu
 $original_backup = tmd_home_battery_cta_test_backup('original', gmdate('Y-m-d\TH:i:s\Z'));
 putenv('TMD_VERIFIED_BACKUP_PATH=' . $original_backup);
 putenv('TMD_HOME_BATTERY_CTA_EXECUTE=1');
+$GLOBALS['wpdb']->ambiguous_commit = true;
 tmd_home_battery_cta_run(true);
 tmd_home_battery_cta_transaction_assert(
     $transformed['content'] === $GLOBALS['tmd_home_battery_cta_test_page']['post_content'],
     'execute con backup verificado debe guardar el destino exacto'
+);
+tmd_home_battery_cta_transaction_assert(
+    false !== strpos(implode("\n", array_column(WP_CLI::$messages, 1)), 'COMMIT informó un resultado ambiguo'),
+    'execute debe confirmar el contenido persistido si COMMIT devuelve un resultado ambiguo'
 );
 $snapshots = glob($original_backup . '/home-battery-cta-before-*.json') ?: [];
 tmd_home_battery_cta_transaction_assert(1 === count($snapshots), 'execute debe crear un snapshot de rollback verificable');
@@ -186,6 +214,7 @@ file_put_contents($manifest_path, json_encode($manifest));
 chmod($manifest_path, 0600);
 $external_content = $transformed['content'] . "\n<!-- external edit -->";
 $GLOBALS['tmd_home_battery_cta_test_page']['post_content'] = $external_content;
+$GLOBALS['wpdb']->committed_content = $external_content;
 $current_backup = tmd_home_battery_cta_test_backup('rollback-conflict', gmdate('Y-m-d\TH:i:s\Z'));
 putenv('TMD_VERIFIED_BACKUP_PATH=' . $current_backup);
 putenv('TMD_HOME_BATTERY_CTA_ORIGINAL_BACKUP_PATH=' . $original_backup);
@@ -209,8 +238,10 @@ tmd_home_battery_cta_transaction_assert(
 );
 
 $GLOBALS['tmd_home_battery_cta_test_page']['post_content'] = $transformed['content'];
+$GLOBALS['wpdb']->committed_content = $transformed['content'];
 $current_backup = tmd_home_battery_cta_test_backup('rollback-success', gmdate('Y-m-d\TH:i:s\Z'));
 putenv('TMD_VERIFIED_BACKUP_PATH=' . $current_backup);
+$GLOBALS['wpdb']->ambiguous_commit = true;
 tmd_home_battery_cta_rollback();
 tmd_home_battery_cta_transaction_assert(
     $fixture === $GLOBALS['tmd_home_battery_cta_test_page']['post_content'],
@@ -219,6 +250,58 @@ tmd_home_battery_cta_transaction_assert(
 tmd_home_battery_cta_transaction_assert(
     false !== strpos(implode("\n", array_column(WP_CLI::$messages, 1)), 'Rollback focalizado verificado'),
     'rollback debe informar que la restauración fue verificada'
+);
+
+WP_CLI::$messages = [];
+$GLOBALS['tmd_home_battery_cta_test_page']['post_content'] = $fixture;
+$GLOBALS['wpdb']->committed_content = $fixture;
+$current_backup = tmd_home_battery_cta_test_backup('execute-not-persisted', gmdate('Y-m-d\\TH:i:s\\Z'));
+putenv('TMD_VERIFIED_BACKUP_PATH=' . $current_backup);
+$GLOBALS['wpdb']->drop_commit_write = true;
+$execute_error = null;
+try {
+    tmd_home_battery_cta_run(true);
+} catch (RuntimeException $exception) {
+    $execute_error = $exception;
+}
+tmd_home_battery_cta_transaction_assert($execute_error instanceof RuntimeException, 'execute debe fallar si COMMIT cierra sin persistir el contenido');
+tmd_home_battery_cta_transaction_assert(
+    false !== strpos($execute_error->getMessage(), 'comprobación posterior al commit'),
+    'execute debe identificar el hash persistido discrepante'
+);
+tmd_home_battery_cta_transaction_assert(
+    $fixture === $GLOBALS['wpdb']->committed_content,
+    'la lectura persistida debe seguir mostrando el contenido anterior tras el COMMIT fallido'
+);
+tmd_home_battery_cta_transaction_assert(
+    false === array_search('success', array_column(WP_CLI::$messages, 0), true),
+    'execute no debe informar éxito si el contenido no quedó persistido'
+);
+
+WP_CLI::$messages = [];
+$GLOBALS['tmd_home_battery_cta_test_page']['post_content'] = $transformed['content'];
+$GLOBALS['wpdb']->committed_content = $transformed['content'];
+$current_backup = tmd_home_battery_cta_test_backup('rollback-not-persisted', gmdate('Y-m-d\\TH:i:s\\Z'));
+putenv('TMD_VERIFIED_BACKUP_PATH=' . $current_backup);
+$GLOBALS['wpdb']->drop_commit_write = true;
+$rollback_error = null;
+try {
+    tmd_home_battery_cta_rollback();
+} catch (RuntimeException $exception) {
+    $rollback_error = $exception;
+}
+tmd_home_battery_cta_transaction_assert($rollback_error instanceof RuntimeException, 'rollback debe fallar si COMMIT cierra sin restaurar el contenido');
+tmd_home_battery_cta_transaction_assert(
+    false !== strpos($rollback_error->getMessage(), 'comprobación posterior al commit'),
+    'rollback debe identificar el hash persistido discrepante'
+);
+tmd_home_battery_cta_transaction_assert(
+    $transformed['content'] === $GLOBALS['wpdb']->committed_content,
+    'la lectura persistida debe seguir mostrando el contenido publicado tras un rollback no persistido'
+);
+tmd_home_battery_cta_transaction_assert(
+    false === array_search('success', array_column(WP_CLI::$messages, 0), true),
+    'rollback no debe informar éxito si la restauración no quedó persistida'
 );
 
 fwrite(STDOUT, "OK: escritura protegida, rollback condicional y backup original anterior a dos horas.\n");
