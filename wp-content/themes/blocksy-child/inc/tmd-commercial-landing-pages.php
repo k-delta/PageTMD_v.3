@@ -350,6 +350,21 @@ function tmd_commercial_landing_is_rental_v2(): bool
     return $page instanceof WP_Post && str_contains((string) $page->post_content, 'tmd-rental-v2-section');
 }
 
+add_action('wp_footer', static function (): void {
+    if (! tmd_commercial_landing_is_rental_v2()) {
+        return;
+    }
+    ?>
+    <a
+      class="tmd-rental-whatsapp-float"
+      href="https://wa.me/573244298326"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contactar por WhatsApp"
+    ><i class="ti ti-brand-whatsapp" aria-hidden="true"></i></a>
+    <?php
+}, 30);
+
 add_filter('blocksy:single:has-default-hero', static function ($has_default_hero): bool {
     if (tmd_commercial_landing_is_rental_v2()) {
         return false;

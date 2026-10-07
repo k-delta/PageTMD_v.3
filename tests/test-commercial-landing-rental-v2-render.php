@@ -161,7 +161,23 @@ render_assert(
     'La página completa debe conservar solo el H1 del hero de la maqueta.'
 );
 render_assert(false === $blocksy_hero_filter(false), 'La landing v2 mantiene desactivado el hero automático de Blocksy.');
+$whatsapp_footer_action = $GLOBALS['actions']['wp_footer'][0] ?? null;
+render_assert(is_callable($whatsapp_footer_action), 'La landing debe registrar el acceso flotante a WhatsApp en el footer.');
+ob_start();
+$whatsapp_footer_action();
+$rental_whatsapp_html = (string) ob_get_clean();
+render_assert(
+    false !== strpos($rental_whatsapp_html, 'class="tmd-rental-whatsapp-float"')
+        && false !== strpos($rental_whatsapp_html, 'href="https://wa.me/573244298326"')
+        && false !== strpos($rental_whatsapp_html, 'aria-label="Contactar por WhatsApp"'),
+    'La landing v2 muestra un enlace flotante accesible al número vigente de WhatsApp.'
+);
 $GLOBALS['test_queried_page']->post_content = 'contenido anterior';
+$GLOBALS['test_current_page_slug'] = 'alquiler-montacargas-electricos';
+ob_start();
+$whatsapp_footer_action();
+$non_v2_whatsapp_html = (string) ob_get_clean();
+render_assert('' === $non_v2_whatsapp_html, 'El acceso flotante se limita a la landing v2.');
 render_assert(true === $blocksy_hero_filter(true), 'Las páginas de alquiler sin el marcador v2 conservan el hero de Blocksy.');
 render_assert(false === $blocksy_hero_filter(false), 'Las páginas de alquiler sin el marcador v2 conservan el valor false recibido.');
 $GLOBALS['test_current_page_slug'] = 'baterias-para-montacargas';
@@ -219,6 +235,7 @@ $process_step_icon_svg_css = is_string($rental_css) ? render_css_rule_body($rent
 $process_step_number_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-number::before') : '';
 $process_step_heading_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process li > strong') : '';
 $process_step_description_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process li > span') : '';
+$rental_whatsapp_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-whatsapp-float') : '';
 $process_heading_accent_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process-heading-accent') : '';
 $tablet_process_css = is_string($rental_css) ? render_css_rule_body($rental_css, '@media (min-width: 761px) and (max-width: 1199px)') : '';
 $tablet_process_steps_css = render_css_rule_body($tablet_process_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__process ol');
@@ -283,7 +300,7 @@ render_assert(
         && false === strpos($rental_css, 'body.tmd-rental-layout-v2 .tmd-mm-header')
         && false === strpos($rental_css, 'body.tmd-rental-layout-v2 .tmd-site-footer')
         && 1 === preg_match(
-            '/body\.tmd-rental-layout-v2 \.entry-header,\s*body\.tmd-rental-layout-v2 \.tmd-contact-rail\s*\{\s*display: none !important;\s*\}/',
+            '/body\.tmd-rental-layout-v2 \.entry-header\s*\{\s*display: none !important;\s*\}/',
             $rental_css
         )
         && false !== strpos($rental_css, 'body.tmd-rental-layout-v2 .ct-container-full,')
@@ -457,5 +474,13 @@ render_assert(
         && false !== strpos($mobile_process_image_css, 'grid-row: auto;')
         && false !== strpos($mobile_process_steps_css, 'grid-template-columns: minmax(0, 1fr);'),
     'El bloque 06 conserva imagen a la izquierda en escritorio, pasos en 4/2/1 columnas por breakpoint y orden textual en móvil.'
+);
+render_assert(
+    false === strpos($rental_css, 'body.tmd-rental-layout-v2 .tmd-contact-rail')
+        && false !== strpos($rental_whatsapp_css, 'position: fixed;')
+        && false !== strpos($rental_whatsapp_css, 'right: 24px;')
+        && false !== strpos($rental_whatsapp_css, 'bottom: 24px;')
+        && false !== strpos($rental_whatsapp_css, 'background: #25d366;'),
+    'La barra lateral global permanece visible y el botón WhatsApp queda fijo abajo a la derecha.'
 );
 fwrite(STDOUT, "OK: DOM rental-v2 con doce secciones, shortcodes reales y máximo de inventario.\n");
