@@ -3,6 +3,7 @@
 ## Estado
 
 - Terminado — 2026-10-06. Código y CSS desplegados en producción con el commit `09d90ed8f855000664972a7ec900acb42216800d`.
+- Verificación adicional — 2026-10-07. El área navy del hero se amplió hacia la derecha y la fotografía conserva su ancho completo. La producción que sirve esta presentación está en `603093c4cf5f03ae662929c0e43608523e80a4a7`; ese commit también incluye ajustes de encabezados en otras secciones de baterías.
 - La verificación productiva de `update-battery-maqueta` confirmó que las huellas actuales y destino de página 1559 y CF7 1557 ya coincidían; no hizo falta escribir en la base de datos.
 - La revisión final de sincronización clasificó una diferencia de snapshot correspondiente al contenido ya persistido de la página 1559; el detalle está registrado en Validación.
 
@@ -10,6 +11,7 @@
 
 - [Solicitud] La captura de `/baterias-para-montacargas/` muestra el hero actual. Se solicita alejar la imagen (sin ampliarla), alinearla a la derecha y dejar el azul bien oscuro en el lado izquierdo.
 - [Solicitud] La referencia visual adicional pide colocar, inmediatamente debajo del texto actual del hero, tres elementos con iconos y las frases “Alto rendimiento para jornadas exigentes”, “Equipos confiables y de larga vida útil” y “Asesoría especializada según tu operación”.
+- [Solicitud: 2026-10-07] Extender hacia la derecha el área navy del hero, conservando visible el ancho completo de la fotografía.
 - [Evidencia: `docs/specs/2026-10-04-landing-montacargas-baterias.md:7-8`] La página 1559 ya tiene una dirección visual aprobada y una imagen de batería asignada al banner; esta tarea solo complementa la presentación de ese hero.
 - [Evidencia: `docs/specs/2026-10-04-landing-montacargas-baterias.md:12,75,189`] La especificación anterior omitía iconos y apoyos en el banner. La solicitud actual reemplaza esa exclusión únicamente para estos tres apoyos del hero de baterías.
 - [Evidencia: `wp-content/themes/blocksy-child/assets/css/tmd-commercial-landings.css:1041-1052`] El hero tiene fondo navy `#262E4F` y un degradado navy encima de la fotografía; el encuadre debe mostrar más área de la foto, con la imagen reducida y alineada a la derecha.
@@ -22,7 +24,7 @@
 
 ## Objetivo
 
-- [Solicitud] Alejar y alinear a la derecha la imagen, mantener el navy oscuro a la izquierda y añadir debajo del texto actual los tres apoyos mostrados en la referencia.
+- [Solicitud] Alejar y alinear a la derecha la imagen, extender el navy oscuro hacia la derecha sin recortar la fotografía y añadir debajo del texto actual los tres apoyos mostrados en la referencia.
 
 ## Fuera del alcance
 
@@ -35,7 +37,7 @@
 1. [Solicitud] En escritorio, alejar la imagen para mostrar completa la fotografía del hero; mantenerla alineada a la derecha, sin ampliar ni recortar la fuente.
 2. [Solicitud] El área izquierda detrás del texto debe verse en azul navy oscuro, usando el navy existente `#262E4F`, y conservar una transición que permita reconocer la fotografía hacia la derecha.
 3. [Solicitud] Inmediatamente debajo del párrafo actual, mostrar en el orden de la referencia tres apoyos con icono y texto: rayo con “Alto rendimiento para jornadas exigentes”; engranaje con “Equipos confiables y de larga vida útil”; reloj con “Asesoría especializada según tu operación”.
-4. [Solicitud] Presentar los apoyos como tres unidades alineadas en escritorio, cada una con icono circular de trazo rojo/anaranjado y su texto a la derecha. Los iconos son decorativos para lectores de pantalla; el texto transmite cada mensaje.
+4. [Solicitud] Presentar los apoyos como tres unidades alineadas en escritorio, cada una con icono circular de trazo amarillo `#FFC33C` y su texto a la derecha. Los iconos son decorativos para lectores de pantalla; el texto transmite cada mensaje.
 5. [Evidencia: `wp-content/themes/blocksy-child/assets/css/tmd-commercial-landings.css:1688-1699`] En móvil se conserva la composición vertical existente y se mantienen legibles el texto y los tres apoyos, sin overflow horizontal.
 6. [Evidencia: `docs/specs/2026-10-04-landing-montacargas-baterias.md:35-42`; `scripts/create-commercial-landing-pages.php:345-346`] Se conservan la fotografía actual del banner, su alternativa accesible, el H1, el subtítulo y el párrafo actuales.
 7. [Solicitud] En móvil, la fotografía se ve completa, usa el ancho disponible y queda alineada arriba a la derecha.
@@ -70,7 +72,7 @@ No aplica; no cambian datos ni interacciones.
 
 ## Criterios de aceptación
 
-1. [Solicitud] En escritorio, la fotografía aparece alejada y completa, alineada a la derecha; el contenido queda sobre una zona izquierda de navy oscuro `#262E4F`.
+1. [Solicitud] En escritorio, la fotografía aparece alejada y completa, alineada a la derecha; el navy oscuro `#262E4F` se extiende hacia la derecha detrás del contenido sin recortar la foto.
 2. [Solicitud] Debajo del párrafo se muestran los tres apoyos en el orden y con las frases indicadas; cada icono corresponde a su frase y el conjunto conserva el estilo de la referencia.
 3. [Solicitud] El H1, subtítulo y párrafo actuales conservan su legibilidad y no se superponen con el foco de la imagen ni con los apoyos.
 4. [Evidencia: `wp-content/themes/blocksy-child/assets/css/tmd-commercial-landings.css:1688-1699`] En móvil se mantiene la composición vertical; la batería sigue reconocible, los apoyos se reacomodan sin overflow horizontal y los textos permanecen legibles.
@@ -85,6 +87,9 @@ No aplica; no cambian datos ni interacciones.
 - [Verificado en producción — 2026-10-06] El checkout productivo corresponde al commit `09d90ed8f855000664972a7ec900acb42216800d`; SHA-256 del CSS: `c7068f07f542309b11c0629e8d4938a185749ce681dc2b40370bb31a2aac2e79`.
 - [Verificado en producción — 2026-10-06] `/baterias-para-montacargas/` respondió HTTP 200. Chromium comprobó 1440×900 y 390×844: sin overflow horizontal; imagen con `object-fit: contain`, alineada a la derecha, con 1166 px de ancho de render en escritorio y 343 px en móvil.
 - [Verificado en producción — 2026-10-06] El dry-run de `update-battery-maqueta` pasó: página 1559 actual/destino `736e568a8a347b23c37c0a7a244db332339406e4c1d623f92fc47577b62b5e98`; CF7 1557 actual/destino `acc47f51da1372fbb1a00a00ae824960b161c1076e6701c6f4ccdc41ea29477a`. No se ejecutó escritura porque ambos recursos ya tenían el contenido objetivo.
+- [Verificado localmente — 2026-10-07] `php -l scripts/create-commercial-landing-pages.php`, `php tests/test-commercial-landing-battery-visual-specs.php` y `git diff --check` pasan en `603093c4cf5f03ae662929c0e43608523e80a4a7`. La prueba confirma los iconos del hero en amarillo de marca.
+- [Verificado en producción — 2026-10-07] `/baterias-para-montacargas/` responde HTTP 200. Tras purgar la caché de LiteSpeed, el bundle CSS servido responde HTTP 200 e incluye el navy con opacidad `0.96` hasta el 50% del degradado; Chromium revisó el hero en escritorio y móvil, manteniendo `object-fit: contain` y la fotografía completa.
+- [Sincronización — 2026-10-07] `sync-production.sh --check` terminó con código 1 por ocho `.DS_Store` locales ignorados y diferencias en `production-snapshot/SHA256SUMS`, `pages.json`, `plugins.json` y `posts.json`. No reportó diferencias de código versionado entre el checkout y producción; los snapshots no se modificaron.
 - [Sincronización — 2026-10-06] `sync-production.sh --check` señaló únicamente `production-snapshot/pages.json` y su suma de control. La comparación de 47 páginas aisló la página 1559 y los campos `post_content`/`post_modified`; su hash actual es el destino autorizado. No hubo diferencias reportadas en código, plugins ni Compose. El snapshot es de auditoría y se dejó intacto en el checkout principal. El reintento aislado tras refrescar solo ese snapshot no terminó dentro de 210 segundos; no se afirma un cierre limpio de ese segundo comando.
 
 ## Riesgos

@@ -437,7 +437,7 @@ tmd_commercial_landing_recipient_assert(
     false !== strpos($rental_content, '120 equipos en flota propia')
         && false !== strpos($rental_content, 'Desde el año 2000 en servicio técnico')
         && false !== strpos($rental_content, '15 días de alquiler mínimo')
-        && false !== strpos($rental_content, 'Yale, Crown, Clark, Jungheinrich y Hyster en la flota disponible')
+        && false !== strpos($rental_content, 'Jungheinrich, Crown, Yale, Clark y Hyster en la flota disponible')
         && false === strpos($rental_content, 'Alquiler mínimo de 1 mes'),
     'El contenido de flota y alquiler debe seguir la maqueta vigente.'
 );

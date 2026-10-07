@@ -160,9 +160,8 @@ tmd_battery_visual_assert(isset($heading_css[1]) && (bool) preg_match('/text-ali
 $solution_text_css = [];
 tmd_battery_visual_assert(
     1 === preg_match('/\\.tmd-commercial-landing__section--battery-solutions \\.tmd-commercial-landing__section-heading h2,\\s*\\.tmd-commercial-landing__section--battery-solutions \\.tmd-commercial-landing__section-heading h3\\s*\\{([^}]*)\\}/s', $css, $solution_text_css)
-        && (bool) preg_match('/text-align:\\s*justify\\s*;/i', $solution_text_css[1])
-        && (bool) preg_match('/text-align-last:\\s*left\\s*;/i', $solution_text_css[1]),
-    'el título y el texto de compatibilidad deben justificarse y conservar la última línea a la izquierda'
+        && (bool) preg_match('/text-align:\\s*left\\s*;/i', $solution_text_css[1]),
+    'el título y el texto de compatibilidad deben alinearse a la izquierda y conservar el espaciado natural'
 );
 $benefits = [];
 tmd_battery_visual_assert(
