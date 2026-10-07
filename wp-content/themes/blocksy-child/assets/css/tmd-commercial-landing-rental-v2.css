@@ -686,6 +686,10 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__sectors-layout > header {
   grid-row: 1;
 }
 
+body.tmd-rental-layout-v2 .tmd-rental-v2__sectors .tmd-rental-v2__eyebrow {
+  color: #ffc33c;
+}
+
 body.tmd-rental-layout-v2 .tmd-rental-v2__sectors-layout h2 span {
   color: #ffc33c;
 }

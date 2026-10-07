@@ -86,7 +86,7 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
         . '</div></section>');
 
     $blocks[] = $html_block('<section class="tmd-rental-v2-section tmd-rental-v2__sectors" aria-labelledby="tmd-rental-v2-sectors-heading">'
-        . '<div class="tmd-rental-v2__container tmd-rental-v2__sectors-layout"><header><h2 id="tmd-rental-v2-sectors-heading">Contrabalanceados y reach para <span>logística, retail y manufactura</span></h2>'
+        . '<div class="tmd-rental-v2__container tmd-rental-v2__sectors-layout"><header><p class="tmd-rental-v2__eyebrow">SECTORES QUE ATENDEMOS</p><h2 id="tmd-rental-v2-sectors-heading">Contrabalanceados y reach para <span>logística, retail y manufactura</span></h2>'
         . '<h3>Operaciones que reciben, almacenan y despachan estibas a diario</h3></header>'
         . '<img class="tmd-rental-v2__sectors-main-image" src="' . esc_url($asset('sectors-main.webp')) . '" alt="Operación de almacenamiento y despacho en un centro de distribución" loading="lazy" decoding="async">'
         . '<div class="tmd-rental-v2__sector-grid">'
