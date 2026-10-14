@@ -84,7 +84,7 @@ if (is_page(57)) {
 
 <a
   class="tmd-whatsapp-float"
-  href="https://wa.me/573244298326"
+  href="https://wa.me/573168770708"
   target="_blank"
   rel="noopener noreferrer"
   aria-label="Contactar por WhatsApp"
