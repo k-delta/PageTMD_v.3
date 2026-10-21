@@ -509,14 +509,25 @@ tmd_commercial_landing_recipient_assert(
 );
 
 $form_markup = tmd_commercial_landing_rental_v2_form_markup();
+$rental_duration_tag = '[select duracion_alquiler include_blank "Mínimo 15 días" "1 mes" "3 meses" "6 meses" "1 año" "Más de 1 año"]';
 tmd_commercial_landing_recipient_assert(
     5 === preg_match_all('/\\[(?:text\\*?|textarea\\*?)\\s+(?:nombre_cargo|empresa_ciudad|contacto|necesidad|requerimientos)\\b[^\\]]*\\]/', $form_markup)
-        && 4 === preg_match_all('/\\[(?:text\\*)\\s+[a-z_]+/', $form_markup)
-        && false !== strpos($form_markup, '[textarea requerimientos]')
-        && false !== strpos($form_markup, 'tmd_website tabindex:-1 autocomplete:off')
+        && 1 === preg_match('/\\[text\\* nombre_cargo\\b/', $form_markup)
+        && 1 === preg_match('/\\[text\\* empresa_ciudad\\b/', $form_markup)
+        && 1 === preg_match('/\\[text\\* contacto\\b/', $form_markup)
+        && 1 === preg_match('/\\[text\\* necesidad\\b/', $form_markup)
+        && 1 === preg_match('/\\[textarea requerimientos\\]/', $form_markup)
+        && 1 === preg_match('/\\[text tmd_website tabindex:-1 autocomplete:off\\]/', $form_markup)
+        && 0 === preg_match('/\\[(?:text|textarea)\\* tmd_website\\b/', $form_markup)
         && false !== strpos($form_markup, 'politica-de-privacidad')
         && false === strpos($form_markup, '[acceptance'),
     'El formulario debe mantener cinco controles, obligatoriedad existente, honeypot, privacidad y sin checkbox de aceptación.'
+);
+tmd_commercial_landing_recipient_assert(
+    false !== strpos($form_markup, '<span>Duración estimada del alquiler</span>' . $rental_duration_tag)
+        && false === strpos($form_markup, '[select* duracion_alquiler')
+        && 6 === preg_match_all('/"(?:Mínimo 15 días|1 mes|3 meses|6 meses|1 año|Más de 1 año)"/', $rental_duration_tag),
+    'El formulario debe tener el selector opcional de duración con las seis opciones exactas.'
 );
 $current_form_properties = [
     'form' => '[text tmd_website tabindex:-1 autocomplete:off]',
@@ -541,6 +552,7 @@ tmd_commercial_landing_recipient_assert(
         && $current_form_properties['additional_settings'] === $target_form_properties['additional_settings']
         && false !== strpos($target_form_properties['mail']['body'], '[nombre_cargo]')
         && false !== strpos($target_form_properties['mail']['body'], '[requerimientos]')
+        && false !== strpos($target_form_properties['mail']['body'], 'Duración estimada del alquiler: [duracion_alquiler]')
         && ! str_ends_with($target_form_properties['mail']['body'], "\n"),
     'El mapeo del correo debe cambiar solo el cuerpo y conservar destinatario, cabeceras y opciones del formulario.'
 );

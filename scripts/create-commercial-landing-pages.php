@@ -1361,7 +1361,10 @@ $seed_lock = null;
 
 if ('update-rental-page' === $mode) {
     try {
-        tmd_commercial_landing_script_run_rental_v2_update('1' === getenv('TMD_COMMERCIAL_LANDINGS_EXECUTE'));
+        tmd_commercial_landing_script_run_rental_v2_update(
+            '1' === getenv('TMD_COMMERCIAL_LANDINGS_EXECUTE'),
+            'yes' === strtolower(trim((string) getenv('TMD_RENTAL_V2_FORM_ONLY')))
+        );
     } catch (Throwable $exception) {
         WP_CLI::error($exception->getMessage());
     }

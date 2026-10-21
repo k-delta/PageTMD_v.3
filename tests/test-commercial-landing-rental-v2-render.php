@@ -117,6 +117,13 @@ $content = tmd_commercial_landing_script_rental_v2_content(
     1556,
     'https://example.test/wp-content/themes/blocksy-child/assets/img'
 );
+$quote_card_start = strpos($content, '<section id="tmd-rental-v2-quote" class="tmd-rental-v2__quote"');
+$quote_faq_start = false === $quote_card_start
+    ? false
+    : strpos($content, '<section class="tmd-rental-v2__faq"', $quote_card_start);
+$quote_card_markup = false === $quote_faq_start
+    ? ''
+    : substr($content, $quote_card_start, $quote_faq_start - $quote_card_start);
 render_assert(
     false !== strpos(
         render_css_rule_body(
@@ -186,19 +193,30 @@ render_assert(
     'Blog debe envolver hasta tres publicaciones reales priorizadas y omitir una entrada irrelevante.'
 );
 $rental_css = file_get_contents(dirname(__DIR__) . '/wp-content/themes/blocksy-child/assets/css/tmd-commercial-landing-rental-v2.css');
+$quote_card_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__quote') : '';
+$quote_form_select_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__form select') : '';
+$quote_form_input_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__form input:not([type="checkbox"]):not([type="submit"])') : '';
+$quote_form_focus_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__form input:not([type="checkbox"]):not([type="submit"]):focus-visible') : '';
+$quote_form_select_focus_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__form select:focus-visible') : '';
+$quote_form_submit_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__form .wpcf7-submit') : '';
 $hero_h1_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1') : '';
 $hero_h1_span_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1 span') : '';
+$hero_promise_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h2.tmd-rental-v2__hero-promise') : '';
+$hero_support_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h3.tmd-rental-v2__hero-support') : '';
 $hero_overlay_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero::after') : '';
 $hero_eyebrow_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2-section .tmd-rental-v2__eyebrow') : '';
 $hero_eyebrow_rule_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2-section .tmd-rental-v2__eyebrow::before') : '';
 $metrics_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__metrics') : '';
 $hero_metrics_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__metrics') : '';
 $mobile_css = is_string($rental_css) ? render_css_rule_body($rental_css, '@media (max-width: 720px)') : '';
+$mobile_quote_card_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__quote');
 $description_badge_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__description-badge') : '';
 $description_badge_accent_css = is_string($rental_css) ? render_css_rule_body($rental_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__description-badge-accent') : '';
 $mobile_description_badge_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__description-badge');
 $mobile_hero_overlay_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero::after');
 $mobile_hero_h1_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1');
+$mobile_hero_promise_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h2.tmd-rental-v2__hero-promise');
+$mobile_hero_support_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero h3.tmd-rental-v2__hero-support');
 $mobile_eyebrow_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2-section .tmd-rental-v2__eyebrow');
 $mobile_eyebrow_rule_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2-section .tmd-rental-v2__eyebrow::before');
 $mobile_hero_metrics_css = render_css_rule_body($mobile_css, 'body.tmd-rental-layout-v2 .tmd-rental-v2__hero .tmd-rental-v2__metrics');
@@ -316,6 +334,23 @@ render_assert(
             $rental_css
         ),
     'El hero mantiene el H1 “Venta o alquiler”, el rótulo azul, el acento amarillo y los iconos métricos de 40 px.'
+);
+render_assert(
+    false !== strpos($content, '<h2 class="tmd-rental-v2__hero-promise">Refuerza tu operación con alquileres desde 15 días</h2>')
+        && false !== strpos($content, '<h3 class="tmd-rental-v2__hero-support">Equipos propios con mantenimiento en nuestro taller técnico</h3>')
+        && strpos($content, 'Venta o alquiler de <span>montacargas eléctricos</span>')
+            < strpos($content, 'Refuerza tu operación con alquileres desde 15 días')
+        && strpos($content, 'Refuerza tu operación con alquileres desde 15 días')
+            < strpos($content, 'Equipos propios con mantenimiento en nuestro taller técnico')
+        && strpos($content, 'Equipos propios con mantenimiento en nuestro taller técnico')
+            < strpos($content, 'Contrabalanceados, reach, pantógrafos y apiladores')
+        && false !== strpos($hero_promise_css, 'font-size: clamp(26px, 2.8vw, 36px);')
+        && false !== strpos($hero_promise_css, 'color: #fff;')
+        && false !== strpos($hero_promise_css, 'text-wrap: balance;')
+        && false !== strpos($hero_support_css, 'font-size: clamp(17px, 1.6vw, 21px);')
+        && false !== strpos($mobile_hero_promise_css, 'font-size: clamp(24px, 6.5vw, 32px);')
+        && false !== strpos($mobile_hero_support_css, 'font-size: clamp(17px, 4.6vw, 20px);'),
+    'El hero agrega el subtítulo aprobado, baja la frase de apoyo y conserva el orden del copy en escritorio y móvil.'
 );
 render_assert(
     false !== strpos($metrics_css, 'grid-template-columns: repeat(3, minmax(0, 1fr));')
@@ -464,5 +499,36 @@ render_assert(
         && false === strpos($rental_css, 'tmd-rental-whatsapp-float')
         && false === strpos($rental_css, '.tmd-whatsapp-float'),
     'La landing no redefine ni limita el botón global de WhatsApp, y conserva visible el rail en escritorio.'
+);
+render_assert(
+    false !== strpos($quote_card_markup, '<div class="tmd-rental-v2__quote-copy">')
+        && false !== strpos($quote_card_markup, 'Cotiza el alquiler de montacargas en Bogotá')
+        && false !== strpos($quote_card_markup, 'Un asesor comercial responde tu solicitud de lunes a viernes en horario laboral')
+        && false !== strpos($quote_card_markup, '<div class="tmd-rental-v2__form">[contact-form-7 id="1556"]</div>'),
+    'El título, el subtítulo y el formulario actual deben quedar agrupados dentro de la tarjeta, sin cambiar su contenido.'
+);
+render_assert(
+    false !== strpos($quote_card_css, 'padding: clamp(')
+        && false !== strpos($quote_card_css, 'border: 1px solid')
+        && false !== strpos($quote_card_css, 'border-radius: 18px;')
+        && false !== strpos($quote_card_css, 'background: #30385d;'),
+    'La tarjeta debe tener superficie navy, borde sutil, esquinas redondeadas y espaciado interior.'
+);
+render_assert(
+    false !== strpos($quote_form_input_css, 'background: #1d2740;')
+        && false !== strpos($quote_form_input_css, 'color: #fff;')
+        && false !== strpos($quote_form_select_css, 'background: #1d2740;')
+        && false !== strpos($quote_form_select_css, 'min-height: 50px;'),
+    'Los campos y el selector deben compartir controles oscuros legibles y de altura uniforme.'
+);
+render_assert(
+    false !== strpos($quote_form_focus_css, 'border-color: #128ceb;')
+        && false !== strpos($quote_form_select_focus_css, 'border-color: #128ceb;')
+        && false !== strpos($quote_form_submit_css, 'background: #ffc33c;'),
+    'Los controles conservan el foco visible y el CTA amarillo.'
+);
+render_assert(
+    false !== strpos($mobile_quote_card_css, 'padding: 24px 20px;'),
+    'La tarjeta reduce su padding en móvil y conserva el ancho disponible.'
 );
 fwrite(STDOUT, "OK: DOM rental-v2 con doce secciones, shortcodes reales y máximo de inventario.\n");

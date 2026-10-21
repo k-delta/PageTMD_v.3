@@ -180,6 +180,11 @@ putenv('TMD_RENTAL_V2_COMMERCIAL_CLAIMS_CONFIRMED=yes');
 putenv('TMD_RENTAL_V2_CONTRAST_APPROVED=yes');
 $properties_before = $GLOBALS['test_form'];
 $properties_after = tmd_commercial_landing_rental_v2_target_form_properties($properties_before);
+test_assert(
+    false !== strpos($properties_after['form'], '[select duracion_alquiler include_blank "Mínimo 15 días" "1 mes" "3 meses" "6 meses" "1 año" "Más de 1 año"]')
+        && false !== strpos($properties_after['mail']['body'], 'Duración estimada del alquiler: [duracion_alquiler]'),
+    'El destino de CF7 debe guardar el selector opcional y mapear su valor en el correo.'
+);
 $meta_before = $GLOBALS['test_meta'][1558];
 $meta_after = [
     'rank_math_title' => 'Alquiler de montacargas eléctricos | Tecnimontacargas',
@@ -208,6 +213,25 @@ test_assert(
         && ! in_array('START TRANSACTION', $GLOBALS['wpdb']->queries, true)
         && false !== strpos(implode("\n", array_column(WP_CLI::$messages, 1)), 'Dry-run sin escrituras'),
     'El dry-run debe informar hashes sin iniciar una transacción ni escribir.'
+);
+$form_only_mismatch_rejected = false;
+try { tmd_commercial_landing_script_run_rental_v2_update(false, true); }
+catch (RuntimeException $exception) {
+    $form_only_mismatch_rejected = false !== strpos($exception->getMessage(), 'solo formulario');
+}
+$form_only_execute_mismatch_rejected = false;
+try { tmd_commercial_landing_script_run_rental_v2_update(true, true); }
+catch (RuntimeException $exception) {
+    $form_only_execute_mismatch_rejected = false !== strpos($exception->getMessage(), 'solo formulario');
+}
+test_assert(
+    $form_only_mismatch_rejected
+        && $form_only_execute_mismatch_rejected
+        && 0 === $GLOBALS['test_page_writes']
+        && 0 === $GLOBALS['test_form_writes']
+        && 0 === $GLOBALS['test_meta_writes']
+        && ! in_array('START TRANSACTION', $GLOBALS['wpdb']->queries, true),
+    'El alcance solo formulario debe detenerse antes de escribir cuando página o Rank Math no coinciden con el destino.'
 );
 
 $GLOBALS['wpdb']->rows[1558]['post_title'] = 'Título distinto no reconocido';
@@ -266,6 +290,8 @@ test_assert(
         && $meta_after === $GLOBALS['test_meta'][1558]
         && hash_equals($hashes['TMD_RENTAL_V2_TARGET_PAGE_SHA256'], hash('sha256', $GLOBALS['test_page']->post_content))
         && $properties_after === $GLOBALS['test_form']
+        && false !== strpos($GLOBALS['test_form']['form'], '[select duracion_alquiler include_blank "Mínimo 15 días" "1 mes" "3 meses" "6 meses" "1 año" "Más de 1 año"]')
+        && false !== strpos($GLOBALS['test_form']['mail']['body'], 'Duración estimada del alquiler: [duracion_alquiler]')
         && 'COMMIT' === end($GLOBALS['wpdb']->queries),
     'La ejecución aprobada debe guardar y verificar página, CF7, Rank Math y commit.'
 );
@@ -387,4 +413,59 @@ test_assert(
 );
 unlink($backup . '/rental-v2-page-1558-form-1556-before.json');
 $GLOBALS['test_fail_page_update_after_write'] = false;
+
+$GLOBALS['wpdb']->rows[1558] = [
+    'ID' => 1558,
+    'post_type' => 'page',
+    'post_name' => 'alquiler-montacargas-electricos',
+    'post_status' => 'publish',
+    'post_title' => 'Alquiler de montacargas eléctricos',
+    'post_content' => $content_after,
+];
+$GLOBALS['wpdb']->meta_rows[1558] = [
+    ['meta_id' => 1, 'meta_key' => 'rank_math_title', 'meta_value' => $meta_after['rank_math_title']],
+    ['meta_id' => 2, 'meta_key' => 'rank_math_description', 'meta_value' => $meta_after['rank_math_description']],
+];
+$GLOBALS['test_meta'] = [1558 => $meta_after];
+$GLOBALS['test_form'] = $properties_before;
+$GLOBALS['test_page'] = new WP_Post($GLOBALS['wpdb']->rows[1558]);
+$GLOBALS['wpdb']->queries = [];
+$form_only_hashes = [
+    'TMD_RENTAL_V2_EXPECTED_PAGE_SHA256' => hash('sha256', $content_after),
+    'TMD_RENTAL_V2_TARGET_PAGE_SHA256' => hash('sha256', $content_after),
+    'TMD_RENTAL_V2_EXPECTED_FORM_SHA256' => tmd_commercial_landing_rental_v2_hash($properties_before),
+    'TMD_RENTAL_V2_TARGET_FORM_SHA256' => tmd_commercial_landing_rental_v2_hash($properties_after),
+    'TMD_RENTAL_V2_EXPECTED_META_SHA256' => tmd_commercial_landing_rental_v2_hash($meta_after),
+    'TMD_RENTAL_V2_TARGET_META_SHA256' => tmd_commercial_landing_rental_v2_hash($meta_after),
+    'TMD_RENTAL_V2_EXPECTED_META_STORAGE_SHA256' => tmd_commercial_landing_rental_v2_hash($GLOBALS['wpdb']->meta_rows[1558]),
+    'TMD_RENTAL_V2_EXPECTED_FORM_STORAGE_SHA256' => tmd_commercial_landing_rental_v2_hash([
+        'post' => $GLOBALS['wpdb']->rows[1556],
+        'meta' => $GLOBALS['wpdb']->meta_rows[1556],
+    ]),
+];
+foreach ($form_only_hashes as $name => $value) { putenv($name . '=' . $value); }
+$page_writes_before_form_only = $GLOBALS['test_page_writes'];
+$meta_writes_before_form_only = $GLOBALS['test_meta_writes'];
+$form_writes_before_form_only = $GLOBALS['test_form_writes'];
+$page_state_before_form_only = [
+    'title' => $GLOBALS['test_page']->post_title,
+    'content' => $GLOBALS['test_page']->post_content,
+    'meta' => $GLOBALS['test_meta'][1558],
+];
+tmd_commercial_landing_script_run_rental_v2_update(false, true);
+tmd_commercial_landing_script_run_rental_v2_update(true, true);
+test_assert(
+    $page_writes_before_form_only === $GLOBALS['test_page_writes']
+        && $meta_writes_before_form_only === $GLOBALS['test_meta_writes']
+        && $form_writes_before_form_only + 1 === $GLOBALS['test_form_writes']
+        && $page_state_before_form_only === [
+            'title' => $GLOBALS['test_page']->post_title,
+            'content' => $GLOBALS['test_page']->post_content,
+            'meta' => $GLOBALS['test_meta'][1558],
+        ]
+        && $properties_after === $GLOBALS['test_form']
+        && 'COMMIT' === end($GLOBALS['wpdb']->queries),
+    'El modo solo formulario guarda y verifica CF7 1556 sin escribir la página ni Rank Math.'
+);
+unlink($backup . '/rental-v2-page-1558-form-1556-before.json');
 fwrite(STDOUT, "OK: updater rental-v2: dry-run, hash, gates, rollback y commit.\n");

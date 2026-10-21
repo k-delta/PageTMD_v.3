@@ -38,6 +38,7 @@ function tmd_commercial_landing_rental_v2_target_form_properties(array $current)
     $target['mail']['body'] = "Solicitud de cotización de montacargas\n\n"
         . "Nombre y cargo: [nombre_cargo]\nEmpresa y ciudad: [empresa_ciudad]\n"
         . "Correo o celular: [contacto]\nNecesidad: [necesidad]\n"
+        . "Duración estimada del alquiler: [duracion_alquiler]\n"
         . "Requerimientos de carga, altura y pasillo: [requerimientos]";
 
     return $target;
@@ -134,7 +135,7 @@ function tmd_commercial_landing_rental_v2_save_rollback_artifact(
     return $artifact;
 }
 
-function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
+function tmd_commercial_landing_script_run_rental_v2_update(bool $execute, bool $form_only = false): void
 {
     $lock_path = trailingslashit(get_temp_dir()) . 'tmd-commercial-landings-seed.lock';
     $lock = @fopen($lock_path, 'c');
@@ -203,6 +204,14 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
                 'meta' => $form_meta_storage_before,
             ]),
         ];
+        if ($form_only
+            && ('Alquiler de montacargas eléctricos' !== $source_page_title
+                || ! hash_equals($hashes['page_before'], $hashes['page_target'])
+                || ! hash_equals($hashes['meta_before'], $hashes['meta_target']))) {
+            throw new RuntimeException(
+                'El modo solo formulario requiere que el título, el contenido de la página y Rank Math ya coincidan con el destino.'
+            );
+        }
         $expected_names = [
             'page_before' => 'TMD_RENTAL_V2_EXPECTED_PAGE_SHA256',
             'page_target' => 'TMD_RENTAL_V2_TARGET_PAGE_SHA256',
@@ -226,7 +235,8 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
         WP_CLI::line('Metadatos Rank Math de 1558: ' . $hashes['meta_before'] . ' → ' . $hashes['meta_target'] . '.');
         WP_CLI::line('Huella de filas Rank Math: ' . $hashes['meta_storage_before'] . '.');
         WP_CLI::line('Huella de almacenamiento CF7 1556: ' . $hashes['form_storage_before'] . '.');
-        WP_CLI::line('Campos solicitados: cinco campos; nota de privacidad y honeypot conservados.');
+        WP_CLI::line('Alcance: ' . ($form_only ? 'solo CF7 1556.' : 'página 1558, Rank Math y CF7 1556.'));
+        WP_CLI::line('Cinco campos existentes conservados; selector opcional de duración incluido; privacidad y honeypot conservados.');
         $commercial_claims_confirmed = 'yes' === strtolower(trim((string) getenv('TMD_RENTAL_V2_COMMERCIAL_CLAIMS_CONFIRMED')));
         $inventory_button_contrast_approved = 'yes' === strtolower(trim((string) getenv('TMD_RENTAL_V2_CONTRAST_APPROVED')));
         WP_CLI::line('Confirmación comercial de 120 equipos y Yale: ' . ($commercial_claims_confirmed ? 'registrada.' : 'pendiente.'));
@@ -279,7 +289,9 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
             if (! is_array($locked_page) || 'page' !== ($locked_page['post_type'] ?? '')
                 || 'alquiler-montacargas-electricos' !== ($locked_page['post_name'] ?? '')
                 || 'publish' !== ($locked_page['post_status'] ?? '')
-                || ! tmd_commercial_landing_rental_v2_is_expected_source_title((string) ($locked_page['post_title'] ?? ''))
+                || ($form_only
+                    ? 'Alquiler de montacargas eléctricos' !== (string) ($locked_page['post_title'] ?? '')
+                    : ! tmd_commercial_landing_rental_v2_is_expected_source_title((string) ($locked_page['post_title'] ?? '')))
                 || ! hash_equals($hashes['page_before'], hash('sha256', (string) ($locked_page['post_content'] ?? '')))) {
                 throw new RuntimeException('La página cambió antes de escribir; la transacción se revertirá.');
             }
@@ -321,15 +333,19 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
                 throw new RuntimeException('Las propiedades de CF7 1556 cambiaron antes de escribir; la transacción se revertirá.');
             }
 
-            $page_result = wp_update_post([
-                'ID' => 1558,
-                'post_title' => 'Alquiler de montacargas eléctricos',
-                'post_content' => wp_slash($target_content),
-            ], true);
-            if (is_wp_error($page_result) || 1558 !== (int) $page_result) {
-                throw new RuntimeException('WordPress no confirmó la actualización de la página 1558.');
+            if (! $form_only
+                && ('Alquiler de montacargas eléctricos' !== $source_page_title
+                    || ! hash_equals($hashes['page_before'], $hashes['page_target']))) {
+                $page_result = wp_update_post([
+                    'ID' => 1558,
+                    'post_title' => 'Alquiler de montacargas eléctricos',
+                    'post_content' => wp_slash($target_content),
+                ], true);
+                if (is_wp_error($page_result) || 1558 !== (int) $page_result) {
+                    throw new RuntimeException('WordPress no confirmó la actualización de la página 1558.');
+                }
             }
-            if (! hash_equals($hashes['meta_before'], $hashes['meta_target'])) {
+            if (! $form_only && ! hash_equals($hashes['meta_before'], $hashes['meta_target'])) {
                 foreach ($target_meta as $meta_key => $meta_value) {
                     update_post_meta(1558, $meta_key, $meta_value);
                 }
@@ -437,7 +453,10 @@ function tmd_commercial_landing_script_run_rental_v2_update(bool $execute): void
         $form_result = hash_equals($hashes['form_before'], $hashes['form_target'])
             ? 'CF7 ya coincidía con el destino'
             : 'CF7 se actualizó al destino';
-        WP_CLI::success('La página 1558 se actualizó y verificó; ' . $meta_result . ' y ' . $form_result . '.');
+        WP_CLI::success(
+            ($form_only ? 'Se verificó el alcance solo CF7 1556; ' : 'La página 1558 se actualizó y verificó; ')
+            . $meta_result . ' y ' . $form_result . '.'
+        );
     } finally {
         flock($lock, LOCK_UN);
         fclose($lock);

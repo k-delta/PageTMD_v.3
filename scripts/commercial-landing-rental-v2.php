@@ -28,7 +28,8 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
         . '<img class="tmd-rental-v2__hero-image" src="' . esc_url($asset('hero-dark.webp')) . '" alt="" fetchpriority="high" decoding="async">'
         . '<div class="tmd-rental-v2__container tmd-rental-v2__hero-content">'
         . '<h1 id="tmd-rental-v2-heading">Venta o alquiler de <span>montacargas eléctricos</span></h1>'
-        . '<h2>Equipos propios con mantenimiento en nuestro taller técnico</h2>'
+        . '<h2 class="tmd-rental-v2__hero-promise">Refuerza tu operación con alquileres desde 15 días</h2>'
+        . '<h3 class="tmd-rental-v2__hero-support">Equipos propios con mantenimiento en nuestro taller técnico</h3>'
         . '<p>Contrabalanceados, reach, pantógrafos y apiladores para bodegas, centros de distribución y plantas que necesitan más equipos en operación sin comprarlos.</p>'
         . $metrics
         . '</div></section>');
@@ -152,6 +153,7 @@ function tmd_commercial_landing_rental_v2_form_markup(): string
         . '<label class="tmd-landing-form__field tmd-landing-form__field--wide"><span>Empresa y ciudad</span>[text* empresa_ciudad]</label>'
         . '<label class="tmd-landing-form__field tmd-landing-form__field--wide"><span>Correo o celular</span>[text* contacto]</label>'
         . '<label class="tmd-landing-form__field tmd-landing-form__field--wide"><span>Tipo de equipo o necesidad</span>[text* necesidad]</label>'
+        . '<label class="tmd-landing-form__field tmd-landing-form__field--wide"><span>Duración estimada del alquiler</span>[select duracion_alquiler include_blank "Mínimo 15 días" "1 mes" "3 meses" "6 meses" "1 año" "Más de 1 año"]</label>'
         . '<label class="tmd-landing-form__field tmd-landing-form__field--wide"><span>Peso de la carga, altura de levante y ancho de pasillo</span>[textarea requerimientos]</label>'
         . '</div>' . $honeypot . $privacy
         . '<p class="tmd-landing-form__submit">[submit "Solicitar cotización"]</p>'

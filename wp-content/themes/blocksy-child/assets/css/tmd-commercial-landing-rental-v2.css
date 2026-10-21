@@ -144,11 +144,23 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__hero h1 span {
   color: #ffc33c;
 }
 
-body.tmd-rental-layout-v2 .tmd-rental-v2__hero h2 {
+body.tmd-rental-layout-v2 .tmd-rental-v2__hero h2.tmd-rental-v2__hero-promise {
   max-width: 760px;
-  margin-bottom: 16px;
+  margin: 0 0 14px;
   color: #fff;
-  font-size: clamp(27px, 3vw, 38px);
+  font-size: clamp(26px, 2.8vw, 36px);
+  font-weight: 700;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__hero h3.tmd-rental-v2__hero-support {
+  max-width: 760px;
+  margin: 0 0 16px;
+  color: #fff;
+  font-size: clamp(17px, 1.6vw, 21px);
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__hero p {
@@ -954,6 +966,30 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__faq h3 {
   font-size: clamp(24px, 2vw, 28px);
 }
 
+body.tmd-rental-layout-v2 .tmd-rental-v2__quote {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: clamp(24px, 3vw, 40px);
+  border: 1px solid #3c466d;
+  border-radius: 18px;
+  background: #30385d;
+  box-shadow: 0 18px 42px rgba(7, 13, 31, .18);
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__quote .tmd-rental-v2__quote-copy h2 {
+  margin: 0 0 14px;
+  font-size: clamp(30px, 3vw, 38px);
+  line-height: 1.15;
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__quote .tmd-rental-v2__quote-copy h3 {
+  margin: 0 0 24px;
+  color: #cbd3e2;
+  font-size: clamp(16px, 1.4vw, 19px);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
 body.tmd-rental-layout-v2 .tmd-rental-v2__form {
   padding: 0;
   border-radius: 0;
@@ -996,21 +1032,39 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__form .tmd-landing-form__field > span {
   display: block;
   margin-bottom: 7px;
   color: #fff;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-body.tmd-rental-layout-v2 .tmd-rental-v2__form input:not([type="checkbox"]),
-body.tmd-rental-layout-v2 .tmd-rental-v2__form textarea {
+body.tmd-rental-layout-v2 .tmd-rental-v2__form input:not([type="checkbox"]):not([type="submit"]),
+body.tmd-rental-layout-v2 .tmd-rental-v2__form textarea,
+body.tmd-rental-layout-v2 .tmd-rental-v2__form select {
   box-sizing: border-box;
   width: 100%;
-  min-height: 48px;
-  padding: 10px 12px;
-  border: 1px solid #5e748b;
-  border-radius: 8px;
-  background: #fff;
-  color: #3c3c3c;
-  font: 400 16px/1.4 'Work Sans', sans-serif;
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid #48577c;
+  border-radius: 10px;
+  background: #1d2740;
+  color: #fff;
+  font: 400 16px/1.45 'Work Sans', sans-serif;
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__form select {
+  color-scheme: dark;
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__form input:not([type="checkbox"]):not([type="submit"]):focus-visible,
+body.tmd-rental-layout-v2 .tmd-rental-v2__form textarea:focus-visible,
+body.tmd-rental-layout-v2 .tmd-rental-v2__form select:focus-visible {
+  border-color: #128ceb;
+  box-shadow: 0 0 0 3px rgba(18, 140, 235, .24);
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__form input::placeholder,
+body.tmd-rental-layout-v2 .tmd-rental-v2__form textarea::placeholder {
+  color: #aab6ca;
+  opacity: 1;
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__form textarea {
@@ -1020,13 +1074,13 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__form textarea {
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__form .tmd-landing-form__privacy-copy {
   margin: 16px 0 0 !important;
-  color: #fff;
-  font-size: 15px;
+  color: #cbd3e2;
+  font-size: 13px;
   line-height: 1.5;
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__form .tmd-landing-form__privacy-copy a {
-  color: #fff;
+  color: #74baff;
   text-decoration: underline;
 }
 
@@ -1035,14 +1089,19 @@ body.tmd-rental-layout-v2 .tmd-rental-v2__form .tmd-landing-form__submit {
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__form .wpcf7-submit {
-  min-height: 48px;
-  padding: 12px 22px;
+  width: 100%;
+  min-height: 58px;
+  padding: 14px 22px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 10px;
   background: #ffc33c;
   color: #262e4f;
-  font: 600 16px/1.3 'Work Sans', sans-serif;
+  font: 600 18px/1.3 'Work Sans', sans-serif;
   cursor: pointer;
+}
+
+body.tmd-rental-layout-v2 .tmd-rental-v2__form .wpcf7-submit:hover:not(:disabled) {
+  background: #ffd15c;
 }
 
 body.tmd-rental-layout-v2 .tmd-rental-v2__faq-list {
@@ -1156,8 +1215,13 @@ body.tmd-rental-layout-v2 :focus-visible {
     font-size: clamp(40px, 10vw, 46px);
   }
 
-  body.tmd-rental-layout-v2 .tmd-rental-v2__hero h2 {
-    font-size: clamp(26px, 7vw, 32px);
+  body.tmd-rental-layout-v2 .tmd-rental-v2__hero h2.tmd-rental-v2__hero-promise {
+    font-size: clamp(24px, 6.5vw, 32px);
+  }
+
+  body.tmd-rental-layout-v2 .tmd-rental-v2__hero h3.tmd-rental-v2__hero-support {
+    margin-bottom: 14px;
+    font-size: clamp(17px, 4.6vw, 20px);
   }
 
   body.tmd-rental-layout-v2 .tmd-rental-v2__buy h2#tmd-rental-v2-buy-heading {
@@ -1184,6 +1248,11 @@ body.tmd-rental-layout-v2 :focus-visible {
   body.tmd-rental-layout-v2 .tmd-rental-v2__quote h3,
   body.tmd-rental-layout-v2 .tmd-rental-v2__faq h3 {
     font-size: clamp(20px, 5vw, 24px);
+  }
+
+  body.tmd-rental-layout-v2 .tmd-rental-v2__quote {
+    padding: 24px 20px;
+    border-radius: 16px;
   }
 
   body.tmd-rental-layout-v2 .tmd-rental-v2__description-visual,
