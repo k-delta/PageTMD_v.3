@@ -156,6 +156,17 @@ $content = str_replace(
 $content = str_replace('[contact-form-7 id="1556"]', '<form data-form-id="1556"></form>', $content);
 
 render_assert(12 === preg_match_all('/<section\b/i', $content), 'El DOM renderizado debe tener doce secciones en orden.');
+$inventory_position = strpos($content, 'tmd-rental-v2__inventory');
+$quote_faq_position = strpos($content, 'tmd-rental-v2__quote-faq');
+$process_position = strpos($content, 'tmd-rental-v2__process');
+render_assert(
+    false !== $inventory_position
+        && false !== $quote_faq_position
+        && false !== $process_position
+        && $inventory_position < $quote_faq_position
+        && $quote_faq_position < $process_position,
+    'El bloque de cotización y FAQ debe quedar debajo del inventario real y antes de Cómo funciona.'
+);
 render_assert(1 === preg_match_all('/<h1\b/i', $content), 'El DOM renderizado debe tener un H1.');
 $blocksy_hero_filter = $GLOBALS['filters']['blocksy:single:has-default-hero'][0] ?? null;
 render_assert(is_callable($blocksy_hero_filter), 'La landing debe registrar el filtro para suprimir el hero automático de Blocksy.');

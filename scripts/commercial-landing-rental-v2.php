@@ -73,6 +73,21 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
 
     $blocks[] = $shortcode_block('[tmd_commercial_landing_inventory type="equipment" variant="rental-v2" eyebrow="Inventario real" heading="Contrabalanceados, reach y apiladores en inventario" intro="Compara capacidad y altura de levante antes de pedir la cotización" link_text="Ver todos los equipos" link_url="/equipos/"]');
 
+    $blocks[] = $html_block('<div class="tmd-rental-v2-section tmd-rental-v2__quote-faq"><div class="tmd-rental-v2__container tmd-rental-v2__quote-faq-layout">'
+        . '<section id="tmd-rental-v2-quote" class="tmd-rental-v2__quote" aria-labelledby="tmd-rental-v2-quote-heading"><div class="tmd-rental-v2__quote-copy">'
+        . '<h2 id="tmd-rental-v2-quote-heading">Cotiza el alquiler de montacargas en Bogotá</h2>'
+        . '<h3>Un asesor comercial responde tu solicitud de lunes a viernes en horario laboral</h3></div>'
+        . '<div class="tmd-rental-v2__form">[contact-form-7 id="' . absint($form_id) . '"]</div></section>'
+        . '<section class="tmd-rental-v2__faq" aria-labelledby="tmd-rental-v2-faq-heading"><header><h2 id="tmd-rental-v2-faq-heading">Preguntas frecuentes sobre alquiler de montacargas</h2>'
+        . '<h3>Condiciones del alquiler mensual de montacargas eléctricos antes de cotizar</h3></header><div class="tmd-rental-v2__faq-list">'
+        . '<details><summary>¿Cuál es el tiempo mínimo de alquiler de un montacargas?</summary><p>El alquiler mínimo es de 15 días, porque cada equipo implica un traslado de ida hasta tu sede y otro de regreso al terminar. Desde ese mínimo, el periodo se ajusta por meses a la duración de la operación y queda fijado en la cotización.</p></details>'
+        . '<details><summary>¿El montacargas se alquila con operador?</summary><p>No. El equipo se alquila sin operador y lo conduce el personal de tu empresa. Por eso, en la recomendación técnica tenemos en cuenta la configuración que tus operarios ya manejan, contrabalanceado o reach, además del peso de la carga, la altura de las estanterías y el ancho de pasillo.</p></details>'
+        . '<details><summary>¿Qué pasa si el montacargas alquilado presenta una falla?</summary><p>Lo atiende nuestro propio servicio técnico, el mismo que hace el mantenimiento preventivo y correctivo de la flota. Reportas la falla a tu asesor comercial, y el técnico diagnostica el equipo y define la reparación para que tu operación vuelva a moverse sin esperar a un tercero.</p></details>'
+        . '<details><summary>¿Qué datos necesitan para cotizar el alquiler?</summary><p>El peso de la carga, la altura de las estanterías, el ancho de los pasillos, las horas de uso por día y la ciudad donde trabajará el equipo. Con esos datos evitamos recomendarte un equipo que no quepa en tus pasillos o que no alcance la altura de tu estantería.</p></details>'
+        . '<details><summary>¿Cuánto cuesta el alquiler de un montacargas eléctrico?</summary><p>El valor depende del tipo de equipo, su capacidad, la altura de levante y el periodo de alquiler. Por eso no manejamos una tarifa única: con los datos de tu operación te enviamos la cotización del equipo que corresponde, sin sobredimensionarlo para la carga que mueves.</p></details>'
+        . '<details><summary>¿Por qué elegir un montacargas eléctrico para trabajar en bodega?</summary><p>Porque no emite gases de combustión, hace menos ruido y maniobra con precisión en pasillos y estanterías, lo que lo hace adecuado para espacios cerrados y turnos junto al personal. Su energía viene de una batería de tracción, que también vendemos y alquilamos, y se recarga en una zona definida de la bodega.</p></details>'
+        . '</div></section></div></div>');
+
     $blocks[] = $html_block('<section class="tmd-rental-v2-section tmd-rental-v2__process" aria-labelledby="tmd-rental-v2-process-heading">'
         . '<div class="tmd-rental-v2__container tmd-rental-v2__process-layout"><div class="tmd-rental-v2__process-copy"><header class="tmd-rental-v2__section-heading">'
         . '<p class="tmd-rental-v2__eyebrow">CÓMO FUNCIONA</p>'
@@ -116,21 +131,6 @@ function tmd_commercial_landing_script_rental_v2_content(int $form_id, string $a
         . '<article class="tmd-rental-v2__diagnosis"><span class="tmd-rental-v2__support-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="14" r="9"/><path d="m21 21 7 7M10 14l3 3 6-7"/></svg></span><span><strong>Diagnóstico antes de intervenir:</strong><p>el alcance de la reparación se explica antes de ejecutarla.</p></span></article>'
         . '</div></div><img src="' . esc_url($asset('technical-support.webp')) . '" alt="Dos técnicos revisan un montacargas en el mástil" loading="lazy" decoding="async">'
         . '</div></div></section>');
-
-    $blocks[] = $html_block('<div class="tmd-rental-v2-section tmd-rental-v2__quote-faq"><div class="tmd-rental-v2__container tmd-rental-v2__quote-faq-layout">'
-        . '<section id="tmd-rental-v2-quote" class="tmd-rental-v2__quote" aria-labelledby="tmd-rental-v2-quote-heading"><div class="tmd-rental-v2__quote-copy">'
-        . '<h2 id="tmd-rental-v2-quote-heading">Cotiza el alquiler de montacargas en Bogotá</h2>'
-        . '<h3>Un asesor comercial responde tu solicitud de lunes a viernes en horario laboral</h3></div>'
-        . '<div class="tmd-rental-v2__form">[contact-form-7 id="' . absint($form_id) . '"]</div></section>'
-        . '<section class="tmd-rental-v2__faq" aria-labelledby="tmd-rental-v2-faq-heading"><header><h2 id="tmd-rental-v2-faq-heading">Preguntas frecuentes sobre alquiler de montacargas</h2>'
-        . '<h3>Condiciones del alquiler mensual de montacargas eléctricos antes de cotizar</h3></header><div class="tmd-rental-v2__faq-list">'
-        . '<details><summary>¿Cuál es el tiempo mínimo de alquiler de un montacargas?</summary><p>El alquiler mínimo es de 15 días, porque cada equipo implica un traslado de ida hasta tu sede y otro de regreso al terminar. Desde ese mínimo, el periodo se ajusta por meses a la duración de la operación y queda fijado en la cotización.</p></details>'
-        . '<details><summary>¿El montacargas se alquila con operador?</summary><p>No. El equipo se alquila sin operador y lo conduce el personal de tu empresa. Por eso, en la recomendación técnica tenemos en cuenta la configuración que tus operarios ya manejan, contrabalanceado o reach, además del peso de la carga, la altura de las estanterías y el ancho de pasillo.</p></details>'
-        . '<details><summary>¿Qué pasa si el montacargas alquilado presenta una falla?</summary><p>Lo atiende nuestro propio servicio técnico, el mismo que hace el mantenimiento preventivo y correctivo de la flota. Reportas la falla a tu asesor comercial, y el técnico diagnostica el equipo y define la reparación para que tu operación vuelva a moverse sin esperar a un tercero.</p></details>'
-        . '<details><summary>¿Qué datos necesitan para cotizar el alquiler?</summary><p>El peso de la carga, la altura de las estanterías, el ancho de los pasillos, las horas de uso por día y la ciudad donde trabajará el equipo. Con esos datos evitamos recomendarte un equipo que no quepa en tus pasillos o que no alcance la altura de tu estantería.</p></details>'
-        . '<details><summary>¿Cuánto cuesta el alquiler de un montacargas eléctrico?</summary><p>El valor depende del tipo de equipo, su capacidad, la altura de levante y el periodo de alquiler. Por eso no manejamos una tarifa única: con los datos de tu operación te enviamos la cotización del equipo que corresponde, sin sobredimensionarlo para la carga que mueves.</p></details>'
-        . '<details><summary>¿Por qué elegir un montacargas eléctrico para trabajar en bodega?</summary><p>Porque no emite gases de combustión, hace menos ruido y maniobra con precisión en pasillos y estanterías, lo que lo hace adecuado para espacios cerrados y turnos junto al personal. Su energía viene de una batería de tracción, que también vendemos y alquilamos, y se recarga en una zona definida de la bodega.</p></details>'
-        . '</div></section></div></div>');
 
     $blocks[] = $shortcode_block('[tmd_commercial_landing_related_section topic="montacargas" variant="rental-v2" fallback="none" eyebrow="Blog" heading="Guías técnicas de mantenimiento y baterías de tracción" subtitle="Vida útil de la batería de tracción y señales de mantenimiento preventivo"]');
 
