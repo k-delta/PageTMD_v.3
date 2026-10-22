@@ -19,7 +19,7 @@ services:
       - db_data:/var/lib/mysql
 
   wordpress:
-    image: litespeedtech/openlitespeed:latest@sha256:c5ed930004046a15f6191cbd2f1ae9adfc5fceb548259ab27d6a1369ea3dc2ee
+    image: litespeedtech/openlitespeed:1.9.3-lsphp82@sha256:cee73ac5b7f312a377af9f3c3d3f96cd57795a09abd6edd43b60ba1ee345aff8
     container_name: tmd_ols_wordpress
     restart: unless-stopped
     depends_on:
