@@ -1,16 +1,16 @@
 # Estado operativo actual
 
-> Última verificación general: pendiente. Verificación focalizada de producción para la página 273: 2026-09-16T16:32:17Z.
+> Última verificación general: pendiente. Verificaciones focalizadas de producción: runtime PHP/LSAPI 2026-10-22T21:51:17Z; página 273 2026-09-16T16:32:17Z.
 
 Este documento contiene observaciones temporales. No debe tratarse como fuente actual sin volver a verificar.
 
 ## Producción
 
-- Sitio accesible:
-- Código HTTP:
-- HTTPS:
-- Estado de contenedores:
-- Deriva contra repositorio:
+- Sitio accesible: Sí en la comprobación focalizada.
+- Código HTTP: 200 en la portada y `/wp-json/`.
+- HTTPS: Sí.
+- Estado de contenedores: `tmd_ols_wordpress` `running`, sin reinicios, con PHP 8.2.35 (LiteSpeed SAPI) y OpenLiteSpeed 1.9.3; `tmd_db` y `tmd_phpmyadmin` continuaron `running` sin recrearse.
+- Deriva contra repositorio: `sync-production.sh --check` encontró diferencias previas en `.DS_Store` locales y en snapshots de páginas, entradas y plugins; `docker-compose.prod.yml` coincide entre el checkout y la configuración activa.
 
 ## WordPress
 
