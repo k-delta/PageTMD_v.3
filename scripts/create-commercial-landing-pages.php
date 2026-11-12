@@ -499,7 +499,7 @@ HTML));
   <div class="tmd-commercial-landing__container">
     <div class="tmd-commercial-landing__section-heading tmd-commercial-landing__section-heading--split">
       <h2 id="tmd-battery-faq-heading">Preguntas frecuentes sobre baterías de montacargas eléctricos</h2>
-      <h3>Compatibilidad, carga, mantenimiento y monitoreo de la batería de tracción</h3>
+      <h3>Baterías montacargas: compatibilidad, carga, mantenimiento y monitoreo</h3>
     </div>
     <div class="tmd-commercial-landing__faq-grid tmd-commercial-landing__faq-grid--battery">
       <div class="tmd-commercial-landing__faq-column">
