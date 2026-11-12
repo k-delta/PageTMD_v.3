@@ -101,7 +101,7 @@ tmd_battery_visual_assert(
 $hero = $hero_match[0];
 tmd_battery_visual_assert(false !== strpos($hero, 'Baterías para montacargas <em>eléctricos</em>'), 'el H1 debe conservar su texto');
 tmd_battery_visual_assert(false !== strpos($hero, 'Representantes de la marca francesa Barbillon'), 'el subtítulo debe conservar su texto');
-tmd_battery_visual_assert(false !== strpos($hero, 'Venta y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.'), 'el párrafo debe conservar su texto');
+tmd_battery_visual_assert(false !== strpos($hero, 'Venta de baterías para montacargas y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.'), 'el párrafo debe conservar su texto');
 tmd_battery_visual_assert(false !== strpos($hero, 'banner-bateria-barbillon.webp" alt=""'), 'el hero debe conservar la imagen y su alternativa');
 
 $support_match = [];

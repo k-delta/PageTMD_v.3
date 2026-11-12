@@ -392,7 +392,7 @@ try {
     $battery_hero = $battery_hero_match[0];
     tmd_battery_test_assert(false !== strpos($battery_hero, 'Baterías para montacargas <em>eléctricos</em>'), 'el hero debe conservar el H1 aprobado');
     tmd_battery_test_assert(false !== strpos($battery_hero, 'Representantes de la marca francesa Barbillon'), 'el hero debe conservar el subtítulo aprobado');
-    tmd_battery_test_assert(false !== strpos($battery_hero, 'Venta y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.'), 'el hero debe conservar el párrafo aprobado');
+    tmd_battery_test_assert(false !== strpos($battery_hero, 'Venta de baterías para montacargas y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.'), 'el hero debe conservar el párrafo aprobado');
     tmd_battery_test_assert(
         false !== strpos($battery_hero, 'commercial-landings/baterias-referencias/banner-bateria-barbillon.webp')
             && (bool) preg_match('/<img\b(?=[^>]*alt="")[^>]*commercial-landings\/baterias-referencias\/banner-bateria-barbillon\.webp[^>]*>/', $battery_hero),
@@ -548,7 +548,7 @@ try {
     $required_copy = [
         'Baterías para montacargas <em>eléctricos</em>',
         'Representantes de la marca francesa Barbillon',
-        'Venta y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.',
+        'Venta de baterías para montacargas y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.',
         '<span class="tmd-commercial-landing__solutions-title-accent">Baterías de tracción</span>, cargadores y monitoreo BMS',
         'Compatibles con retráctiles, apiladores, estibadores, tomapedidos y equipos de pasillo angosto',
         'Baterías de tracción plomo-ácido:',
@@ -576,7 +576,7 @@ try {
         'Baterías y equipos eléctricos en operación',
         'Soluciones de energía y montacargas en entornos de trabajo',
         'Cotiza baterías para montacargas',
-        'Preguntas frecuentes sobre baterías para montacargas',
+        'Preguntas frecuentes sobre baterías de montacargas eléctricos',
         'Compatibilidad, carga, mantenimiento y monitoreo de la batería de tracción',
         'Artículos sobre carga y electrolito del plomo-ácido',
         'Lectura de los registros del BMS y cuidado de las conexiones',

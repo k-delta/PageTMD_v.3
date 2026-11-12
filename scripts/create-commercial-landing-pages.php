@@ -348,7 +348,7 @@ function tmd_commercial_landing_script_battery_content(string $asset_root, int $
     <div class="tmd-commercial-landing__hero-copy">
       <h1 id="tmd-battery-heading">Baterías para montacargas <em>eléctricos</em></h1>
       <h2 class="tmd-commercial-landing__hero-subhead">Representantes de la marca francesa Barbillon</h2>
-      <p class="tmd-commercial-landing__hero-lead">Venta y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.</p>
+      <p class="tmd-commercial-landing__hero-lead">Venta de baterías para montacargas y alquiler para flotas de bodega, con cargador del mismo voltaje y registro BMS de la carga y la descarga.</p>
       <ul class="tmd-commercial-landing__hero-supports">
         <li class="tmd-commercial-landing__hero-support tmd-commercial-landing__hero-support--performance">
           <span class="tmd-commercial-landing__hero-support-icon tmd-commercial-landing__hero-support-icon--performance"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M27 5 13 26h10l-2 17 14-23H25z"/></svg></span>
@@ -498,7 +498,7 @@ HTML));
 <section class="tmd-commercial-landing tmd-commercial-landing__section tmd-commercial-landing__section--battery-faq" aria-labelledby="tmd-battery-faq-heading">
   <div class="tmd-commercial-landing__container">
     <div class="tmd-commercial-landing__section-heading tmd-commercial-landing__section-heading--split">
-      <h2 id="tmd-battery-faq-heading">Preguntas frecuentes sobre baterías para montacargas</h2>
+      <h2 id="tmd-battery-faq-heading">Preguntas frecuentes sobre baterías de montacargas eléctricos</h2>
       <h3>Compatibilidad, carga, mantenimiento y monitoreo de la batería de tracción</h3>
     </div>
     <div class="tmd-commercial-landing__faq-grid tmd-commercial-landing__faq-grid--battery">

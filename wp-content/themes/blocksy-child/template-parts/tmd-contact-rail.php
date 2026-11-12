@@ -131,7 +131,7 @@ if (is_page(57)) {
       </label>
       <label class="tmd-whatsapp-dialog__consent">
         <input name="privacy" type="checkbox" required>
-        <span>Acepto la <a href="<?php echo esc_url(home_url('/privacidad/')); ?>" target="_blank" rel="noopener noreferrer">política de privacidad y tratamiento de datos personales</a>.</span>
+        <span>Acepto la <a href="<?php echo esc_url(home_url('/nosotros/legal/politica-de-privacidad/')); ?>" target="_blank" rel="noopener noreferrer">política de privacidad y tratamiento de datos personales</a>.</span>
       </label>
       <button class="tmd-whatsapp-dialog__submit" type="submit">Continuar a WhatsApp</button>
     </form>
